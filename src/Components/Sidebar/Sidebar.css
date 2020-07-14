@@ -1,0 +1,7 @@
+.Sidebar{
+    width:15%;
+    height:100%;
+    float: left;
+    background-color: green;
+    margin: 0 auto;
+}

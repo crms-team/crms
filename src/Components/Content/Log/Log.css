@@ -1,0 +1,8 @@
+.Log{
+    width:60%;
+    position: absolute;
+    bottom:20px;
+    margin-left: 40px;
+    height: 25%;
+    background-color: blue;
+}
