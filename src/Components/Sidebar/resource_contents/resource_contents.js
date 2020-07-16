@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import './list.css';
+import './contents.css';
 
 const resources = {
     common:[
@@ -62,14 +62,14 @@ const resources = {
     }
 
 
-class List extends Component{
+class Resource extends Component{
     constructor(props){
         super(props) 
     }
 
     render(){
         return(
-            <>
+            <div className="Resource">
             <hr />
                 { Object.keys(resources).map((v)=> {
                     return (
@@ -86,9 +86,10 @@ class List extends Component{
                             </div>
                     )
                 }) }
-            </>
+            </div>
         );
     }
+
 }
 
-export default List;
+export default Resource;

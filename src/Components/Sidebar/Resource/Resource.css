@@ -1,7 +1,0 @@
-.Resource{
-    position: absolute;
-    left: 0;
-    top:150px;
-    width:15% ;
-    height:calc( 100% - 150px );
-}

@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+improt {select,utcParse} from "d3";
 import './Visual.css'
 
 class Visual extends Component{

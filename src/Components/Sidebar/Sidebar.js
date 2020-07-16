@@ -1,30 +1,43 @@
 import React,{Component} from 'react';
 import './Sidebar.css'
-import Menu from './Menu/Menu'
-import Resource from './Resource/Resource'
-import Logo from './Logo/Logo';
+import Resource from './resource_contents/resource_contents'
+import BudgetContents from './budget_contents/budget_contents'
 
 class Sidebar extends Component{
     constructor(props){
         super(props);
         this.state={
-            bgcol:"blue"
+            resource:true,
+            budget:false
         }
-        this.test=this.test.bind(this);
     }
 
-    test=(text)=>{
-        this.setState(()=>{
-            return {bgcol:text}
-        })
-    }
-    
+
     render(){
         return(
             <div className="Sidebar">
-                <Logo/>
-                <Menu test={this.test}/>
-                <Resource color={this.state.bgcol}/>
+                <div className="header">
+                    <b>CRMS</b>
+                    <br/>
+                <button className="clresource" onClick={()=>{
+                    this.setState({
+                        resource: true,
+                        budget: false
+                    })
+                }}>
+                    리소스
+                </button>
+                <button className="budget"onClick={()=>{
+                    this.setState({
+                        resource: false,
+                        budget: true
+                    })
+                }}>
+                    예산
+                </button>
+                </div>
+                { this.state.resource && <Resource/> }
+                { this.state.budget && <BudgetContents/> }
             </div>
         );
     }
