@@ -1,8 +1,7 @@
 .Resource{
     position: absolute;
     left: 0;
-    top:100px;
-    width:15%;
-    height:calc( 100% - 100px );
-    background-color: brown;
+    top:150px;
+    width:15% ;
+    height:calc( 100% - 150px );
 }

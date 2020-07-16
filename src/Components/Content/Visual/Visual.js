@@ -4,8 +4,8 @@ import './Visual.css'
 class Visual extends Component{
     render(){
         return(
-            <div className="Visual">
-            </div>
+            <svg className="Visual">
+            </svg>
         );
     }
 }

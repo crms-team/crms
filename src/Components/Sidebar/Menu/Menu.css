@@ -1,7 +1,7 @@
 .Menu{
     position: absolute;
     left:0;
-    top:0;
+    top:50px;
     width:15%;
     height:100px;
     background-color: blue;
