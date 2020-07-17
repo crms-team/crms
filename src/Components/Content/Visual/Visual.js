@@ -72,13 +72,17 @@ const config = {
     nodeHighlightBehavior: true,
     width:1600,
     height:800,
+    collapsible:true,
+    directed:true,
     node: {
         color: "lightgreen",
         size: 500,
+        height:500,
         highlightStrokeColor: "blue",
+        labelPosition:"bottom",
     },
     link: {
-        highlightColor: "lightblue",
+        highlightColor: "Red",
     }
 }
 
@@ -107,23 +111,13 @@ class Visual extends Component{
         nodes.push({id:test.id,attr:test.attr})
         for(let tmp=0;tmp<test.children.length;tmp++){
             nodes.push({id:test.children[tmp].id,attr:test.children[tmp].attr})
-            links.push({source:test.children[tmp].id,target:test.id})
+            links.push({source:test.id,target:test.children[tmp].id})
             for(let tmp1=0;tmp1<test.children[tmp].children.length;tmp1++){
                 nodes.push({id:test.children[tmp].children[tmp1].id,attr:test.children[tmp].children[tmp1].attr})
-                links.push({source:test.children[tmp].children[tmp1].id,target:test.children[tmp].id})
-                for (let i=0;i<test.children[tmp].children[tmp1].link.length;i++){
-                    if(test.children[tmp].children[tmp1].link[i]){
-                        links.push({source:test.children[tmp].children[tmp1].id,target:test.children[tmp].children[tmp1].link[i]})
-                    }
-                }
+                links.push({source:test.children[tmp].id,target:test.children[tmp].children[tmp1].id})
                 for(let tmp2=0;tmp2<test.children[tmp].children[tmp1].children.length;tmp2++){
                     nodes.push({id:test.children[tmp].children[tmp1].children[tmp2].id,attr:test.children[tmp].children[tmp1].children[tmp2].attr})
-                    links.push({source:test.children[tmp].children[tmp1].children[tmp2].id,target:test.children[tmp].children[tmp1].id})
-                    for (let i=0;i<test.children[tmp].children[tmp1].children[tmp2].link.length;i++){
-                        if(test.children[tmp].children[tmp1].children[tmp2].link[i]){
-                            links.push({source:test.children[tmp].children[tmp1].children[tmp2].id,target:test.children[tmp].children[tmp1].children[tmp2].link[i]})
-                        }
-                    }
+                    links.push({source:test.children[tmp].children[tmp1].id,target:test.children[tmp].children[tmp1].children[tmp2].id})
                 }
             }
             for(let i=0;i<nodes.length;i++){
@@ -160,16 +154,7 @@ class Visual extends Component{
 
     render(){
         return(
-            <div className="Visual">
-                <button
-                    onClick={()=>{
-                        this.setState({
-                            data: this.make_d3_graph_data(26)
-                        })
-                        console.log(test)
-                    }}
-                >adsfhajfda</button>
-                
+            <div className="Visual">                
                 <Graph
                     id="graph-id"
                     data={this.state.data}
