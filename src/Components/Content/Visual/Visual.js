@@ -31,7 +31,7 @@ const test={
                     id:"sn",
                     attr:"Subnet",
                     parent:"vpc_test",
-                    link:["sn1"],
+                    link:[],
                     children:[
                         {
                             id:"ec2_1",
@@ -61,7 +61,7 @@ const test={
                     attr:"Subnet",
                     parent:"vpc_test",
                     children:"",
-                    link:["sn"]
+                    link:[]
                 }
             ]
         }
