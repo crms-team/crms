@@ -118,6 +118,11 @@ class Visual extends Component{
                 for(let tmp2=0;tmp2<test.children[tmp].children[tmp1].children.length;tmp2++){
                     nodes.push({id:test.children[tmp].children[tmp1].children[tmp2].id,attr:test.children[tmp].children[tmp1].children[tmp2].attr})
                     links.push({source:test.children[tmp].children[tmp1].children[tmp2].id,target:test.children[tmp].children[tmp1].id})
+                    for (let i=0;i<test.children[tmp].children[tmp1].children[tmp2].link.length;i++){
+                        if(test.children[tmp].children[tmp1].children[tmp2].link[i]){
+                            links.push({source:test.children[tmp].children[tmp1].children[tmp2].id,target:test.children[tmp].children[tmp1].children[tmp2].link[i]})
+                        }
+                    }
                 }
             }
         }
