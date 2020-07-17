@@ -94,6 +94,9 @@ class Visual extends Component{
                     links.push({source:id.children[tmp].id,target:id.children[tmp].link[i]})
                 }
             }
+            if(id.children[tmp].children.length>0){
+                this.Draw_graph(id.children[tmp])
+            }
         }
     }
 
@@ -111,6 +114,10 @@ class Visual extends Component{
                     if(test.children[tmp].children[tmp1].link[i]){
                         links.push({source:test.children[tmp].children[tmp1].id,target:test.children[tmp].children[tmp1].link[i]})
                     }
+                }
+                for(let tmp2=0;tmp2<test.children[tmp].children[tmp1].children.length;tmp2++){
+                    nodes.push({id:test.children[tmp].children[tmp1].children[tmp2].id,attr:test.children[tmp].children[tmp1].children[tmp2].attr})
+                    links.push({source:test.children[tmp].children[tmp1].children[tmp2].id,target:test.children[tmp].children[tmp1].id})
                 }
             }
         }
