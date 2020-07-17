@@ -63,10 +63,6 @@ const resources = {
 
 
 class Resource extends Component{
-    constructor(props){
-        super(props) 
-    }
-
     render(){
         return(
             <div className="Resource">
