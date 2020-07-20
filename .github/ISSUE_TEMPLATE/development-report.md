@@ -2,7 +2,7 @@
 name: Development Report
 about: 'To do list '
 title: ''
-labels: ''
+labels: dev
 assignees: ''
 
 ---
