@@ -6,14 +6,21 @@ class Form extends Component {
         super(props);
         this.state = {
             value : '',
-            placeholder : 'password',
-            buttonText : 'continue',
         };
+        this.onChange.bind()
+        this.tryLogin.bind()
     }
 
-    onSubmit = (e) => {
-        e.preventDefault();
-    };
+    tryLogin = () => {
+        fetch(`http://localhost:4000/api/passwd?passwd=${this.state.value}`).then(res=>res.json()).then(res=>{
+            if (res.result){
+                localStorage.setItem('login', true)
+                window.location.href='/board'
+            } else {
+                alert('Failed Login')
+            }
+        })
+    }
 
     onChange = (e) =>{
         this.setState({
@@ -23,12 +30,10 @@ class Form extends Component {
 
     render(){
         return(
-            <>
-                <form className="form" onSubmit={this.onSubmit}>
-                    <input className="form__input" required type='password' placeholder={this.state.placeholder} value={this.state.value} onChange={this.onChange}/>
-                    <button className="form__button"> {this.state.buttonText} </button>
-                </form>
-            </>
+            <div className="form">
+                <input className="form__input" required type='password' placeholder='password' value={this.state.value} onChange={this.onChange}/>
+                <button className="form__button" onClick={this.tryLogin}>continue</button>
+            </div>
         );
     }
 }
