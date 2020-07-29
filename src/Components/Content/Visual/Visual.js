@@ -164,31 +164,22 @@ class Visual extends Component{
         var nodeEnter = nodeSvg.enter()
           .append("g")
           .attr("class", "node")
+          .on("mouseover", function(d) {
+                var thisNode = d.id
+                d3.selectAll(".circleNode").attr("r", 6);
+                d3.select(this).attr("r", 12);
+                d3.selectAll(".link").attr("opacity", function(d) {
+                    return (d.source.id == thisNode || d.target.id == thisNode) ? 1 : 0.1
+                });           
+            })
+          .on("mouseout", function(d) {
+                d3.selectAll(".link").attr("opacity","1");
+          })
           .on("click", click)
           .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
             .on("end", dragended))
-            .on("mouseover", function(d) {
-                var thisNode = d.id
-            
-                d3.selectAll(".circleNode");
-                d3.select(this).attr("r", 12);
-            
-                linkEnter.attr("opacity", function(d) {
-                    return (d.source.id == thisNode || d.target.id == thisNode) ? 1 : 0.1
-                });
-            
-            })
-            .on("mouseout", function(d) {
-                var thisNode = d.id
-            
-                d3.selectAll(".circleNode")
-                d3.select(this).attr("r", 12);
-            
-                linkEnter.attr("opacity","1");
-            
-            });
       
         nodeEnter.append("circle")
           .attr("r", 20)
