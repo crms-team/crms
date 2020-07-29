@@ -15,11 +15,13 @@ if (!init.config.existConfig(PATH)){
 const express = require('express')
 const server = express()
 const cors = require('cors');
-const config = init.config.getConfig(PATH)    
-const PORT = config.server_port
+
+// add server.config
+server.config = init.config.getConfig(PATH)    
+const PORT = server.config.server_port
 
 server.use(cors())
-require('./info')(server)
+require('./api')(server)
 server.listen(PORT, ()=>{
     console.log('>> Statr Node Server 0.0.0.0:' + PORT)
 })
