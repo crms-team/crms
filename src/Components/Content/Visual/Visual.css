@@ -5,3 +5,15 @@
     padding: 0;
     background-color: white;
 }
+circle.node {
+	cursor: pointer;
+	stroke: #34495e;
+	stroke-width: 2px;
+	box-sizing: border-box;
+}
+
+line.link {
+	fill: none;
+	stroke: #34495e;
+	stroke-width: 1.5px;
+}

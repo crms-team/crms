@@ -8,7 +8,8 @@ class Sidebar extends Component{
         super(props);
         this.state={
             resource:true,
-            budget:false
+            budget:false,
+            text:''
         }
     }
 

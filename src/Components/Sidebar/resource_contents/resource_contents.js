@@ -1,4 +1,6 @@
 import React,{Component} from 'react';
+import {connect} from 'react-redux';
+import{Set_Data} from '../../../actions';
 import './contents.css';
 
 const resources = {
@@ -63,6 +65,16 @@ const resources = {
 
 
 class Resource extends Component{
+    constructor(props){
+        super(props);
+
+        this.state={
+            instance:""
+        }
+
+        this.onChangeins=this.onChangeins.bind(this);
+    }
+
     render(){
         return(
             <div className="Resource">
@@ -74,7 +86,7 @@ class Resource extends Component{
                                 {
                                     resources[v].map((t)=>{
                                         return (
-                                            <button className="resource">{t.id}</button>
+                                            <button onClick={this.onChangeins} className="resource">{t.id}</button>
                                         )
                                     }) 
                                 }
@@ -86,6 +98,18 @@ class Resource extends Component{
         );
     }
 
+    onChangeins(e){
+        this.setState({instance:e.id});
+    }
+
 }
+
+let mapDispatchToProps =(dispatch)=>{
+    return{
+        onUpdateins:(value)=>dispatch(Set_Data(value))
+    };
+}
+
+Resource = connect(undefined,mapDispatchToProps)(Resource);
 
 export default Resource;
