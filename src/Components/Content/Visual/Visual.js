@@ -58,11 +58,13 @@ const test={
 
 
 class Visual extends Component{
-
+    state={
+        data:""
+    }
 
     drawChart() {
-        var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
-        height = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).height)-200;
+      var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
+          height = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).height)-200;
       
       //initialising hierarchical data
         var root = d3.hierarchy(test);
@@ -75,6 +77,10 @@ class Visual extends Component{
       
       var svg = d3.select("svg")
         .call(d3.zoom().scaleExtent([1 / 2, 8]).on("zoom", zoomed))
+        .on("dblclick.zoom",null)
+        .on("contextmenu",function(d,i){
+            d3.event.preventDefault();
+        })
         .append("g")
         .attr("transform", "translate(40,0)")
     
@@ -152,6 +158,10 @@ class Visual extends Component{
                 d3.selectAll(".node").attr("opacity","1");
           })
           .on("click", click)
+          .on("contextmenu",function(d,i){
+              d3.event.preventDefault();
+              alert("right click!");
+          })
           .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
@@ -268,7 +278,7 @@ class Visual extends Component{
         recurse(root);
         return nodes;
       }
-
+      
     }
 
     componentDidMount(){
