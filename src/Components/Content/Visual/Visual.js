@@ -16,7 +16,7 @@ const test={
             link:"",
             children:[
                 {
-                    "name":"sn",
+                    "name":"test_sub",
                     type:"Subnet",
                     parent:"vpc_test",
                     link:[],
@@ -135,13 +135,21 @@ class Visual extends Component{
           .style("stroke","black")
           .on("mouseover", function(d) {
                 var thisNode = d.id
+                var thislink=d
                 d3.selectAll(".link").attr("opacity", function(d) {
                     return (d.source.id == thisNode || d.target.id == thisNode) ? 1 : 0.1
+                });
+                d3.selectAll(".node").attr("opacity", function(d) {
+                    if(d.data.name==thislink.data.parent||d.id==thisNode||d.data.parent==thislink.data.name)
+                        return "1";
+                    else
+                        return "0.1";
                 });
                     
             })
           .on("mouseout", function(d) {
                 d3.selectAll(".link").attr("opacity","1");
+                d3.selectAll(".node").attr("opacity","1");
           })
           .on("click", click)
           .call(d3.drag()
