@@ -14,7 +14,7 @@ module.exports ={
     },
     createConfig: function (path) {
         try {
-            fs.mkdirSync(`${path}/data`)
+            fs.mkdir(`${path}/data`, ()=>{})
             fs.writeFileSync(`${path}/data/${config_file_name}`, JSON.stringify(default_config))
             return true
         } catch {
