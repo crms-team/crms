@@ -1,11 +1,11 @@
 // init crms
-const init = require('./init')
+const system = require('./system')
 const path = require('path')
 
 const PATH = __dirname.split(path.sep).slice(0, -1).join(path.sep)
 
-if (!init.config.existConfig(PATH)){
-    if (!init.config.createConfig(PATH)){
+if (!system.config.existConfig(PATH)){
+    if (!system.config.createConfig(PATH)){
         console.log("Failed Create Config File path ./crms/data/crms.config")
         process.exit()
     }
@@ -17,7 +17,7 @@ const server = express()
 const cors = require('cors');
 
 // add server.config
-server.config = init.config.getConfig(PATH)    
+server.config = system.config.getConfig(PATH)    
 const PORT = server.config.server_port
 
 server.use(cors())

@@ -1,4 +1,4 @@
-const key_module = require('../../init/data')
+const key_module = require('../../system/key')
 
 function isKeyFormat(vendor, keys){
     switch (vendor) {
