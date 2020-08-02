@@ -1,15 +1,28 @@
 export const AddResource ='AddResource';
-export const Set_Data='Set_Data'
+export const ViewResource ='ViewResource';
+export const DelResource ='DelResouce';
+export const ModResource ='ModResouce';
 
-export function addresource(){
+export function actionaddresource(){
     return{
         type:AddResource
     };
 }
 
-export function setdata(value){
+export function actionmodresource(){
     return{
-        type:Set_Data,
-        instance:value
+        type:ModResource
+    };
+}
+
+export function actiondelresource(){
+    return{
+        type:DelResource
+    };
+}
+
+export function actionViewResource(data){
+    return{
+        type: ViewResource
     };
 }

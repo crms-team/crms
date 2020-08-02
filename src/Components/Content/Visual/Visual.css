@@ -8,6 +8,26 @@
 	background-color: white;
 	font-family: 'NanumSquare', sans-serif;
 }
+.Log{
+    width:60%;
+    position: absolute;
+    bottom:20px;
+    margin-left: 40px;
+    height: 25%;
+    background-color: blue;
+    display: none;
+}
+.ResourceData{
+    position: absolute;
+    right:0;
+    top:0;
+    margin-top:120px;
+    margin-right: 15px;
+    width:20%;
+    background-color: red;
+    height: 60%;
+    display: none;
+}
 circle.node {
 	cursor: pointer;
 	stroke: #34495e;
@@ -20,4 +40,8 @@ line.link {
 	fill: none;
 	stroke: #34495e;
 	stroke-width: 1.5px;
+}
+
+select{
+	width:100px;
 }

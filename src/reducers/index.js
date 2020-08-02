@@ -1,25 +1,27 @@
-import {AddResource, Set_Data} from '../actions';
 import {combineReducers} from 'redux';
+import {AddResource,ViewResource,DelResource} from '../actions'
 
-const instanceinit={
-    value:"",
-    instance:""
+const resourcestate={
+    name:"AWS",
+    type:"CLOUD",
+    region:"",
+    platform:"",
+    instype:"",
+    size:"",
+    parent:"",
+    link:[],
+    children:[] 
 };
 
-const SetType=(state=instanceinit,action)=>{
+function Reducer(state=resourcestate,action){
     switch(action.type){
-        case Set_Data:
-            return Object.assign({},state,{
-                instance:action.instance
-            });
+        case ViewResource:
+            return action.id
         default:
             return state;
+
     }
 }
 
-const SetTypeApp=combineReducers({
-    SetType
-});
 
-export default SetTypeApp;
-
+export default Reducer

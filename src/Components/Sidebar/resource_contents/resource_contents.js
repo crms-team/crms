@@ -1,6 +1,4 @@
 import React,{Component} from 'react';
-import {connect} from 'react-redux';
-import{Set_Data} from '../../../actions';
 import './contents.css';
 
 const resources = {
@@ -103,13 +101,5 @@ class Resource extends Component{
     }
 
 }
-
-let mapDispatchToProps =(dispatch)=>{
-    return{
-        onUpdateins:(value)=>dispatch(Set_Data(value))
-    };
-}
-
-Resource = connect(undefined,mapDispatchToProps)(Resource);
 
 export default Resource;

@@ -4,39 +4,39 @@ import * as d3 from 'd3';
 import './Visual.css'
 
 const test={
-    "name":"CLOUD",
+    name:"CLOUD",
     type:"cloud",
     parent:"",
-    link:"",
+    link:[],
     children:[
         {
-            "name":"vpc_test",
+            name:"vpc_test",
             type:"VPC",
             parent:"CLOUD",
-            link:"",
+            link:[],
             children:[
                 {
-                    "name":"test_sub",
+                    name:"test_sub",
                     type:"Subnet",
                     parent:"vpc_test",
                     link:[],
                     children:[
                         {
-                            "name":"ec2_1",
+                            name:"ec2_1",
                             type:"EC2",
                             parent:"test_sub",
                             children:"",
                             link:["ec2_2","sg"]
                         },
                         {
-                            "name":"ec2_2",
+                            name:"ec2_2",
                             type:"EC2",
                             parent:"test_sub",
                             children:"",
                             link:["ec2_1","sg"]
                         },
                         {
-                            "name":"sg",
+                            name:"sg",
                             type:"SecurityGroup",
                             parent:"test_sub",
                             children:"",
@@ -45,7 +45,7 @@ const test={
                     ]
                 },
                 {
-                    "name":"sn1",
+                    name:"sn1",
                     type:"Subnet",
                     parent:"vpc_test",
                     children:"",
@@ -56,18 +56,26 @@ const test={
     ]
 };
 
+const logstate={
+    name:"AWS",
+    type:"CLOUD",
+    region:"",
+    platform:"",
+    instype:"",
+    size:"",
+    parent:"",
+    link:[],
+    children:[] 
+}
 
 class Visual extends Component{
-    state={
-        data:""
-    }
 
     drawChart() {
       var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
           height = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).height)-200;
-      
+
       //initialising hierarchical data
-        var root = d3.hierarchy(test);
+      var root = d3.hierarchy(test);
       
       var i = 0;
       
@@ -179,10 +187,9 @@ class Visual extends Component{
                 d3.selectAll(".link").attr("opacity","1");
                 d3.selectAll(".node").attr("opacity","1");
           })
-          .on("click", click)
-          .on("contextmenu",function(d,i){
+          .on("contextmenu",function(d){
               d3.event.preventDefault();
-              alert("right click!");
+              viewset(d);
           })
           .call(d3.drag()
             .on("start", dragstarted)
@@ -211,7 +218,8 @@ class Visual extends Component{
         .attr("x", function(d) { return -30;})
         .attr("y", function(d) { return -35;})
         .attr("height", 60)
-        .attr("width", 60);
+        .attr("width", 60)
+        .on("click", click);
       
         nodeEnter.append("text")
           .attr("dy", 33)
@@ -220,7 +228,7 @@ class Visual extends Component{
           .style("font-weight","bold")
           .style("font-size","14px")
           .style("text-anchor","middle")
-          .text(function(d) {
+          .text(function(d) { 
             return d.data.name;
           });
       
@@ -239,12 +247,12 @@ class Visual extends Component{
         linkSvg
           .attr("x1", function(d) {
             var angle=Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-            var length=50*Math.cos(angle);
+            var length=60*Math.cos(angle);
             return d.source.x+length;
           })
           .attr("y1", function(d) {
             var angle=Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-            var length=50*Math.sin(angle);
+            var length=60*Math.sin(angle);
             return d.source.y+length;
           })
           .attr("x2", function(d) {
@@ -265,6 +273,7 @@ class Visual extends Component{
       }
       
       function click(d) {
+
         if (d.children) {
           d._children = d.children;
           d.children = null;
@@ -276,6 +285,36 @@ class Visual extends Component{
           update();
           simulation.restart();
         }
+      }
+
+      function viewset(d){
+        var log=d3.select(".ResourceData");
+        log.style('display','block');
+        var cancel=log.select("#cancel")
+        var resid=log.select("#id")
+        var restype=log.select("#type")
+        var resreg=log.select("#region")
+        var resplatform=log.select("#platform")
+        var resparent = log.select("#parent")
+        var reslink=log.select("#link")
+        resid.attr("value",d.id)
+        restype.selectAll("option").remove()
+        var tyopt=restype.append("option")
+        tyopt.text(d.data.type)
+        resparent.selectAll("option").remove()
+        var paropt=resparent.append("option")
+        paropt.text(d.data.parent)
+        reslink.attr("value",function(){
+          var tmp="";
+          for(var i=0;i<d.data.link.length;i++)
+            tmp+=d.data.link[i]+",";
+          tmp=tmp.substring(0,tmp.length-1);
+          return tmp;
+        })
+
+        cancel.on("click",function() {
+          log.style('display','none');
+        })
       }
       
       function dragstarted(d) {
@@ -314,18 +353,50 @@ class Visual extends Component{
 
     render(){
         return(
-            <svg className="Visual">                
+          <>
+            <svg className="Visual">              
             </svg>
+            <div className="ResourceData">
+              <button id="cancel">
+                X
+              </button>
+              <p>
+                ID:
+              <input id="id"></input>
+              </p>
+              <p>
+                TYPE:
+                <select id="type">
+                </select>
+              </p>
+              <p>
+                Region:
+                <select id="region">
+                </select>
+              </p>
+              <p>
+                Platform:
+                <select id="platform">
+                </select>
+              </p>
+              <p>
+                Size:
+                <select id="size">
+                </select>
+              </p>
+              <p>
+                Parent:
+                <select id="parent">
+                </select>
+              </p>
+              <p>
+                Link:
+                <input id="link"></input>
+              </p>
+            </div>  
+          </>
         );
     }
 }
-
-let mapStateToProps = (state) =>{
-    return{
-        value:state.SetType.value
-    };
-}
-
-Visual = connect(mapStateToProps) (Visual);
 
 export default Visual;
