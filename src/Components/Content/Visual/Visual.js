@@ -233,6 +233,12 @@ class Visual extends Component{
           });
       
         nodeSvg = nodeEnter.merge(nodeSvg);
+
+        var addresshow = d3.select(".add_res");
+        var resnoshow = addresshow.select("#cancel");
+        resnoshow.on("click",function(){
+          addresshow.style("display","none");
+        })
       
         simulation
           .nodes(nodes)
@@ -357,7 +363,45 @@ class Visual extends Component{
           <>
             <svg className="Visual">              
             </svg>
-            <div className="add_res"></div>
+            <div className="add_res">
+              <button id="cancel">
+                  X
+                </button>
+                <p>
+                  ID:
+                <input id="id"></input>
+                </p>
+                <p>
+                  TYPE:
+                  <input id="type"value={this.props.value}></input>
+                </p>
+                <p>
+                  Region:
+                  <select id="region">
+                  </select>
+                </p>
+                <p>
+                  Platform:
+                  <select id="platform">
+                  </select>
+                </p>
+                <p>
+                  Size:
+                  <select id="size">
+                  </select>
+                </p>
+                <p>
+                  Parent:
+                  <select id="parent">
+                  </select>
+                </p>
+                <p>
+                  Link:
+                  <input id="link"></input>
+                </p>
+                <button id="apply">Apply</button>
+              <br/>
+            </div>
             <div className="ResourceData">
               <button id="cancel">
                 X
