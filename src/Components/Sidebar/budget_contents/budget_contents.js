@@ -2,24 +2,6 @@ import React,{Component} from 'react';
 import './budget_contents.css';
 
 const resources = {
-    common:[
-        {
-            id:'block',
-            width:'20px',
-            height:'20px',
-            vpc:'',
-            subnet:'',
-            security:'',
-        },
-        {
-            id:'text',
-            size:25,
-            text:'text',
-            vpc:'',
-            subnet:'',
-            security:''
-        }
-    ],
     aws_compute:[
         {
             id:'ec2',
@@ -34,6 +16,47 @@ const resources = {
             size:'',
             bliling:0
         }
+    ],
+    aws_setting:[
+        {
+            id:'VPC',
+            width:'20px',
+            height:'20px',
+            vpc:'',
+            subnet:'',
+            security:'',
+            region:'',
+            platform:'',
+            instype:'',
+            size:'',
+            bliling:0
+        },
+        {
+            id:'SecurityGroup',
+            width:'20px',
+            height:'20px',
+            vpc:'',
+            subnet:'',
+            security:'',
+            region:'',
+            platform:'',
+            instype:'',
+            size:'',
+            bliling:0
+        },
+        {
+            id:'Subnet',
+            width:'20px',
+            height:'20px',
+            vpc:'',
+            subnet:'',
+            security:'',
+            region:'',
+            platform:'',
+            instype:'',
+            size:'',
+            bliling:0
+        },
     ],
     aws_storage:[
         {

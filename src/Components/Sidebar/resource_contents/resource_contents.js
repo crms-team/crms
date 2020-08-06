@@ -1,25 +1,9 @@
 import React,{Component} from 'react';
 import './contents.css';
+import {showmodal, ShowModal} from '../../../actions';
+import {connect} from 'react-redux';
 
 const resources = {
-    common:[
-        {
-            id:'block',
-            width:'20px',
-            height:'20px',
-            vpc:'',
-            subnet:'',
-            security:'',
-        },
-        {
-            id:'text',
-            size:25,
-            text:'text',
-            vpc:'',
-            subnet:'',
-            security:''
-        }
-    ],
     aws_compute:[
         {
             id:'ec2',
@@ -34,6 +18,47 @@ const resources = {
             size:'',
             bliling:0
         }
+    ],
+    aws_setting:[
+        {
+            id:'VPC',
+            width:'20px',
+            height:'20px',
+            vpc:'',
+            subnet:'',
+            security:'',
+            region:'',
+            platform:'',
+            instype:'',
+            size:'',
+            bliling:0
+        },
+        {
+            id:'SecurityGroup',
+            width:'20px',
+            height:'20px',
+            vpc:'',
+            subnet:'',
+            security:'',
+            region:'',
+            platform:'',
+            instype:'',
+            size:'',
+            bliling:0
+        },
+        {
+            id:'Subnet',
+            width:'20px',
+            height:'20px',
+            vpc:'',
+            subnet:'',
+            security:'',
+            region:'',
+            platform:'',
+            instype:'',
+            size:'',
+            bliling:0
+        },
     ],
     aws_storage:[
         {
@@ -62,15 +87,15 @@ const resources = {
     }
 
 
-class Resource extends Component{
+class Resource extends React.Component{
     constructor(props){
         super(props);
 
         this.state={
-            instance:""
+            restype:"hi"
         }
 
-        this.onChangeins=this.onChangeins.bind(this);
+        this.onshowres=this.onshowres.bind(this);
     }
 
     render(){
@@ -84,22 +109,31 @@ class Resource extends Component{
                                 {
                                     resources[v].map((t)=>{
                                         return (
-                                            <button onClick={this.onChangeins} className="resource">{t.id}</button>
+                                            <button onClick={this.onshowres} className="resource">{t.id}</button>
                                         )
                                     }) 
                                 }
-                                <hr />
+                                <hr/>
                             </div>
-                    )
-                }) }
+                        )
+                    }) 
+                }
             </div>
         );
     }
 
-    onChangeins(e){
-        this.setState({instance:e.id});
+    onshowres(e){  
+        this.setState({restype:e.target.innerText});
+        this.props.onupdateshow(e.target.innerText);
     }
-
 }
+
+let mapDispatchToProps = (dispatch) =>{
+    return{
+        onupdateshow: (value) => dispatch(ShowModal(value))
+    };
+}
+
+Resource = connect(undefined,mapDispatchToProps)(Resource);
 
 export default Resource;

@@ -1,28 +1,57 @@
 export const AddResource ='AddResource';
-export const ViewResource ='ViewResource';
 export const DelResource ='DelResouce';
 export const ModResource ='ModResouce';
+export const  showmodal='showmodal';
 
 export function actionaddresource(){
     return{
-        type:AddResource
+        type:AddResource,
+        payload:{
+            name:"",
+            type:"",
+            region:"",
+            platform:"",
+            instype:"",
+            size:"",
+            parent:"",
+            link:[],
+            children:[] 
+        }
     };
-}
+};
+
+export function ShowModal(value){
+    return{
+        type: showmodal,
+        restype : value
+    }
+};
 
 export function actionmodresource(){
     return{
-        type:ModResource
+        type:ModResource,
+        payload:{
+            name:"",
+            type:"",
+            region:"",
+            platform:"",
+            instype:"",
+            size:"",
+            parent:"",
+            link:[],
+            children:[] 
+        }
     };
-}
+};
 
 export function actiondelresource(){
     return{
-        type:DelResource
+        type:DelResource,
+        payload:{
+            name:"",
+            type:"",
+            parent:"",
+        }
     };
-}
+};
 
-export function actionViewResource(data){
-    return{
-        type: ViewResource
-    };
-}

@@ -1,27 +1,24 @@
 import {combineReducers} from 'redux';
-import {AddResource,ViewResource,DelResource} from '../actions'
+import {showmodal} from '../actions'
 
-const resourcestate={
-    name:"AWS",
-    type:"CLOUD",
-    region:"",
-    platform:"",
-    instype:"",
-    size:"",
-    parent:"",
-    link:[],
-    children:[] 
+const initstate={ 
+    restype:""
 };
 
-function Reducer(state=resourcestate,action){
+
+const show = (state=initstate,action)=>{
     switch(action.type){
-        case ViewResource:
-            return action.id
+        case showmodal:
+            return Object.assign({},state,{
+                restype:action.restype
+            })
         default:
-            return state;
-
+            return state
     }
-}
+};
 
+const Reduxapp = combineReducers({
+    show
+});
 
-export default Reducer
+export default Reduxapp;

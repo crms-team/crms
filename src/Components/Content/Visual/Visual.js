@@ -297,13 +297,12 @@ class Visual extends Component{
         var resplatform=log.select("#platform")
         var resparent = log.select("#parent")
         var reslink=log.select("#link")
+        var resapply=log.select("#apply")
+        var reslog=log.select("#log")
         resid.attr("value",d.id)
         restype.selectAll("option").remove()
         var tyopt=restype.append("option")
         tyopt.text(d.data.type)
-        resparent.selectAll("option").remove()
-        var paropt=resparent.append("option")
-        paropt.text(d.data.parent)
         reslink.attr("value",function(){
           var tmp="";
           for(var i=0;i<d.data.link.length;i++)
@@ -311,7 +310,9 @@ class Visual extends Component{
           tmp=tmp.substring(0,tmp.length-1);
           return tmp;
         })
-
+        resapply.on("click",function(){
+          log.style('display','none');
+        });
         cancel.on("click",function() {
           log.style('display','none');
         })
@@ -356,6 +357,7 @@ class Visual extends Component{
           <>
             <svg className="Visual">              
             </svg>
+            <div className="add_res"></div>
             <div className="ResourceData">
               <button id="cancel">
                 X
@@ -393,10 +395,23 @@ class Visual extends Component{
                 Link:
                 <input id="link"></input>
               </p>
+              <button id="apply">Apply</button>
+              <br/>
             </div>  
           </>
         );
     }
 }
+
+let mapStateToProps=(state)=>{
+  if(state.show.restype!=""){
+      document.querySelector(".add_res").style.display="block";
+    }
+    return{
+      value:state.show.restype
+  }
+}
+
+Visual=connect(mapStateToProps)(Visual);
 
 export default Visual;
