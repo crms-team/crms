@@ -3,19 +3,18 @@ const key_module = require('../../system/key')
 function isKeyFormat(vendor, keys){
     switch (vendor) {
         case 'aws': {
-            let existAccessKey = 'access_key' in keys
-            let existSecretKey = 'secrert_key' in keys
+            let existAccessKey = 'accessKeyId' in keys
+            let existSecretKey = 'secretAccessKey' in keys
             let existRegion = 'region' in keys
-            
             return existAccessKey && existSecretKey && existRegion
-        } break;
+        } 
         default:
             break;
     }
     return false;
 }
 
-function setKeyFunc(path, vendor, keys) {
+function setKeyFunc(path, key_id, vendor, keys) {
     let data = key_module.getKeyData(path)
     if (!isKeyFormat(vendor, keys)){
         return {result: false, msg: 'Key Format Error'}
@@ -53,7 +52,7 @@ module.exports = server => {
             let vendor = req.body.vendor
             let keys = req.body.keys
 
-            res.send(setKeyFunc(server.config.path, vendor, keys))
+            res.send(setKeyFunc(server.config.path, key_id, vendor, keys))
         })
         
         server.put('/api/cloud/key', (req, res) => {

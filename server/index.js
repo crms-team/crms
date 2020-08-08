@@ -11,8 +11,16 @@ if (!system.config.existConfig(PATH)){
     }
 }
 
+if (!system.key.existsKeyData(PATH)) {
+    if (!system.key.createKeyData(PATH)){
+        console.log("Failed Create Key Data File path ./crms/data/key_data.json")
+        process.exit()
+    }
+}
+
 // create express server
 const express = require('express')
+const bodyParser = require('body-parser')
 const server = express()
 const cors = require('cors');
 
@@ -21,6 +29,7 @@ server.config = system.config.getConfig(PATH)
 const PORT = server.config.server_port
 
 server.use(cors())
+server.use(bodyParser.json())
 require('./api')(server)
 server.listen(PORT, ()=>{
     console.log('>> Statr Node Server 0.0.0.0:' + PORT)

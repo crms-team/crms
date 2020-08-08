@@ -21,5 +21,13 @@ module.exports = {
             console.log('setKeyData function Error')
             return false
         }
+    },
+    existsKeyData: function (path) {
+        try {
+            fs.statSync(`${path}/data/key_data.json`)
+            return true
+        } catch {
+            return false
+        }
     }
 }
