@@ -6,14 +6,14 @@ const PATH = __dirname.split(path.sep).slice(0, -1).join(path.sep)
 
 if (!system.config.existConfig(PATH)){
     if (!system.config.createConfig(PATH)){
-        console.log("Failed Create Config File path ./crms/data/crms.config")
+        console.log("Failed Create Config File path ./data/crms.config")
         process.exit()
     }
 }
 
 if (!system.key.existsKeyData(PATH)) {
     if (!system.key.createKeyData(PATH)){
-        console.log("Failed Create Key Data File path ./crms/data/key_data.json")
+        console.log("Failed Create Key Data File path ./data/key_data.json")
         process.exit()
     }
 }
