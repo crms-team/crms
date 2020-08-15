@@ -1,9 +1,9 @@
 
 module.exports = {
-    ...require('./compute'),
-    ...require('./network'),
-    ...require('./database'),
-    ...require('./storage')
+    compute: require('./compute'),
+    network: require('./network'),
+    database: require('./database'),
+    storage: require('./storage')
 }
 
 /*

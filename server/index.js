@@ -25,8 +25,19 @@ const server = express()
 const cors = require('cors');
 
 // add server.config
-server.config = system.config.getConfig(PATH)    
+server.config = system.config.getConfig(PATH)   
 const PORT = server.config.server_port
+
+
+//// TEST
+
+const dataMod = require('../crms/data')
+console.log("testing start")
+dataMod.saveData(server.config.path, 'test', 'aws', {"accessKeyId":"AKIATOLCGVDHV56GC2C4","secretAccessKey":"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","region":"ap-northeast-2"})
+console.log("testing stop")
+
+////
+
 
 server.use(cors())
 server.use(bodyParser.json())
