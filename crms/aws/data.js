@@ -1,25 +1,24 @@
 const aws = require('.')
 
-function getAWSComputeData(key){
+async function getAWSComputeData(key){
     return {
-        ec2: aws.compute.describeInstances(key),
-        ebs: aws.compute.describeVolumes(key)
+        ec2: await aws.compute.ec2.default.get(key),
+        ebs: await aws.compute.ebs.default.get(key)
     }
 }
 
-function getAWSNetworkData(key) {
+async function getAWSNetworkData(key) {
     return {
-        vpc: aws.network.describeVpcs(key),
-        subnet: aws.network.describeSubnets(key),
-        securityGroup: aws.network.describeSecurityGroups(key)
+        vpc: await aws.network.vpc.default.get(key),
+        subnet: await aws.network.subnet.default.get(key),
+        securityGroup: await aws.network.securityGroup.default.get(key)
     }
 }
 
-function getAWSData(key){
-    console.log(key)
+async function getAWSData(key){
     return {
-        compute: getAWSComputeData(key),
-        network: getAWSNetworkData(key)
+        compute: await getAWSComputeData(key),
+        network: await getAWSNetworkData(key)
     }
 }
 

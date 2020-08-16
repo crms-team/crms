@@ -9,7 +9,7 @@ function createDataDict(path) {
     }
 }
 
-function saveData(path, keyId, keyVendor, keyData){
+async function saveData(path, keyId, keyVendor, keyData){
     try { 
         let dataPath = `${path}/data/${keyId}`    
         let data = null
@@ -17,19 +17,17 @@ function saveData(path, keyId, keyVendor, keyData){
 
         switch (keyVendor) {
             case 'aws': {
-                data = awsData.getAWSData(keyData.keys)
+                data = await awsData.getAWSData(keyData)
                 break;
             }
             default: {
                 console.log("Not Support Vendor")
                 return
             }
-        }
-        
-        let fileName = (new Date()).toLocaleString() + ".json"
+        }        
+        let fileName = (new Date()).toISOString().replace('T', ' ').split('.')[0] + ".json"
         fs.writeFileSync(`${dataPath}/${fileName}`, JSON.stringify(data))
     } catch (e) {
-        console.log(e)
         console.log("saveData function Error")
     }
 }

@@ -1,8 +1,8 @@
 module.exports = {
-    ...require('./ec2'),
-    ...require('./ebs'),
-    ...require('./eip'),
-    ...require('./key-pair'),
-    ...require('./ami')
+    ec2: require('./ec2'),
+    ebs: require('./ebs'),
+    eip: require('./eip'),
+    keyPair: require('./key-pair'),
+    ami: require('./ami')
 }
 

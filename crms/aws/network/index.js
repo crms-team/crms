@@ -1,6 +1,6 @@
 
 module.exports = {
-    ...require('./subnet'),
-    ...require('./vpc'),
-    ...require('./security-group')
+    subnet: require('./subnet'),
+    vpc: require('./vpc'),
+    securityGroup: require('./security-group')
 }
