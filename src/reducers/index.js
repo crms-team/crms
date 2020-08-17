@@ -1,9 +1,23 @@
 import {combineReducers} from 'redux';
-import {showmodal} from '../actions'
+import {showmodal,AddResource} from '../actions'
+import { act } from 'react-dom/test-utils';
 
 const initstate={ 
     restype:""
 };
+const instancestate={
+    payload:{
+        name:"",
+        type:"",
+        region:"",
+        platform:"",
+        instype:"",
+        size:"",
+        parent:"",
+        link:[],
+        children:[] 
+    }
+}
 
 
 const show = (state=initstate,action)=>{
@@ -17,8 +31,19 @@ const show = (state=initstate,action)=>{
     }
 };
 
+const Add = (state=instancestate,action)=>{
+    switch(action.type){
+        case AddResource:
+            return Object.assign({},state,{
+                payload:action.payload
+            })
+        default:
+            return state
+    }
+};
+
 const Reduxapp = combineReducers({
-    show
+    show,Add
 });
 
 export default Reduxapp;

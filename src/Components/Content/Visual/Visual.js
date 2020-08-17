@@ -1,74 +1,96 @@
 import React,{Component} from 'react';
 import {connect} from 'react-redux';
+import {AddResource} from  '../../../actions';
 import * as d3 from 'd3';
 import './Visual.css'
 
 const test={
-    name:"CLOUD",
+    name:"ClOUD",
     type:"cloud",
-    parent:"",
-    link:[],
-    children:[
-        {
-            name:"vpc_test",
-            type:"VPC",
-            parent:"CLOUD",
-            link:[],
-            children:[
-                {
-                    name:"test_sub",
-                    type:"Subnet",
-                    parent:"vpc_test",
-                    link:[],
-                    children:[
-                        {
-                            name:"ec2_1",
-                            type:"EC2",
-                            parent:"test_sub",
-                            children:"",
-                            link:["ec2_2","sg"]
-                        },
-                        {
-                            name:"ec2_2",
-                            type:"EC2",
-                            parent:"test_sub",
-                            children:"",
-                            link:["ec2_1","sg"]
-                        },
-                        {
-                            name:"sg",
-                            type:"SecurityGroup",
-                            parent:"test_sub",
-                            children:"",
-                            link:["ec2_1","ec2_2"]
-                        }
-                    ]
-                },
-                {
-                    name:"sn1",
-                    type:"Subnet",
-                    parent:"vpc_test",
-                    children:"",
-                    link:[]
-                }
-            ]
-        }
-    ]
-};
-
-const logstate={
-    name:"AWS",
-    type:"CLOUD",
     region:"",
     platform:"",
     instype:"",
     size:"",
     parent:"",
     link:[],
-    children:[] 
+    children:[
+      {
+        name:"vpc_test",
+        type:"VPC",
+        parent:"CLOUD",
+        link:[],
+        children:[
+            {
+                name:"test_sub",
+                type:"Subnet",
+                parent:"vpc_test",
+                link:[],
+                children:[
+                    {
+                        name:"ec2_1",
+                        type:"EC2",
+                        parent:"test_sub",
+                        platform:"",
+                        instype:"",
+                        size:"",
+                        EIP:"",
+                        EBS_size:"",
+                        EBS_type:"",
+                        children:"",
+                        link:["ec2_2","sg"]
+                    },
+                    {
+                        name:"ec2_2",
+                        type:"EC2",
+                        parent:"test_sub",
+                        platform:"",
+                        instype:"",
+                        size:"",
+                        EIP:"",
+                        EBS_size:"",
+                        EBS_type:"",
+                        children:"",
+                        link:["ec2_1","sg"]
+                    },
+                    {
+                        name:"sg",
+                        type:"SecurityGroup",
+                        parent:"test_sub",
+                        children:"",
+                        link:["ec2_1","ec2_2"]
+                    }
+                ]
+            },
+            {
+                name:"sn1",
+                type:"Subnet",
+                parent:"vpc_test",
+                children:"",
+                link:[]
+            }
+        ]
+    }
+    ] 
 }
 
 class Visual extends Component{
+    constructor(props){
+      super(props);
+
+      this.state={
+          payload:{
+            name:"",
+            type:"",
+            region:"",
+            platform:"",
+            instype:"",
+            size:"",
+            parent:"",
+            link:[],
+            children:[] 
+         }
+        }
+    }
 
     drawChart() {
       var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
@@ -82,6 +104,13 @@ class Visual extends Component{
       var transform = d3.zoomIdentity;
       
       var nodeSvg, linkSvg, simulation, nodeEnter, linkEnter;
+
+      var tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("display", "none")
+      .on("contextmenu",function(d){
+        d3.event.preventDefault();});
       
       var svg = d3.select("svg")
         .call(d3.zoom().scaleExtent([1 / 2, 8]).on("zoom", zoomed))
@@ -107,11 +136,13 @@ class Visual extends Component{
             .attr("d", "M0,-5L10,0L0,5");
       
       function zoomed() {
+        tooltip.style("display", "none")
         svg.attr("transform", d3.event.transform);
       }
       
       simulation = d3.forceSimulation()
         .force("link", d3.forceLink(linkSvg).distance(200))
+        .alphaDecay(.001)
         .force("charge", d3.forceManyBody().strength(-1500))
         .force("center", d3.forceCenter(width / 2, height / 2+100))
         .force("colide",d3.forceCollide().radius(d=>d.r*500))
@@ -137,11 +168,9 @@ class Visual extends Component{
 
         linkSvg = svg.selectAll(".link")
             .data(links, function(d) {
-            console.log(d.target.id)
             return d.target.id;
           })
         
-        console.log(linkSvg)
       
         linkSvg.exit().remove();
       
@@ -164,12 +193,12 @@ class Visual extends Component{
           .append("g")
           .attr("class", "node")
           .on("mouseover", function(d) {
-                var thisNode = d.id
-                var thislink=d
-                d3.selectAll(".link").attr("opacity", function(d) {
+            var thisNode = d.id
+            var thislink=d
+            d3.selectAll(".link").attr("opacity", function(d) {
                     return (d.source.id == thisNode || d.target.id == thisNode) ? 1 : 0.2
-                });
-                d3.selectAll(".node").attr("opacity", function(d) {
+            });
+            d3.selectAll(".node").attr("opacity", function(d) {
                     if(d.data.link.length>0){
                         for(var i=0;i<d.data.link.length;i++){
                             if(d.data.link[i]==thislink.data.name)
@@ -180,16 +209,34 @@ class Visual extends Component{
                         return "1";
                     else
                         return "0.2";
-                });
-                    
-            })
+            });                    
+          })
           .on("mouseout", function(d) {
                 d3.selectAll(".link").attr("opacity","1");
                 d3.selectAll(".node").attr("opacity","1");
           })
           .on("contextmenu",function(d){
               d3.event.preventDefault();
-              viewset(d);
+              var tmp=[];
+              if(d.data.children.length>0){
+                for(var i=0;i<d.data.children.length;i++){
+                  tmp.push(d.data.children[i].name)
+                }
+              }
+              tooltip.transition()
+              .duration(300)
+              .style("opacity",1)
+              .style("display", "block")
+              .style('pointer-events', 'visiblePainted')
+              tooltip.html(
+                "Name : " + d.data.name + "<hr/>" +
+                "Type : " + d.data.type + "<hr/>" +
+                "Parent : " + d.data.parent + "<hr/>" +
+                "Children : " + tmp + "<hr/>"+
+                "Link : " + d.data.link + "<hr/>" 
+              )
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY + 10) + "px");
           })
           .call(d3.drag()
             .on("start", dragstarted)
@@ -284,7 +331,8 @@ class Visual extends Component{
           d._children = d.children;
           d.children = null;
           update();
-          simulation.restart();
+          simulation.restart()
+          ;
         } else {
           d.children = d._children;
           d._children = null;
@@ -292,39 +340,10 @@ class Visual extends Component{
           simulation.restart();
         }
       }
-
-      function viewset(d){
-        var log=d3.select(".ResourceData");
-        log.style('display','block');
-        var cancel=log.select("#cancel")
-        var resid=log.select("#id")
-        var restype=log.select("#type")
-        var resreg=log.select("#region")
-        var resplatform=log.select("#platform")
-        var resparent = log.select("#parent")
-        var reslink=log.select("#link")
-        var resapply=log.select("#apply")
-        var reslog=log.select("#log")
-        resid.attr("value",d.id)
-        restype.selectAll("option").remove()
-        var tyopt=restype.append("option")
-        tyopt.text(d.data.type)
-        reslink.attr("value",function(){
-          var tmp="";
-          for(var i=0;i<d.data.link.length;i++)
-            tmp+=d.data.link[i]+",";
-          tmp=tmp.substring(0,tmp.length-1);
-          return tmp;
-        })
-        resapply.on("click",function(){
-          log.style('display','none');
-        });
-        cancel.on("click",function() {
-          log.style('display','none');
-        })
-      }
       
       function dragstarted(d) {
+        tooltip.style("display", "none")
+        .style('pointer-events', 'visiblePainted')
         if (!d3.event.active) simulation.alphaTarget(0.3).restart()
         simulation.fix(d);
       }
@@ -360,100 +379,16 @@ class Visual extends Component{
 
     render(){
         return(
-          <>
+            <>
             <svg className="Visual">              
             </svg>
-            <div className="add_res">
-              <button id="cancel">
-                  X
-                </button>
-                <p>
-                  ID:
-                <input id="id"></input>
-                </p>
-                <p>
-                  TYPE:
-                  <input id="type"value={this.props.value}></input>
-                </p>
-                <p>
-                  Region:
-                  <select id="region">
-                  </select>
-                </p>
-                <p>
-                  Platform:
-                  <select id="platform">
-                  </select>
-                </p>
-                <p>
-                  Size:
-                  <select id="size">
-                  </select>
-                </p>
-                <p>
-                  Parent:
-                  <select id="parent">
-                  </select>
-                </p>
-                <p>
-                  Link:
-                  <input id="link"></input>
-                </p>
-                <button id="apply">Apply</button>
-              <br/>
-            </div>
-            <div className="ResourceData">
-              <button id="cancel">
-                X
-              </button>
-              <p>
-                ID:
-              <input id="id"></input>
-              </p>
-              <p>
-                TYPE:
-                <select id="type">
-                </select>
-              </p>
-              <p>
-                Region:
-                <select id="region">
-                </select>
-              </p>
-              <p>
-                Platform:
-                <select id="platform">
-                </select>
-              </p>
-              <p>
-                Size:
-                <select id="size">
-                </select>
-              </p>
-              <p>
-                Parent:
-                <select id="parent">
-                </select>
-              </p>
-              <p>
-                Link:
-                <input id="link"></input>
-              </p>
-              <button id="apply">Apply</button>
-              <br/>
-            </div>  
-          </>
+            </>
         );
     }
 }
 
 let mapStateToProps=(state)=>{
-  if(state.show.restype!=""){
-      document.querySelector(".add_res").style.display="block";
-    }
-    return{
-      value:state.show.restype
-  }
+  console.log(state.show,state.Add)
 }
 
 Visual=connect(mapStateToProps)(Visual);
