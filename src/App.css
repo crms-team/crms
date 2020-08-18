@@ -1,4 +1,32 @@
+@import url("https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css");
+
+:root {
+    --text-lightgray-color : #cfcfcf ;
+    --point-color : #ffc14d;
+    --point-hover-color : #e09129;
+    --text-gray-color : #494949;
+    --text-white-color : #ececec;
+    --background-color: #27262b;
+}
+
 .App{
     height: 100%;
     margin: 0 auto;
+    font-family: 'NanumSquare', sans-serif !important;
+}
+
+
+html, body{
+    background: var(--background-color);
+    
+}
+
+a{
+  text-decoration: none;
+}
+
+ul, li{
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
