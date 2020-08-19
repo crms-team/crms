@@ -8,10 +8,13 @@ a{
   text-decoration: none !important;
   color: $lightText;
 }
+body {
+  position: relative;
+}
 
 .sidemenu-container{
     
-    z-index: 10;
+    z-index: 999;
     background: $darkGray;
     height: 100%;
     width: 15vw;
