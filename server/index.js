@@ -35,7 +35,11 @@ server.keys = require('./system/key')
 
 const dataMod = require('../crms/data')
 console.log("testing start")
-//dataMod.saveData(server.config.path, 'taws', 'aws', {"accessKeyId":"AKIATOLCGVDHV56GC2C4","secretAccessKey":"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","region":"ap-northeast-2"})
+dataMod.saveData(server.config.path, 'tatum', 'aws', {
+    "accessKeyId": "AKIAZ2MZFSD746ESUT5M",
+    "secretAccessKey": "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",
+    "region":"ap-northeast-2"
+})
 console.log("testing stop")
 
 ////

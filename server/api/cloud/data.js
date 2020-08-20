@@ -9,10 +9,10 @@ function getLastDataFileName(path, keyId){
 }
 
 function getType(vendor, resource){
-    let types = Object.keys(crms[vendor])
+    let types = Object.keys(crms[vendor]['session'])
 
     for (let type of types){
-        let crmsObject = crms[vendor][type]
+        let crmsObject = crms[vendor]['session'][type]
         for (let res in crmsObject){
             if (res == resource) 
                 return type
@@ -22,7 +22,7 @@ function getType(vendor, resource){
     return undefined
 }
 
-function checkCrmsParms(keyId, resourceType, keys, vendor) {
+function checkKeyParms(keyId, keys) {
     if (!keyId){
         return {
             result: false,
@@ -30,17 +30,27 @@ function checkCrmsParms(keyId, resourceType, keys, vendor) {
         }
     }
 
-    if (resourceType == undefined){
-        return {
-            result: false,
-            msg: "Not Support this resource"
-        }
-    }
-
     if (!(keyId in keys)) {
         return {
             result: false,
             msg: "This Key ID is not registered."
+        }
+    }
+
+    return undefined
+}
+
+function checkCrmsParms(keyId, resourceType, keys, vendor) {
+    let checkParms = checkKeyParms(keyId, keys)
+
+    if (checkParms) {
+        return checkParms
+    }
+
+    if (resourceType == undefined){
+        return {
+            result: false,
+            msg: "Not Support this resource"
         }
     }
 
@@ -55,6 +65,33 @@ function checkCrmsParms(keyId, resourceType, keys, vendor) {
 }
 
 module.exports = server => {
+    {
+        server.get("/api/cloud/data", async (req, res)=> {
+            let keyId = req.query.key_id
+            let apiType = req.query.type
+            let keys = server.keys.getKeyData(server.config.path)
+            let vendor = keys[keyId].vendor
+            let checkParms = checkKeyParms(keyId, keys)
+
+            if (checkParms) {
+                res.send(checkParms)
+                return 
+            }
+
+
+            if (apiType){
+                await crms.data.saveData(server.config.path, keyId, vendor, keys[keyId].keys)
+            }                 
+            
+            let dataFile = getLastDataFileName(server.config.path, keyId)
+            res.send({
+                result: true,
+                data: JSON.parse(fs.readFileSync(`${server.config.path}/data/${keyId}/${dataFile}`))
+            })
+
+        })
+    }
+    
     {
         server.get("/api/cloud/data/:vendor/:resource", async (req, res) => {
             let keyId = req.query.key_id
@@ -103,7 +140,7 @@ module.exports = server => {
                 return 
             }
 
-            let crmsFunction = crms[vendor][resourceType][resource]['default']['post']
+            let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['post']
 
             if (crmsFunction) {
                 try {

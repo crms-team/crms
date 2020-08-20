@@ -1,17 +1,20 @@
-const aws = require('.')
+const compute = require('./compute')
+const network = require('./network')
+const database = require('./database')
+const storage = require('./storage')
 
 async function getAWSComputeData(key){
     return {
-        ec2: await aws.compute.ec2.default.get(key),
-        ebs: await aws.compute.ebs.default.get(key)
+        ec2: await compute.ec2.default.get(key),
+        ebs: await compute.ebs.default.get(key)
     }
 }
 
 async function getAWSNetworkData(key) {
     return {
-        vpc: await aws.network.vpc.default.get(key),
-        subnet: await aws.network.subnet.default.get(key),
-        securityGroup: await aws.network.securityGroup.default.get(key)
+        vpc: await network.vpc.default.get(key),
+        subnet: await network.subnet.default.get(key),
+        securityGroup: await network.securityGroup.default.get(key)
     }
 }
 
@@ -23,5 +26,5 @@ async function getAWSData(key){
 }
 
 module.exports = {
-    getAWSData: getAWSData
+    getAllData: getAWSData
 }
