@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {AddResource} from  '../../../actions';
 import * as d3 from 'd3';
 import './Visual.css'
+import { Modal } from 'react-bootstrap';
 
 const test={
     name:"ClOUD",
@@ -105,8 +106,7 @@ class Visual extends Component{
       
       var nodeSvg, linkSvg, simulation, nodeEnter, linkEnter;
 
-      var tooltip = d3.select("body")
-      .append("div")
+      var tooltip = d3.select(".tooltip")
       .attr("class", "tooltip")
       .style("display", "none")
       .on("contextmenu",function(d){
@@ -142,7 +142,7 @@ class Visual extends Component{
       
       simulation = d3.forceSimulation()
         .force("link", d3.forceLink(linkSvg).distance(200))
-        .alphaDecay(.001)
+        .alphaDecay(.0001)
         .force("charge", d3.forceManyBody().strength(-1500))
         .force("center", d3.forceCenter(width / 2, height / 2+100))
         .force("colide",d3.forceCollide().radius(d=>d.r*500))
@@ -153,6 +153,7 @@ class Visual extends Component{
       function update() {
         var nodes = flatten(root);
         var links = root.links();
+
 
         for(var i=0;i<nodes.length;i++){
             if(nodes[i].data.link.length>0){
@@ -229,15 +230,23 @@ class Visual extends Component{
               .style("display", "block")
               .style('pointer-events', 'visiblePainted')
               tooltip.html(
+                "<div class='toolbut'>"+
+                  "<button class='hide' onClick={document.getElementsByClassName('tooltip')[0].style.display='none';}> X </button>" +
+                "</div>"+
+                "<hr/>"+
                 "Name : " + d.data.name + "<hr/>" +
                 "Type : " + d.data.type + "<hr/>" +
                 "Parent : " + d.data.parent + "<hr/>" +
                 "Children : " + tmp + "<hr/>"+
-                "Link : " + d.data.link + "<hr/>" 
+                "Link : " + d.data.link + "<hr/>"+
+                "<div class='toolbut'>"+
+                "<button> Detail </button>" + 
+                "<button> Delete </button>"+
+                "</div>"
               )
               .style("left", (d3.event.pageX) + "px")
               .style("top", (d3.event.pageY + 10) + "px");
-          })
+            })
           .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
@@ -294,7 +303,7 @@ class Visual extends Component{
           .links(links);
       
       }
-      
+
       function ticked() {
         
         linkSvg
@@ -326,7 +335,6 @@ class Visual extends Component{
       }
       
       function click(d) {
-
         if (d.children) {
           d._children = d.children;
           d.children = null;
@@ -380,8 +388,10 @@ class Visual extends Component{
     render(){
         return(
             <>
-            <svg className="Visual">              
-            </svg>
+              <div className="tooltip"> 
+              </div>   
+              <svg className="Visual">           
+              </svg>
             </>
         );
     }

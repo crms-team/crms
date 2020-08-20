@@ -8,11 +8,17 @@
 	background-color: white;
 	font-family: 'NanumSquare', sans-serif;
 }
+.toolbut{
+    text-align: right;
+}
+.toolbut button{
+    margin:2px;
+}
 
 .tooltip {
     position: absolute;
     background-color: white;
-    max-width: 400px;
+    width: 300px;
     height: auto;
     padding: 15px;
     border-style: solid;
