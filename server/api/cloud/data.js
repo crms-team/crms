@@ -85,6 +85,7 @@ module.exports = server => {
             let dataFile = getLastDataFileName(server.config.path, keyId)
             res.send({
                 result: true,
+                vendor: vendor, 
                 data: JSON.parse(fs.readFileSync(`${server.config.path}/data/${keyId}/${dataFile}`))
             })
 
