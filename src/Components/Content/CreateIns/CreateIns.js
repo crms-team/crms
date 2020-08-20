@@ -8340,6 +8340,7 @@ class EC2 extends React.Component{
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>AMI</Form.Label>
                                 <Form.Control as="select" onChange={this.props.ami}>
+                                    <option value="" disabled selected>Ami</option>
                                     <option>ami-05a4cce8936a89f06</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -8350,6 +8351,7 @@ class EC2 extends React.Component{
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>Type</Form.Label>
                                 <Form.Control as="select" onChange={this.props.instype}>
+                                    <option value="" disabled selected>InstanceType</option>
                                     <option>m5d.large</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -8367,6 +8369,7 @@ class EC2 extends React.Component{
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>EBS Type</Form.Label>
                                 <Form.Control as="select">
+                                    <option value="" disabled selected>EBS Type</option>
                                     <option>범용 SSD(gp2)</option>
                                     <option>프로비저닝된 IOPS SSD(io1)</option>
                                     <option>마그네틱(standard)</option>
@@ -8377,6 +8380,7 @@ class EC2 extends React.Component{
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>VPC</Form.Label>
                                 <Form.Control as="select">
+                                    <option value="" disabled selected>VPC</option>
                                     <option>test_vpc</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -8387,6 +8391,7 @@ class EC2 extends React.Component{
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>Subnet</Form.Label>
                                 <Form.Control as="select" onChange={this.props.subnet}>
+                                    <option value="" disabled selected>Subnet</option>
                                     <option>test_sub</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -8397,6 +8402,7 @@ class EC2 extends React.Component{
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>SecurityGroup</Form.Label>
                                 <Form.Control as="select" onChange={this.props.sg} >
+                                    <option value="" disabled selected>SecurityGroup</option>
                                     <option>test_sg</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -8505,27 +8511,25 @@ class CreateIns extends React.Component{
     }
 
     change_name(e){
+        let tmp;
+        tmp=this.state.ec2_data.TagSpecifications;
+        tmp[0].Tags[0].Value=e.target.value;
         this.setState({
             ec2_data:{
                 ...this.state.ec2_data,
-                ...this.state.TagSpecifications,
-                ...this.state.Tags,
-                Value:e.target.value
+                TagSpecifications:tmp
             }
         })
     }
 
     change_EbsSize(e){
-        let tmp=[this.state.ec2_data.BlockDeviceMappings];
-        console.log(tmp);
+        let tmp;
+        tmp=this.state.ec2_data.BlockDeviceMappings;
+        tmp[0].Ebs.VolumeSize=e.target.value;
         this.setState({
             ec2_data:{
                 ...this.state.ec2_data,
-                BlockDeviceMappings:{
-                ...this.state.BlockDeviceMappings,
-                    ...this.state.Ebs,
-                    VolumeSize: parseInt(e.target.value)
-                }
+                BlockDeviceMappings:tmp
             }
         })
     }
@@ -8551,6 +8555,7 @@ class CreateIns extends React.Component{
             alert("Plz input all data");
         }
         else{
+            console.log(this.state.ec2_data)
             this.setState({showHide:!this.state.showHide,
                 ec2_data:{
                     BlockDeviceMappings: [{
@@ -8576,10 +8581,7 @@ class CreateIns extends React.Component{
                         }]
                     }]
                 }
-            });  
-            if(this.state.type!=""){
-                this.setState({type:"",component:<Index click={this.change_type.bind(this)}/>})
-            }         
+            });          
         }
     }
 

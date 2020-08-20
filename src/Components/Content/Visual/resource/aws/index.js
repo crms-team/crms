@@ -1,5 +1,7 @@
 import compute from './compute'
+import network from './network'
 
 export default {
-    compute: compute
+    compute: compute,
+    network: network
 }

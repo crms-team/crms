@@ -27,14 +27,38 @@ class EC2 extends CloudResourceDataFormat {
         // add links subnet
         this.links.push(data.SubnetId)
         
+        // add links security group
         for (let sg of data.SecurityGroups){
             this.links.push(sg.GroupId)
         }
     }
 }
 
+class EBS extends CloudResourceDataFormat { 
+  constructor (data) {
+      super()
 
-export default {
-  ec2: EC2
+      this.type = 'ebs'
+      this.id = data.VolumeId
+      let name = this.getTagName(data.Tags)
+
+      this.name = name == undefined ? data.VolumeId : name        
+
+      this.data = {}
+
+      for (let key in data) {
+        this.data[key] = data[key]
+      }
+      
+      // add links EC2
+      for (let ec2 of data.Attachments){
+          this.links.push(ec2.InstanceId)
+      }
+  }
 }
 
+
+export default {
+  ec2: EC2,
+  ebs: EBS
+}
