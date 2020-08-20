@@ -5,6 +5,7 @@ import Test1 from './test1/test1'
 import Test2 from './test1/test2'
 
 import './Board.css';
+import {connect} from 'react-redux';
 
 class Board extends Component{
     constructor (props) {

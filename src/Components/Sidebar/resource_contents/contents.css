@@ -1,9 +1,0 @@
-.Resource{
-    position: relative;
-    left: 0;
-    width:100% ;
-    height:calc( 100% - 150px );
-}
-button{
-    width: 100%;
-}

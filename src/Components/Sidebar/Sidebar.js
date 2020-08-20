@@ -1,46 +1,130 @@
-import React,{Component} from 'react';
-import './Sidebar.css'
-import Resource from './resource_contents/resource_contents'
-import BudgetContents from './budget_contents/budget_contents'
+import React, { Component } from 'react';
+import {Route,Link} from 'react-router-dom';
+import './Sidebar.scss';
+import { 
+    FiSettings, 
+    FiCreditCard, 
+    FiGitBranch, 
+    FiLayers, 
+    FiDatabase, 
+} from "react-icons/fi";
 
-class Sidebar extends Component{
+class Sidemenu extends Component{
     constructor(props){
         super(props);
-        this.state={
-            resource:true,
-            budget:false
+
+        this.state = {
+            isDashboard : false,
+            isResource : false,
+            isSetting: false
         }
     }
 
+    hidetooltip() {
+        if(document.getElementsByClassName('tooltip')[0]){
+            document.getElementsByClassName('tooltip')[0].style.display='none';
+        }    
+    }
 
     render(){
+
+        const { isDashboard, isResource, isSetting } = this.state;
+
         return(
-            <div className="Sidebar">
-                <div className="header">
-                    <b>CRMS</b>
-                    <br/>
-                <button className="clresource" onClick={()=>{
-                    this.setState({
-                        resource: true,
-                        budget: false
-                    })
-                }}>
-                    리소스
-                </button>
-                <button className="budget"onClick={()=>{
-                    this.setState({
-                        resource: false,
-                        budget: true
-                    })
-                }}>
-                    예산
-                </button>
+            <div className="sidemenu-container">
+                <div className="sidemenu">
+                    <div>
+                        <p className="sidemenu-title">MENU</p>
+                        <hr/>
+                        <ul onClick={this.hidetooltip()} className="menu">
+
+                        {/*     MENU - DASHBOARD      */}
+                        <a href="#dashboard">
+                            <li onClick={()=>{
+                                this.setState({ 
+                                    isDashboard : !isDashboard,
+                                    isResource : false,
+                                    isSetting : false
+                                });
+                            }}>
+                                <FiCreditCard className="material-icons"/>
+                                <p className="menulist">Dashboard</p>
+                            </li>
+                        </a>  
+                                { isDashboard &&
+                                    <>
+                                        <Link to="/info"><p className="menulist-in dashboard">Home</p></Link>
+                                        <p className="menulist-in dashboard">Log</p>
+                                    </>
+                                }
+
+                        {/*      MENU - RESOURCE     */}
+                            <a href="#resource">
+                                <li onClick={()=>{
+                                this.setState({ isResource : !isResource, isDashboard : false, isSetting : false });
+                            }}>
+                                <FiGitBranch className="material-icons"/>
+                                <p className="menulist">Resource</p>
+                                </li>
+                            </a>
+                            { 
+                                isResource &&
+                                <>
+                                    <p className="menulist-in resource">Compute</p>
+                                    <p className="submenu">Server</p>
+                                    <p className="submenu">Volume</p>
+                                    <p className="submenu">IP</p>
+                                    <p className="submenu">Key Pair</p>
+                                        
+                                    <p className="menulist-in resource">Database</p>
+                                                                    
+                                    <p className="menulist-in resource">Network</p>
+                                    <p className="submenu">VPC</p>
+                                    <p className="submenu">Subnet</p>
+                                    <p className="submenu">Security Group</p>
+                                    
+                                    <p className="menulist-in resource">Storage</p>
+                                    <p className="submenu">Bucket</p>
+                                </>
+                            }
+                            
+                           {/*      MENU - VISUALIZATION    */}         
+                           <Link to="/"><li>
+                                <FiLayers className="material-icons"/>
+                                <p className="menulist">Visualization</p>
+                            </li></Link>
+
+                            {/*     MENU - BILLING      */}
+                            <a href="#billing"><li>
+                                <FiDatabase className="material-icons"/>
+                                <p className="menulist">Billing</p>
+                            </li></a>
+
+                            {/*     MENU - SETTING   */}
+                            <a href="#setting"><li onClick={ () => 
+                                { this.setState({ 
+                                    isSetting : !isSetting, 
+                                    isDashboard : false, 
+                                    isResource : false 
+                                });
+                            }}>
+                                <FiSettings className="material-icons"/>
+                                <p className="menulist" >Setting</p>
+                            </li></a>
+                            {
+                                isSetting &&
+                                <>
+                                    <p className="menulist-in">Password</p>
+                                    <p className="menulist-in">Cloud List</p>
+                                    <p className="menulist-in">Cloud Add</p>
+                                </>
+                            }
+                        </ul>
+                    </div>
                 </div>
-                { this.state.resource && <Resource/> }
-                { this.state.budget && <BudgetContents/> }
             </div>
         );
     }
 }
 
-export default Sidebar;
+export default Sidemenu;
