@@ -93,6 +93,40 @@ class Subnet extends CloudResourceDataFormat{
     }
 }
 
+class EBS extends CloudResourceDataFormat{
+  constructor (data) {
+      super()
+
+      this.type = 'ebs'
+      ebs_data=[];
+      var i=0;
+
+      for(let tmp of data.Volumes){
+        let name = this.getTagName(tmp.Tags)
+
+        ebs_data[i].name = name == undefined ? "" : name
+        ebs_data[i].Attachments=data.Attachments;
+        ebs_data[i].AvailabilityZone=data.AvailabilityZone;
+        ebs_data[i].Encrypted=data.Encrypted;
+        ebs_data[i].Size=data.Size;
+        ebs_data[i].SnapshotId=data.SnapshotId;
+        ebs_data[i].State=data.State;
+        ebs_data[i].VolumeId=data.VolumeId;
+        ebs_data[i].Iops=data.Iops;
+        ebs_data[i].VolumeType=data.VolumeType;
+        ebs_data[i].MultiAttachEnabled=data.MultiAttachEnabled;
+        i++;
+      }      
+
+      this.data = {
+          Volumes:ebs_data
+      }       
+      // add links subnet
+      this.links.push("CLOUD")
+
+  }
+}
+
 class VPC extends CloudResourceDataFormat{
     constructor (data) {
         super()

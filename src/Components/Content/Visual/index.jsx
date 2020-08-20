@@ -3,75 +3,298 @@ import {connect} from 'react-redux';
 import {AddResource} from  '../../../actions';
 import * as d3 from 'd3';
 import './Visual.css'
-import { Modal } from 'react-bootstrap';
+
+const data={
+  instancedata : [
+    {
+      "id": "i-0acd99ba8df692892",
+      "name": "NevationServer",
+      "link": [
+        "subnet-6ed08922",
+        "sg-00174d37f556e051b"
+      ],
+      "type": "ec2",
+      "data": {
+        "InstanceType": "t2.micro",
+        "ImageId": "ami-0a25005e83c56767a",
+        "InstanceId": "i-0acd99ba8df692892",
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "AttachTime": "2019-07-24T10:43:57.000Z",
+              "DeleteOnTermination": true,
+              "Status": "attached",
+              "VolumeId": "vol-0e537238313263ee4"
+            }
+          }
+        ],
+        "KeyName": "NevationKey",
+        "MaxCount": 1,
+        "MinCount": 1,
+        "SecurityGroups": [
+          {
+            "GroupName": "launch-wizard-1",
+            "GroupId": "sg-00174d37f556e051b"
+          }
+        ],
+        "SubnetId": "subnet-6ed08922",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NevationServer"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vol-0e537238313263ee4",
+      "name": "vol-0e537238313263ee4",
+      "link": [
+        "i-0acd99ba8df692892"
+      ],
+      "type": "ebs",
+      "data": {
+        "Attachments": [
+          {
+            "AttachTime": "2019-07-24T10:43:57.000Z",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-0acd99ba8df692892",
+            "State": "attached",
+            "VolumeId": "vol-0e537238313263ee4",
+            "DeleteOnTermination": true
+          }
+        ],
+        "AvailabilityZone": "ap-northeast-2c",
+        "CreateTime": "2019-07-24T10:43:57.581Z",
+        "Encrypted": false,
+        "Size": 8,
+        "SnapshotId": "snap-0f0af9b836996d175",
+        "State": "in-use",
+        "VolumeId": "vol-0e537238313263ee4",
+        "Iops": 100,
+        "Tags": [],
+        "VolumeType": "gp2",
+        "MultiAttachEnabled": false
+      }
+    },
+    {
+      "id": "vpc-2bef1440",
+      "name": "vpc-2bef1440",
+      "link": [
+        "CLOUD"
+      ],
+      "type": "vpc",
+      "data": {
+        "CidrBlock": "172.31.0.0/16",
+        "DhcpOptionsId": "dopt-bad47bd1",
+        "State": "available",
+        "InstanceTenancy": "default",
+        "Ipv6CidrBlockAssociationSet": [],
+        "CidrBlockAssociationSet": [
+          {
+            "AssociationId": "vpc-cidr-assoc-722a771a",
+            "CidrBlock": "172.31.0.0/16",
+            "CidrBlockState": {
+              "State": "associated"
+            }
+          }
+        ],
+        "IsDefault": true
+      }
+    },
+    {
+      "id": "subnet-6ed08922",
+      "name": "subnet-6ed08922",
+      "link": [
+        "vpc-2bef1440"
+      ],
+      "type": "subnet",
+      "data": {
+        "AvailabilityZone": "ap-northeast-2c",
+        "AvailabilityZoneId": "apne2-az3",
+        "CidrBlock": "172.31.32.0/20",
+        "State": "available",
+        "Ipv6CidrBlockAssociationSet": [],
+        "SubnetArn": "arn:aws:ec2:ap-northeast-2:236966029519:subnet/subnet-6ed08922"
+      }
+    },
+    {
+      "id": "subnet-2b12e740",
+      "name": "subnet-2b12e740",
+      "link": [
+        "vpc-2bef1440"
+      ],
+      "type": "subnet",
+      "data": {
+        "AvailabilityZone": "ap-northeast-2a",
+        "AvailabilityZoneId": "apne2-az1",
+        "CidrBlock": "172.31.0.0/20",
+        "State": "available",
+        "Ipv6CidrBlockAssociationSet": [],
+        "SubnetArn": "arn:aws:ec2:ap-northeast-2:236966029519:subnet/subnet-2b12e740"
+      }
+    },
+    {
+      "id": "subnet-8bcdebd7",
+      "name": "subnet-8bcdebd7",
+      "link": [
+        "vpc-2bef1440"
+      ],
+      "type": "subnet",
+      "data": {
+        "AvailabilityZone": "ap-northeast-2d",
+        "AvailabilityZoneId": "apne2-az4",
+        "CidrBlock": "172.31.48.0/20",
+        "State": "available",
+        "Ipv6CidrBlockAssociationSet": [],
+        "SubnetArn": "arn:aws:ec2:ap-northeast-2:236966029519:subnet/subnet-8bcdebd7"
+      }
+    },
+    {
+      "id": "subnet-8458feff",
+      "name": "subnet-8458feff",
+      "link": [
+        "vpc-2bef1440"
+      ],
+      "type": "subnet",
+      "data": {
+        "AvailabilityZone": "ap-northeast-2b",
+        "AvailabilityZoneId": "apne2-az2",
+        "CidrBlock": "172.31.16.0/20",
+        "State": "available",
+        "Ipv6CidrBlockAssociationSet": [],
+        "SubnetArn": "arn:aws:ec2:ap-northeast-2:236966029519:subnet/subnet-8458feff"
+      }
+    },
+    {
+      "id": "sg-00174d37f556e051b",
+      "name": "launch-wizard-1",
+      "link": [
+        "vpc-2bef1440"
+      ],
+      "type": "securitygroup",
+      "data": {
+        "IpPermissions": [
+          {
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ],
+            "Ipv6Ranges": [
+              {
+                "CidrIpv6": "::/0"
+              }
+            ],
+            "PrefixListIds": [],
+            "ToPort": 80,
+            "UserIdGroupPairs": []
+          },
+          {
+            "FromPort": 22,
+            "IpProtocol": "tcp",
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": 22,
+            "UserIdGroupPairs": []
+          }
+        ],
+        "VpcId": "vpc-2bef1440",
+        "tagname": ""
+      }
+    },
+    {
+      "id": "sg-b91790d7",
+      "name": "default",
+      "link": [
+        "vpc-2bef1440"
+      ],
+      "type": "securitygroup",
+      "data": {
+        "IpPermissions": [
+          {
+            "IpProtocol": "-1",
+            "IpRanges": [],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "UserIdGroupPairs": [
+              {
+                "GroupId": "sg-b91790d7",
+                "UserId": "236966029519"
+              }
+            ]
+          }
+        ],
+        "VpcId": "vpc-2bef1440",
+        "tagname": ""
+      }
+    }
+  ]
+}
 
 const test={
-    name:"ClOUD",
-    type:"cloud",
-    region:"",
-    platform:"",
-    instype:"",
-    size:"",
-    parent:"",
-    link:[],
-    children:[
-      {
-        name:"vpc_test",
-        type:"VPC",
-        parent:"CLOUD",
-        link:[],
-        children:[
-            {
-                name:"test_sub",
-                type:"Subnet",
-                parent:"vpc_test",
-                link:[],
-                children:[
-                    {
-                        name:"ec2_1",
-                        type:"EC2",
-                        parent:"test_sub",
-                        platform:"",
-                        instype:"",
-                        size:"",
-                        EIP:"",
-                        EBS_size:"",
-                        EBS_type:"",
-                        children:"",
-                        link:["ec2_2","sg"]
-                    },
-                    {
-                        name:"ec2_2",
-                        type:"EC2",
-                        parent:"test_sub",
-                        platform:"",
-                        instype:"",
-                        size:"",
-                        EIP:"",
-                        EBS_size:"",
-                        EBS_type:"",
-                        children:"",
-                        link:["ec2_1","sg"]
-                    },
-                    {
-                        name:"sg",
-                        type:"SecurityGroup",
-                        parent:"test_sub",
-                        children:"",
-                        link:["ec2_1","ec2_2"]
-                    }
-                ]
-            },
-            {
-                name:"sn1",
-                type:"Subnet",
-                parent:"vpc_test",
-                children:"",
-                link:[]
+  name:"ClOUD",
+  type:"cloud",
+  region:"",
+  platform:"",
+  instype:"",
+  size:"",
+  parent:"",
+  link:[],
+  children:[
+
+  ] 
+}
+
+var vpc = data.instancedata.filter(item=>item.type.toLowerCase().includes("vpc"));
+var sg=data.instancedata.filter(item=>item.type.toLowerCase().includes("securitygroup"));
+var ec2 = data.instancedata.filter(item=>item.type.toLowerCase().includes("ec2"));
+var subnet=data.instancedata.filter(item=>item.type.toLowerCase().includes("subnet"));
+var ebs = data.instancedata.filter(item=>item.type.toLowerCase().includes("ebs"));
+
+for (let tmp of vpc){
+  tmp.children=[];
+  test.children.push(tmp);
+}
+
+for (let tmp of subnet){
+  tmp.children=[];
+  for(let tmp_ec2 of ec2){
+    for(var i=0;i<tmp_ec2.link.length;i++){
+      if(tmp_ec2.link[i]==tmp.id){
+        tmp_ec2.children=[];
+        for (let tmp_ebs of ebs){
+          tmp.children=[];
+          for(var j=0;j<tmp_ebs.link.length;j++){
+            if(tmp_ebs.link[i]==tmp_ec2.id){
+              tmp_ec2.children.push(tmp_ebs);
             }
-        ]
+          }
+        }
+        tmp.children.push(tmp_ec2);        
+      }
     }
-    ] 
+  }
+  for(var i=0;i<test.children.length;i++){
+    if(test.children[i].id==tmp.link[0])
+      test.children[i].children.push(tmp);
+  }
+}
+
+for (let tmp of sg){
+  tmp.children=[];
+  for(var i=0;i<test.children.length;i++){
+    if(test.children[i].id==tmp.link[0])
+      test.children[i].children.push(tmp);
+  }
 }
 
 class Visual extends Component{
@@ -141,9 +364,9 @@ class Visual extends Component{
       }
       
       simulation = d3.forceSimulation()
-        .force("link", d3.forceLink(linkSvg).distance(200))
+        .force("link", d3.forceLink(linkSvg).distance(300))
         .alphaDecay(.0001)
-        .force("charge", d3.forceManyBody().strength(-1500))
+        .force("charge", d3.forceManyBody().strength(-1000))
         .force("center", d3.forceCenter(width / 2, height / 2+100))
         .force("colide",d3.forceCollide().radius(d=>d.r*500))
         .on("tick", ticked);
@@ -154,14 +377,15 @@ class Visual extends Component{
         var nodes = flatten(root);
         var links = root.links();
 
-
         for(var i=0;i<nodes.length;i++){
             if(nodes[i].data.link.length>0){
                 for(var j=0;j<nodes[i].data.link.length;j++){
                     for(var h=0;h<nodes.length;h++){
                         if(nodes[i].data.link[j]==nodes[h].id){
+                          console.log(nodes[i].data.link[j],nodes[h].id)
                             links.push({source:i,target:h})
                         }
+                        
                     }
                 }
             }
