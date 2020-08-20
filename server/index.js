@@ -27,23 +27,7 @@ const cors = require('cors');
 // add server.config
 server.config = system.config.getConfig(PATH)   
 const PORT = server.config.server_port
-
-
-server.keys = require('./system/key')
-
-//// TEST
-
-const dataMod = require('../crms/data')
-console.log("testing start")
-dataMod.saveData(server.config.path, 'tatum', 'aws', {
-    "accessKeyId": "AKIAZ2MZFSD746ESUT5M",
-    "secretAccessKey": "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",
-    "region":"ap-northeast-2"
-})
-console.log("testing stop")
-
-////
-
+server.keys = require('./system').key
 
 server.use(cors())
 server.use(bodyParser.json())

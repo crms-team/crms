@@ -78,7 +78,6 @@ module.exports = server => {
                 return 
             }
 
-
             if (apiType){
                 await crms.data.saveData(server.config.path, keyId, vendor, keys[keyId].keys)
             }                 
@@ -116,8 +115,7 @@ module.exports = server => {
                     data: data[resourceType][resource]
                 })
             } else {
-                let crmsFunction = crms[vendor][resourceType][resource]['default']['get']
-                console.log(keys[keyId].keys)
+                let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['get']
                 res.send({
                     result: true,
                     data: await crmsFunction(keys[keyId].keys)
