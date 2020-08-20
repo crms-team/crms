@@ -47,7 +47,7 @@ class EC2 extends CloudResourceDataFormat {
     }
 }
 
-class SecuritGroup extends CloudResourceDataFormat{
+class SecurityGroup extends CloudResourceDataFormat{
     constructor (data) {
         super()
 
@@ -65,16 +65,57 @@ class SecuritGroup extends CloudResourceDataFormat{
         }       
         // add links subnet
         this.links.push(data.VpcId)
-        
+
+    }
+}
+
+class Subnet extends CloudResourceDataFormat{
+    constructor (data) {
+        super()
+
+        this.type = 'subnet'
+        this.id = data.SubnetId
+        let name = this.getTagName(data.Tags)
+
+        this.name = name == undefined ? data.InstanceId : name        
+
+        this.data = {
+            AvailabilityZone:this.AvailabilityZone,
+            AvailabilityZoneId:data.AvailabilityZoneId,
+            CidrBlock : data.CidrBlock,
+            State:data.State,
+            Ipv6CidrBlockAssociationSet:data.Ipv6CidrBlockAssociationSet,
+            SubnetArn:data.SubnetArn
+        }       
+        // add links subnet
+        this.links.push(data.VpcId)
+
     }
 }
 
 class VPC extends CloudResourceDataFormat{
-    
-}
+    constructor (data) {
+        super()
 
-class Subnet extends CloudResourceDataFormat{
-    
+        this.type = 'vpc'
+        this.id = data.VpcId
+        let name = this.getTagName(data.Tags)
+
+        this.name = name == undefined ? data.InstanceId : name        
+
+        this.data = {
+            CidrBlock : this.CidrBlock,
+            DhcpOptionsId: this.DhcpOptionsId,
+            State:this.State,
+            InstanceTenancy:this.InstanceTenancy,
+            Ipv6CidrBlockAssociationSet:this.Ipv6CidrBlockAssociationSet,
+            CidrBlockAssociationSet:CidrBlockAssociationSet,
+            IsDefault:this.IsDefault
+        }       
+        // add links subnet
+        this.links.push("CLOUD")
+
+    }
 }
 
 class RDS extends CloudResourceDataFormat{
