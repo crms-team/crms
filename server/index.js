@@ -29,6 +29,9 @@ server.config = system.config.getConfig(PATH)
 const PORT = server.config.server_port
 server.keys = require('./system').key
 
+// logging
+system.log.logger(server.config.path)
+
 server.use(cors())
 server.use(bodyParser.json())
 require('./api')(server)

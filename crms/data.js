@@ -17,8 +17,8 @@ async function saveData(path, keyId, keyVendor, keyData){
         let dataPath = PATH.normalize(`${path}/data/${keyId}`)    
         let data = await vendors[keyVendor].data.getAllData(keyData)
         createDataDict(dataPath)
-                
-        let fileName = (new Date()).toISOString().replace(/:/g, '-').replace('T', ' ').split('.')[0] + ".json"
+        
+        let fileName = (new Date()).toLocaleString().replace(/:/g, '-') + ".json"
         fs.writeFileSync(PATH.normalize(`${dataPath}/${fileName}`), JSON.stringify(data))
     } catch (e) {
         console.log(e)
