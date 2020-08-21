@@ -1,64 +1,82 @@
-import { CloudResourceDataFormat } from "../format";
+import {
+    CloudResourceDataFormat
+} from "../format";
 
-class EC2 extends CloudResourceDataFormat { 
-    constructor (data) {
-        super()
+class EC2 extends CloudResourceDataFormat {
+    constructor(keyId, data) {
+        super(keyId)
         data = data.Instances[0]
 
-        this.type = 'ec2'
-        this.id = data.InstanceId
+        let type = 'ec2'
+        this.type = type
+        this.id = this.makeId(type, data.InstanceId)
         let name = this.getTagName(data.Tags)
 
-        this.name = name == undefined ? data.InstanceId : name        
+        this.name = name == undefined ? data.InstanceId : name
 
         this.data = {
             InstanceType: data.InstanceType,
-            ImageId:data.ImageId,
-            InstanceId:data.InstanceId,
-            BlockDeviceMappings:data.BlockDeviceMappings,
-            KeyName:data.KeyName,
-            MaxCount: typeof(data.MaxCount)=="number" ? data.MaxCount : 1,
-            MinCount:typeof(data.MinCount)=="number" ? data.MinCount : 1,
-            SecurityGroups:data.SecurityGroups,
-            SubnetId:data.SubnetId,
-            Tags:data.Tags
+            ImageId: data.ImageId,
+            InstanceId: data.InstanceId,
+            BlockDeviceMappings: data.BlockDeviceMappings,
+            KeyName: data.KeyName,
+            MaxCount: typeof(data.MaxCount) == "number" ? data.MaxCount : 1,
+            MinCount: typeof(data.MinCount) == "number" ? data.MinCount : 1,
+            SecurityGroups: data.SecurityGroups,
+            SubnetId: data.SubnetId,
+            Tags: data.Tags
         }
-        
+
         // add links subnet
-        this.links.push(data.SubnetId)
-        
+        this.links.push(this.makeId('subnet', data.SubnetId))
+
         // add links security group
-        for (let sg of data.SecurityGroups){
-            this.links.push(sg.GroupId)
+        for (let sg of data.SecurityGroups) {
+            this.links.push(this.makeId('securitygroup', sg.GroupId))
         }
+    }
+    getTagName(tagData) {
+        for (let tag of tagData) {
+            if (tag.Key == "Name")
+                return tag.Value
+        }
+        return undefined
     }
 }
 
-class EBS extends CloudResourceDataFormat { 
-  constructor (data) {
-      super()
+class EBS extends CloudResourceDataFormat {
+    constructor(keyId, data) {
+        super(keyId)
 
-      this.type = 'ebs'
-      this.id = data.VolumeId
-      let name = this.getTagName(data.Tags)
+        let type = 'ebs'
+        this.type = type
+        this.id = this.makeId(type, data.VolumeId)
+        let name = this.getTagName(data.Tags)
 
-      this.name = name == undefined ? data.VolumeId : name        
+        this.name = name == undefined ? data.VolumeId : name
 
-      this.data = {}
+        this.data = {}
 
-      for (let key in data) {
-        this.data[key] = data[key]
-      }
-      
-      // add links EC2
-      for (let ec2 of data.Attachments){
-          this.links.push(ec2.InstanceId)
-      }
-  }
+        for (let key in data) {
+            this.data[key] = data[key]
+        }
+
+        // add links EC2
+        for (let ec2 of data.Attachments) {
+            this.links.push(this.makeId('ec2', ec2.InstanceId))
+        }
+    }
+    getTagName(tagData) {
+        for (let tag of tagData) {
+            if (tag.Key == "Name")
+                return tag.Value
+        }
+        return undefined
+    }
 }
 
 
 export default {
-  ec2: EC2,
-  ebs: EBS
+    ec2: EC2,
+    ebs: EBS
 }

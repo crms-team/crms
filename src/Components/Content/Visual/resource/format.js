@@ -1,10 +1,11 @@
 
 export class CloudResourceDataFormat {
-    constructor () {
+    constructor (keyId) {
         this.id = undefined;
         this.name = undefined;
         this.type = undefined;
         this.links = []
+        this.keyId = keyId
     }
 
     json() {
@@ -17,11 +18,15 @@ export class CloudResourceDataFormat {
         }
     }
 
-    getTagName(tagData) {
-        for (let tag of tagData) {
-            if (tag.Key == "Name")
-                return tag.Value
-        }
-        return undefined
+    makeId(type, id) {
+        return `${this.keyId}:${type}:${id}`
+    }
+
+    hasParent(){
+        return Boolean(this.parent)
+    }
+
+    parentJson(){
+        return this.parent.json()
     }
 }

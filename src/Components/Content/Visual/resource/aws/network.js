@@ -1,33 +1,39 @@
 import { CloudResourceDataFormat } from "../format";
 
 class SecurityGroup extends CloudResourceDataFormat{
-    constructor (data) {
-        super()
+    constructor (keyId, data) {
+        super(keyId)
 
-        this.type = 'securitygroup'
-        this.id = data.GroupId
+        let type = 'securitygroup'
+        this.type = type
+        this.id = this.makeId(type, data.GroupId)
         this.name = data.GroupName
-        let tagname = this.getTagName(data.Tags)        
 
         this.data = {
             IpPermissions:data.IpPermissions,
             IpPermissionsEngress:data.IpPermissionsEngress,
             VpcId:data.VpcId,
-            tagname : tagname == undefined ? "" : tagname
-
         }       
-        // add links subnet
-        this.links.push(data.VpcId)
 
+        let securityGroupsId = this.makeId('securitygroups', data.VpcId)
+        this.links.push(securityGroupsId)
+        
+        let parent = new CloudResourceDataFormat()
+        parent.name = "SecurityGroups"
+        parent.type = "securitygroups"
+        parent.id = securityGroupsId
+        parent.links.push(this.makeId('vpc', data.VpcId))
+        this.parent = parent
     }
 }
 
 class Subnet extends CloudResourceDataFormat{
-    constructor (data) {
-        super()
+    constructor (keyId, data) {
+        super(keyId)
 
-        this.type = 'subnet'
-        this.id = data.SubnetId
+        let type = 'subnet'
+        this.type = type
+        this.id = this.makeId(type, data.SubnetId)
         let name = this.getTagName(data.Tags)
 
         this.name = name == undefined ? data.SubnetId : name        
@@ -41,17 +47,33 @@ class Subnet extends CloudResourceDataFormat{
             SubnetArn: data.SubnetArn
         }       
 
-        // add links vpc
-        this.links.push(data.VpcId)
+        let subnetsId = this.makeId('subnets', data.VpcId)
+        this.links.push(subnetsId)
+        
+        let parent = new CloudResourceDataFormat()
+        parent.name = "Subnets"
+        parent.type = "subnets"
+        parent.id = subnetsId
+        parent.links.push(this.makeId('vpc', data.VpcId))
+        this.parent = parent
     }
-}
+
+    getTagName(tagData) {
+        for (let tag of tagData) {
+            if (tag.Key == "Name")
+                return tag.Value
+        }
+        return undefined
+    }
+} 
 
 class VPC extends CloudResourceDataFormat{
-    constructor (data) {
-        super()
+    constructor (keyId, data) {
+        super(keyId)
         
-        this.type = 'vpc'
-        this.id = data.VpcId
+        let type = 'vpc'
+        this.type = type
+        this.id = this.makeId(type, data.VpcId)
         let name = this.getTagName(data.Tags)
 
         this.name = name == undefined ? data.VpcId : name        
@@ -67,8 +89,15 @@ class VPC extends CloudResourceDataFormat{
         }       
 
         // add links Cloud (root)
-        this.links.push("CLOUD")
+        this.links.push(this.keyId)
+    }
 
+    getTagName(tagData) {
+        for (let tag of tagData) {
+            if (tag.Key == "Name")
+                return tag.Value
+        }
+        return undefined
     }
 }
 
