@@ -3,7 +3,7 @@ import Board from './Components/Board';
 import './App.css';
 import Detail from './Components/Detail/Detail';
 import Listview from './Components/Listview/Listview';
-import EnhancedTable from './Components/Listview/Table';
+import Dashboard from './Components/Dashboard/Dashboard';
 
 class App extends Component{
   render(){
@@ -11,7 +11,9 @@ class App extends Component{
       <div className="App">
         {/* <Board/> */}
         {/* <Detail /> */}
-        <Listview />
+        {/* <Listview /> */}
+        <Dashboard/>
+        
       </div>
     );
   }

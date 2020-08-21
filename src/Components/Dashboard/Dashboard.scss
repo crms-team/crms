@@ -1,0 +1,71 @@
+$darkGray : #18181f;
+$lightGray : #27262b;
+$point : #ffc14d;
+$text : #6b6e7c;
+$lightText : #9298b1;
+
+.dashboard-page{
+    
+    width: 100%;
+    position: relative;
+    height: 100%;
+    
+}
+
+.board-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 85%;
+    border-radius: 1rem;
+    padding: 20px;
+    box-sizing: border-box;
+    float: right;
+    background: transparent !important;
+}
+
+.resource-list{
+    .text-muted{
+        margin-top: 5px;
+    }
+}
+
+.card-body{
+    margin-bottom: 10px;
+    background: #212125;
+    height: 100px;
+    padding: 15px;
+
+    & + & {
+        margin-left: 10px;
+    }
+}
+
+.compute-list {
+    display: flex;
+    flex-direction: row;
+    min-width: 50%;
+
+    & .compute{
+        width: 50%;
+    }
+}
+.chart-container{
+    display: flex;
+    flex-direction: row;
+
+    & h3{
+        font-size: 15px;
+        margin-top: 10px;
+        text-indent: 5px;
+    }
+    
+}
+
+NumberWidget + NumberWidget{
+    margin-right: 30px;
+}
+
+.progress{
+    background-color: #353741;
+}
