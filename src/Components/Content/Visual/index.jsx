@@ -9,7 +9,7 @@ class Visual extends Component {
         super(props);
 
         this.state = {
-            dataset: []
+            dataset: undefined
         }
     }
 
@@ -23,7 +23,6 @@ class Visual extends Component {
 
         var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
             height = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).height) - 200;
-
 
         var cloud = this.state.dataset.filter(item => item.type.toLowerCase().includes("aws"))
         var vpc = this.state.dataset.filter(item => item.type.toLowerCase().includes("vpc"));
@@ -403,8 +402,10 @@ class Visual extends Component {
     }
 
     componentDidMount() {
-        this.drawChart();
-        this.setState({dataset: this.getVisualData()})
+        if(this.state.dataset!=undefined){
+            this.drawChart();
+            this.setState({dataset: this.getVisualData()})
+        }
     }
 
     render() {
