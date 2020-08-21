@@ -16,13 +16,13 @@ class SecurityGroup extends CloudResourceDataFormat{
         }       
 
         let securityGroupsId = this.makeId('securitygroups', data.VpcId)
-        this.links.push(securityGroupsId)
+        this.link.push(securityGroupsId)
         
         let parent = new CloudResourceDataFormat()
         parent.name = "SecurityGroups"
         parent.type = "securitygroups"
         parent.id = securityGroupsId
-        parent.links.push(this.makeId('vpc', data.VpcId))
+        parent.link.push(this.makeId('vpc', data.VpcId))
         this.parent = parent
     }
 }
@@ -36,7 +36,7 @@ class Subnet extends CloudResourceDataFormat{
         this.id = this.makeId(type, data.SubnetId)
         let name = this.getTagName(data.Tags)
 
-        this.name = name == undefined ? data.SubnetId : name        
+        this.name = name === undefined ? data.SubnetId : name        
 
         this.data = {
             AvailabilityZone: data.AvailabilityZone,
@@ -48,19 +48,19 @@ class Subnet extends CloudResourceDataFormat{
         }       
 
         let subnetsId = this.makeId('subnets', data.VpcId)
-        this.links.push(subnetsId)
+        this.link.push(subnetsId)
         
         let parent = new CloudResourceDataFormat()
         parent.name = "Subnets"
         parent.type = "subnets"
         parent.id = subnetsId
-        parent.links.push(this.makeId('vpc', data.VpcId))
+        parent.link.push(this.makeId('vpc', data.VpcId))
         this.parent = parent
     }
 
     getTagName(tagData) {
         for (let tag of tagData) {
-            if (tag.Key == "Name")
+            if (tag.Key === "Name")
                 return tag.Value
         }
         return undefined
@@ -76,7 +76,7 @@ class VPC extends CloudResourceDataFormat{
         this.id = this.makeId(type, data.VpcId)
         let name = this.getTagName(data.Tags)
 
-        this.name = name == undefined ? data.VpcId : name        
+        this.name = name === undefined ? data.VpcId : name        
 
         this.data = {
             CidrBlock : data.CidrBlock,
@@ -88,13 +88,13 @@ class VPC extends CloudResourceDataFormat{
             IsDefault: data.IsDefault
         }       
 
-        // add links Cloud (root)
-        this.links.push(this.keyId)
+        // add link Cloud (root)
+        this.link.push(this.keyId)
     }
 
     getTagName(tagData) {
         for (let tag of tagData) {
-            if (tag.Key == "Name")
+            if (tag.Key === "Name")
                 return tag.Value
         }
         return undefined

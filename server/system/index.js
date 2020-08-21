@@ -1,6 +1,6 @@
-const fs = require('fs')
 
 module.exports = {
     config: require('./config'),
-    key: require('./key')
+    key: require('./key'),
+    log: require('./log')
 }

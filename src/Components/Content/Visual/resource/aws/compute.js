@@ -12,7 +12,7 @@ class EC2 extends CloudResourceDataFormat {
         this.id = this.makeId(type, data.InstanceId)
         let name = this.getTagName(data.Tags)
 
-        this.name = name == undefined ? data.InstanceId : name
+        this.name = name === undefined ? data.InstanceId : name
 
         this.data = {
             InstanceType: data.InstanceType,
@@ -27,17 +27,17 @@ class EC2 extends CloudResourceDataFormat {
             Tags: data.Tags
         }
 
-        // add links subnet
-        this.links.push(this.makeId('subnet', data.SubnetId))
+        // add link subnet
+        this.link.push(this.makeId('subnet', data.SubnetId))
 
-        // add links security group
+        // add link security group
         for (let sg of data.SecurityGroups) {
-            this.links.push(this.makeId('securitygroup', sg.GroupId))
+            this.link.push(this.makeId('securitygroup', sg.GroupId))
         }
     }
     getTagName(tagData) {
         for (let tag of tagData) {
-            if (tag.Key == "Name")
+            if (tag.Key === "Name")
                 return tag.Value
         }
         return undefined
@@ -53,7 +53,7 @@ class EBS extends CloudResourceDataFormat {
         this.id = this.makeId(type, data.VolumeId)
         let name = this.getTagName(data.Tags)
 
-        this.name = name == undefined ? data.VolumeId : name
+        this.name = name === undefined ? data.VolumeId : name
 
         this.data = {}
 
@@ -61,14 +61,14 @@ class EBS extends CloudResourceDataFormat {
             this.data[key] = data[key]
         }
 
-        // add links EC2
+        // add link EC2
         for (let ec2 of data.Attachments) {
-            this.links.push(this.makeId('ec2', ec2.InstanceId))
+            this.link.push(this.makeId('ec2', ec2.InstanceId))
         }
     }
     getTagName(tagData) {
         for (let tag of tagData) {
-            if (tag.Key == "Name")
+            if (tag.Key === "Name")
                 return tag.Value
         }
         return undefined

@@ -6,7 +6,9 @@ const storage = require('./storage')
 async function getAWSComputeData(key){
     return {
         ec2: await compute.ec2.default.get(key),
-        ebs: await compute.ebs.default.get(key)
+        ebs: await compute.ebs.default.get(key),
+        keyPair: await compute.keyPair.default.get(key),
+        eip: await compute.eip.default.get(key)
     }
 }
 
@@ -26,5 +28,5 @@ async function getAWSData(key){
 }
 
 module.exports = {
-    getAllData: getAWSData
+    getAllData: getAWSData,
 }

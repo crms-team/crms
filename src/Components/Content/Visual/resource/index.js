@@ -6,22 +6,34 @@ export const DataFormat = {
 
 export function CreateVisualDataFormat(keyId, vendor, data) {
     let result = new Set()
-    
+    let parents = {}
+
     result.add({
         id: keyId,
         name: keyId,
         type: vendor,
-        links: []
+        link: []
     })
 
     for (let session in data) {
         for (let type in data[session]) {
-            for (let resource of data[session][type]){
-                let resourceObj = new DataFormat[vendor][session][type](keyId, resource)
-                result.add(resourceObj.json())
-                if (resourceObj.hasParent()) {
-                    result.add(resourceObj.parentJson())
-                }
+            if (type in DataFormat[vendor][session]) {
+                for (let resource of data[session][type]){
+                    let resourceObj = new DataFormat[vendor][session][type](keyId, resource)
+                    result.add(resourceObj.json())
+                    if (resourceObj.hasParent()) {
+                        let parent = resourceObj.parentJson()
+                        if (parents[parent.type] == undefined) {
+                            parents[parent.type] = new Set()
+                            parents[parent.type].add(parent.id)
+                        } else {
+                            if (parents[parent.type].has(parent.id)) {
+                                continue
+                            }
+                        }
+                        result.add(parent)
+                    }
+                }    
             }
         }
     }

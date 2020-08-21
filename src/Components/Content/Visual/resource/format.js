@@ -4,7 +4,7 @@ export class CloudResourceDataFormat {
         this.id = undefined;
         this.name = undefined;
         this.type = undefined;
-        this.links = []
+        this.link = []
         this.keyId = keyId
     }
 
@@ -12,7 +12,7 @@ export class CloudResourceDataFormat {
         return {
             id: this.id,
             name: this.name,
-            links: this.links,
+            link: this.link,
             type: this.type,
             data: this.data
         }
