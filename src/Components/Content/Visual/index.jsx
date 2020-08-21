@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as d3 from 'd3';
 import './Visual.css'
+import { DataFormat, CreateVisualDataFormat } from "./resource";
 
 
 class Visual extends Component {
@@ -9,17 +10,33 @@ class Visual extends Component {
         super(props);
 
         this.state = {
-            dataset: undefined
+            dataset: undefined,
+            keyList: this.getKeyData()
         }
     }
 
-    getVisualData() {
+    async getKeyData() {
+        let response = await (await fetch("http://192.168.35.253:4000/api/cloud/key/list")).json()
+        return response.keys
+    }
 
+    async getVisualData() {
+        let result = []
+        console.log("Start", this.state.keyList)
+        for (let key in this.state.keyList) {
+            let response = await (await fetch(`http://192.168.35.253:4000/api/cloud/data?key_id=${key}`)).json()
+            console.log(response)
+            result.concat(result, CreateVisualDataFormat(key, this.state.keyList[key].vendor, response.data))   
+        }
+        console.log(result)
+        return result
     }
 
 
 
     drawChart() {
+
+        const visualdata=[];
 
         var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
             height = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).height) - 200;
@@ -82,11 +99,13 @@ class Visual extends Component {
                     tmp.children.push(tmp_vpc);
                 }
             }
-            this.state.dataset.push(tmp);
+            visualdata.push(tmp);
         }
 
         //initialising hierarchical data
-        var root = d3.hierarchy(this.state.dataset[0]);
+        var root = d3.hierarchy(visualdata[0]);
+
+        console.log(root);
 
         var i = 0;
 
@@ -401,11 +420,14 @@ class Visual extends Component {
 
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        //this.drawChart();
+            await this.setState({dataset: await this.getVisualData()})
+        /*
         if(this.state.dataset!=undefined){
             this.drawChart();
-            this.setState({dataset: this.getVisualData()})
         }
+        */
     }
 
     render() {

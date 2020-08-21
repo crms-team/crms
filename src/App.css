@@ -1,4 +1,14 @@
+:root {
+    --text-lightgray-color : #cfcfcf ;
+    --point-color : #ffc14d;
+    --point-hover-color : #e09129;
+    --text-gray-color : #494949;
+    --text-white-color : #ececec;
+    --background-color: #27262b;
+}
+
 .App{
+    background-color: var(--background-color);
     height: 100%;
     margin: 0 auto;
 }
