@@ -1,0 +1,112 @@
+$darkGray : #18181f;
+$lightGray : #27262b;
+$point : #ffc14d;
+$text : #6b6e7c;
+$lightText : #9298b1;
+
+button:focus{
+    outline: none;
+}
+
+.listview-title{
+    color: #ffc14d;
+    margin: 0 auto;
+    padding-top: 50px;
+    float: right;
+    width: 83%;
+    font-size: 25px;
+}
+
+.table{
+    background: transparent !important;
+    margin: 0;
+    border-top-left-radius: 1rem;
+
+    & thead th {
+        padding-left: 30px;
+        background-color: #292933;
+        border-top: 1px solid #27262b;
+        border-bottom: 2px solid #27262b;
+    }
+    th, td {
+        padding: 0 ;
+        vertical-align: middle !important;
+        text-align: center;
+        padding-left: 5px;
+        color: $lightText;
+        border: none;
+        border-bottom: 1px solid #33353bb4;
+    }
+    th{
+        width: 10%;
+        text-align: center;
+    }
+
+    td {
+        text-align: center;
+        width: 3%;
+
+        
+    }
+    td + td{
+        text-align: center;
+    }
+
+    .MuiTableCell-paddingCheckbox{
+        text-align: left;
+        padding-left: 30px;
+        width: 3%;
+    }
+
+    /* TABLE HEAD */
+    .makeStyles-root-5{
+        background: #ffc14d;
+        min-height: 10px !important;
+    }
+
+    /* TABLE HEAD TEXT */
+    .makeStyles-title-7{
+        color: #2d2e3d;
+        padding-left: 10px;
+        font-size: 20px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    /* TABLE TR */
+    .makeStyles-paper-2{
+        background-color: #212125;
+        color: $point;
+    }
+
+
+    .MuiSvgIcon-root{
+        color: $point;
+    }
+    .makeStyles-icon-8{
+        color: #18181f;
+    }
+    
+    .MuiCheckbox-colorSecondary.Mui-checked{
+        color : #ffc14d;
+    }
+    .MuiTableRow-root.Mui-selected, .MuiTableRow-root.Mui-selected:hover{
+        background-color: #292933;
+    }
+    .MuiTableSortLabel-root.MuiTableSortLabel-active{
+        color: #ffc14d;
+    }
+
+    .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active .MuiTableSortLabel-icon{
+        color: $point;
+    }
+
+    // PAGE TEXT
+    .MuiTablePagination-caption{
+        color: $point;
+    }
+
+    span:hover{
+        color : $point;
+    }
+}
