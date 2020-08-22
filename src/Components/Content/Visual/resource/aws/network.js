@@ -101,9 +101,40 @@ class VPC extends CloudResourceDataFormat{
     }
 }
 
+class InternetGateway extends CloudResourceDataFormat{
+    constructor (keyId, data) {
+        super(keyId)
+        
+        let type = 'internetgateway'
+        this.type = type
+        this.id = this.makeId(type, data.InternetGatewayId)
+        let name = this.getTagName(data.Tags)
+
+        this.name = name === undefined ? data.InternetGatewayId : name        
+
+        this.data = {
+        }       
+        
+        for (let vpc of data.Attachments) {
+            this.link.push(this.makeId('vpc', vpc.VpcId))
+        }
+    }
+
+    getTagName(tagData) {
+        for (let tag of tagData) {
+            if (tag.Key === "Name")
+                return tag.Value
+        }
+        return undefined
+    }
+}
+
+
 
 export default {
     subnet: Subnet,
     securityGroup: SecurityGroup,
-    vpc: VPC
+    vpc: VPC,
+    internetGateway: InternetGateway
+
   }

@@ -1,324 +1,496 @@
-import React,{Component} from 'react';
-import {connect} from 'react-redux';
-import {AddResource} from  '../../../actions';
+import React, { Component } from 'react';
+import {Button,Modal,ListGroup,Tab,Row,Col,Form,Pagination} from 'react-bootstrap';
 import * as d3 from 'd3';
 import './Visual.css'
-import { Modal } from 'react-bootstrap';
-import { DataFormat, CreateVisualDataFormat } from './resource'
+import { DataFormat, CreateVisualDataFormat } from "./resource";
 
-class Visual extends Component{
-    constructor(props){
-      
+const resource_svg = {
+    ec2: "/images/compute.svg",
+    securitygroup: '/images/security_group.svg',
+    subnet: '/images/ec2-container-registry.svg',
+    vpc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png',
+    aws: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png',
+    ebs: '/images/ebs.svg',
+    rds: '/images/trans-line/rds.svg',
+    s3: '/images/storage.svg',
+    internetgateway: '/images/internet-gateway.svg'
+}
+
+class Visual extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            dataset: undefined,
+            keyList: undefined,
+            showHide: false
+        }
+        this.drawChart=this.drawChart.bind(this);
     }
+
+    async getKeyData() {
+        let response = await (await fetch("http://192.168.35.253:4000/api/cloud/key/list")).json()
+        return response.keys
+    }
+
+    async getVisualData() {
+        let result = []
+        for (let key in this.state.keyList) {
+            let response = await fetch(`http://192.168.35.253:4000/api/cloud/data?key_id=${key}`)
+            let data = await response.json()
+            result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
+        }
+        console.log(result)
+        return result
+    }
+
+    handleModalShowHide(){
+        this.setState({showHide:!this.state.showHide});
+    }
+
+
 
     drawChart() {
-      var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
-          height = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).height)-200;
+        if (this.state.dataset != undefined) {
+            var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
+                height = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).height) - 200;
 
-      //initialising hierarchical data
-      var root = d3.hierarchy(test);
-      
-      var i = 0;
-      
-      var transform = d3.zoomIdentity;
-      
-      var nodeSvg, linkSvg, simulation, nodeEnter, linkEnter;
+            let visualdata = [];
 
-      var tooltip = d3.select(".tooltip")
-      .attr("class", "tooltip")
-      .style("display", "none")
-      .on("contextmenu",function(d){
-        d3.event.preventDefault();});
-      
-      var svg = d3.select("svg")
-        .call(d3.zoom().scaleExtent([1 / 2, 8]).on("zoom", zoomed))
-        .style("background-color","#27262b")
-        .on("dblclick.zoom",null)
-        .on("contextmenu",function(d,i){
-            d3.event.preventDefault();
-        })
-        .append("g")
-        .attr("transform", "translate(40,0)")
+            for (let dataset of this.state.dataset)
+            {
+
+                var cloud = dataset.filter(item => item.type.toLowerCase() == "aws")
+                var vpc = dataset.filter(item => item.type.toLowerCase() == "vpc")
+                var sgs = dataset.filter(item => item.type.toLowerCase() == "securitygroups")
+                var sg = dataset.filter(item => item.type.toLowerCase() == "securitygroup")
+                var subnets = dataset.filter(item => item.type.toLowerCase() == "subnets")
+                var subnet = dataset.filter(item => item.type.toLowerCase() == "subnet")
+                var ec2 = dataset.filter(item => item.type.toLowerCase() == "ec2")
+                var ebs = dataset.filter(item => item.type.toLowerCase() == "ebs")
+                var ig = dataset.filter(item=>item.type.toLowerCase() == "internetgateway")
+                var s3_group = dataset.filter(item=>item.type.toLowerCase() == "s3_group")
+                var s3 = dataset.filter(item=>item.type.toLowerCase() == "s3")
+                var rds_group = dataset.filter(item=>item.type.toLowerCase() == "rds_group")
+                var rds = dataset.filter(item=>item.type.toLowerCase() == "rds")
+
+
+                for (let tmp of cloud) {
+                    tmp.children = [];
+                    for (let tmp_vpc of vpc) {
+                        tmp_vpc.children = [];
+                        if (tmp.id == tmp_vpc.link[0]) {
+                            for (let tmp_subs of subnets) {
+                                tmp_subs.children = [];
+                                if (tmp_vpc.id == tmp_subs.link[0]) {
+                                    for (let tmp_sub of subnet) {
+                                        tmp_sub.children = [];
+                                        
+                                        if (tmp_subs.id == tmp_sub.link[0]) {
+                                            for (let tmp_ec2 of ec2) {
+                                                for (var i = 0; i < tmp_ec2.link.length; i++) {
+                                                    if (tmp_ec2.link[i] == tmp_sub.id) {
+                                                        for (let tmp_ebs of ebs) {
+                                                            for (var j = 0; j < tmp_ebs.link.length; j++) {
+                                                                if (tmp_ebs.link[j] == tmp_ec2.id) {
+                                                                    tmp_ec2.children = [];
+                                                                    tmp_ec2.children.push(tmp_ebs);
+                                                                }
+                                                            }
+                                                        }
+                                                        tmp_sub.children.push(tmp_ec2);
+                                                    }
+                                                }
+                                            }
+                                            tmp_subs.children.push(tmp_sub);
+                                        }
+                                    }
     
-        svg.append("svg:defs").selectAll("marker")
-            .data(["end"])      // Different link/path types can be defined here
-            .enter().append("svg:marker")    // This section adds in the arrows
-            .attr("id", String)
-            .style("stroke","#ffc14d")
-            .style("fill","#ffc14d")
-            .attr("viewBox", "0 -5 10 10")
-            .attr("markerWidth", 10)
-            .attr("markerHeight", 10)
-            .attr("orient", "auto")
-            .append("svg:path")
-            .attr("d", "M0,-5L10,0L0,5");
-      
-      function zoomed() {
-        tooltip.style("display", "none")
-        svg.attr("transform", d3.event.transform);
-      }
-      
-      simulation = d3.forceSimulation()
-        .force("link", d3.forceLink(linkSvg).distance(200))
-        .alphaDecay(.0001)
-        .force("charge", d3.forceManyBody().strength(-1500))
-        .force("center", d3.forceCenter(width / 2, height / 2+100))
-        .force("colide",d3.forceCollide().radius(d=>d.r*500))
-        .on("tick", ticked);
-      
-      update();
-      
-      function update() {
-        var nodes = flatten(root);
-        var links = root.links();
+                                    tmp_vpc.children.push(tmp_subs);
+                                }
+                            }
+                            for (let tmp_sgs of sgs) {
+                                tmp_sgs.children = [];
+                                if (tmp_vpc.id == tmp_sgs.link[0]) {
+                                    for (let tmp_sg of sg) {
+                                        if (tmp_sgs.id == tmp_sg.link[0]) {
+                                            tmp_sgs.children.push(tmp_sg);
+                                        }
+                                    }
+                                    tmp_vpc.children.push(tmp_sgs);
+                                }
+                            }
+                            tmp.children.push(tmp_vpc);
+                        }
+                        for(let tmp_ig of ig){
+                            if(tmp_vpc.id==tmp_ig.link[0]){
+                                tmp_vpc.children.push(tmp_ig)
+                            }
+                        }
+                        for(let tmp_rds_group of rds_group){
+                            tmp_rds_group.children=[]
+                            if(tmp_vpc.id==tmp_rds_group.link[0]){
+                                for(let tmp_rds of rds){
+                                    for(var i=0;i<tmp_rds.link.length;i++){
+                                        if(tmp_rds.link[i]==tmp_rds_group.id){
+                                            tmp_rds_group.children.push(tmp_rds)
+                                        }
+                                    }
+                                }
+                                tmp_vpc.children.push(tmp_rds_group)
+                            }
+                        }
 
-
-        for(var i=0;i<nodes.length;i++){
-            if(nodes[i].data.link.length>0){
-                for(var j=0;j<nodes[i].data.link.length;j++){
-                    for(var h=0;h<nodes.length;h++){
-                        if(nodes[i].data.link[j]==nodes[h].id){
-                            links.push({source:i,target:h})
+                    }
+                    for(let tmp_s3_group of s3_group){
+                        tmp_s3_group.children=[]
+                        if(tmp.id==tmp_s3_group.link[0]){
+                            for(let tmp_s3 of s3){
+                                for(var i=0;i<tmp_s3.link.length;i++){
+                                    if(tmp_s3.link[i]==tmp_s3_group.id){
+                                        tmp_s3_group.children.push(tmp_s3)
+                                    }
+                                }
+                            }
+                            tmp.children.push(tmp_s3_group)
                         }
                     }
+                    visualdata = visualdata.concat(tmp);
+                }
+    
+            }
+
+            let aroot = {
+                id: 'CRMSRootId',
+                name: 'CRMS',
+                type: 'CRMS',
+                link: [],
+                children: visualdata
+            }
+
+            var root = d3.hierarchy(aroot);
+
+            var i = 0;
+
+            var transform = d3.zoomIdentity;
+
+            var nodeSvg, linkSvg, simulation, nodeEnter, linkEnter;
+
+            var svg = d3.select("svg")
+                .call(d3.zoom().scaleExtent([1 / 100, 8]).on("zoom", zoomed))
+                .style("background-color", "#27262b")
+                .on("dblclick.zoom", null)
+                .on("contextmenu", function (d, i) {
+                    d3.event.preventDefault();
+                })
+                .append("g")
+                .attr("transform", "translate(40,0)")
+            
+            svg.append("svg:defs").selectAll("marker")
+                .data(["end"])      // Different link/path types can be defined here
+                .enter().append("svg:marker")    // This section adds in the arrows
+                .attr("id", String)
+                .style("stroke", "#ffc14d")
+                .style("fill", "#ffc14d")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("markerWidth", 10)
+                .attr("markerHeight", 10)
+                .attr("orient", "auto")
+                .append("svg:path")
+                .attr("d", "M0,-5L10,0L0,5");
+            
+            d3.select(".time")
+                .append("text")
+                .attr("text-anchor","middle")
+                .style("font-family", "NanumSquare")
+                .style("font-weight", "bold")
+                .style("font-size", "15px")
+                .style("color","white")
+                .text(function(){
+                    return new Date();
+                })
+            d3.select(".time").append("image")
+                .attr("xlink:href","https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR_5b8ZALQdHiE71A9ZKbXAL_tyAKGbr_X6wg&usqp=CAU")
+
+            function zoomed() {
+                svg.attr("transform", d3.event.transform);
+                
+            }
+
+            simulation = d3.forceSimulation()
+                .alpha(0.5)
+                .alphaDecay(0.001)
+                .force("link", d3.forceLink(linkSvg).distance(400))
+                .force("charge", d3.forceManyBody().strength(-2000))
+                .force("center", d3.forceCenter(width / 2 + 100, height / 2 + 100))
+                .on("tick", ticked);
+
+            const stateFunc= this.setState.bind(this);
+            
+            update(stateFunc,this.state);
+
+            function update(stateFunc,prestate) {
+                
+                var nodes = flatten(root);
+                var links = root.links();
+
+                for (var i = 0; i < nodes.length; i++) {
+                    if (nodes[i].data.link.length > 0) {
+                        for (var j = 0; j < nodes[i].data.link.length; j++) {
+                            for (var h = 0; h < nodes.length; h++) {
+                                if (nodes[i].data.link[j] == nodes[h].data.id) {
+                                    links.push({ source: i, target: h })
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+                linkSvg = svg.selectAll(".link")
+                    .data(links, function (d) {
+                        return d.target.id;
+                    })
+
+
+                linkSvg.exit().remove();
+
+                var linkEnter = linkSvg.enter()
+                    .append("line")
+                    .attr("class", "link")
+                    .style("stroke", "#ffc14d")
+                    .attr("marker-end", "url(#end)");
+
+                linkSvg = linkEnter.merge(linkSvg)
+
+                nodeSvg = svg.selectAll(".node")
+                    .data(nodes, function (d) {
+                        return d.id;
+                    })
+
+                nodeSvg.exit().remove();
+
+                var nodeEnter = nodeSvg.enter()
+                    .append("g")
+                    .attr("class", "node")
+                    .on("mouseover", function (d) {
+                        var thisNode = d.id
+                        var thislink = d
+                        d3.selectAll(".link").attr("opacity", function (d) {
+                            return (d.source.id == thisNode || d.target.id == thisNode) ? 1 : 0.2
+                        });
+                        d3.selectAll(".node").attr("opacity", function (d) {
+                            if (d.data.link.length > 0) {
+                                for (var i = 0; i < d.data.link.length; i++) {
+                                    if (d.data.link[i] == thislink.data.id)
+                                        return "1";
+                                }
+                            }
+                            if (d.id == thislink.data.link || d.id == thisNode)
+                                return "1";
+                            else
+                                return "0.2";
+                        });
+                    })
+                    .on("mouseout", function (d) {
+                        d3.selectAll(".link").attr("opacity", "1");
+                        d3.selectAll(".node").attr("opacity", "1");
+                    })
+                    .on("contextmenu", function (d) {
+                        d3.event.preventDefault();
+                        stateFunc({showHide:!prestate.showHide})       
+                    })
+                    .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended))
+
+                nodeEnter.append("circle")
+                    .attr("stroke", "#ffc14d")
+                    .attr("stroke-width", "3")
+                    .attr("fill", "none")
+                    .attr("r", function (d) {
+                        if(d.data.type=="CRMS"){
+                            return 150;
+                        }
+                        if (d.data.type == "aws") {
+                            return 100;
+                        }
+                        else if (d.data.type == "vpc")
+                            return 80;
+                        else if (d.data.type == "subnets" || d.data.type == "securitygroups")
+                            return 70;
+                        else if (d.data.type == "subnet" || d.data.type == "securitygroup")
+                            return 60;
+                        else {
+                            return 50;
+                        }
+                    })
+
+                nodeEnter.append("svg:image")
+                    .attr("xlink:href", function (d) {
+                        return resource_svg[d.data.type]
+                    })
+                    .attr("x", function (d) { return -30; })
+                    .attr("y", function (d) { return -35; })
+                    .attr("height", 60)
+                    .attr("width", 60)
+                    .on("click", click);
+
+                nodeEnter.append("text")
+                    .attr("dy", 33)
+                    .style("fill", "#ffc14d")
+                    .style("font-family", "NanumSquare")
+                    .style("font-weight", "bold")
+                    .style("font-size", "14px")
+                    .style("text-anchor", "middle")
+                    .text(function (d) {
+                        return d.data.name;
+                    });
+
+                nodeSvg = nodeEnter.merge(nodeSvg);
+
+                var addresshow = d3.select(".add_res");
+                var resnoshow = addresshow.select("#cancel");
+                resnoshow.on("click", function () {
+                    addresshow.style("display", "none");
+                })
+
+                simulation
+                    .nodes(nodes)
+
+                simulation.force("link")
+                    .links(links);
+
+            }
+
+            function ticked() {
+
+                linkSvg
+                    .attr("x1", function (d) {
+                        var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                        var length = 60 * Math.cos(angle);
+                        return d.source.x + length;
+                    })
+                    .attr("y1", function (d) {
+                        var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                        var length = 60 * Math.sin(angle);
+                        return d.source.y + length;
+                    })
+                    .attr("x2", function (d) {
+                        var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                        var length = 70 * Math.cos(angle);
+                        return d.target.x - length;
+                    })
+                    .attr("y2", function (d) {
+                        var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                        var length = 70 * Math.sin(angle);
+                        return d.target.y - length;
+                    });
+
+                nodeSvg
+                    .attr("transform", function (d) {
+                        return "translate(" + d.x + ", " + d.y + ")";
+                    });
+            }
+
+            function click(d) {
+                if (d.children) {
+                    var check = 0;
+                    if (d.data.type == "subnet") {
+                        for (var i = 0; i < d.children.length; i++) {
+                            for (var j = 0; j < d.children[i].data.link.length; j++) {
+                                if (d.children[i].data.link[j].includes(":securitygroup:")) {
+                                    d.data.link.push(d.children[i].data.link[j]);
+                                    check++;
+                                }
+                            }
+                        }
+                    }
+                    d._children = d.children;
+                    d.children = null;
+                    update();
+                    simulation.restart();
+                    if (check != 0) {
+                        for (var i = 0; i < check; i++) {
+                            d.data.link.pop();
+                        }
+                    }
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                    update();
+                    simulation.restart();
                 }
             }
-        }
 
-        linkSvg = svg.selectAll(".link")
-            .data(links, function(d) {
-            return d.target.id;
-          })
-        
-      
-        linkSvg.exit().remove();
-      
-        var linkEnter = linkSvg.enter()
-          .append("line")
-          .attr("class", "link")
-          .style("stroke","#ffc14d")
-          .attr("marker-end", "url(#end)");
-      
-        linkSvg = linkEnter.merge(linkSvg)
-      
-        nodeSvg = svg.selectAll(".node")
-          .data(nodes, function(d) {
-            return d.id;
-          })
-      
-        nodeSvg.exit().remove();
-      
-        var nodeEnter = nodeSvg.enter()
-          .append("g")
-          .attr("class", "node")
-          .on("mouseover", function(d) {
-            var thisNode = d.id
-            var thislink=d
-            d3.selectAll(".link").attr("opacity", function(d) {
-                    return (d.source.id == thisNode || d.target.id == thisNode) ? 1 : 0.2
-            });
-            d3.selectAll(".node").attr("opacity", function(d) {
-                    if(d.data.link.length>0){
-                        for(var i=0;i<d.data.link.length;i++){
-                            if(d.data.link[i]==thislink.data.name)
-                            return "1";
-                        }
-                    }
-                    if(d.data.name==thislink.data.parent||d.id==thisNode||d.data.parent==thislink.data.name)
-                        return "1";
-                    else
-                        return "0.2";
-            });                    
-          })
-          .on("mouseout", function(d) {
-                d3.selectAll(".link").attr("opacity","1");
-                d3.selectAll(".node").attr("opacity","1");
-          })
-          .on("contextmenu",function(d){
-              d3.event.preventDefault();
-              var tmp=[];
-              if(d.data.children.length>0){
-                for(var i=0;i<d.data.children.length;i++){
-                  tmp.push(d.data.children[i].name)
+            function dragstarted(d) {
+                if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+                simulation.fix(d);
+            }
+
+            function dragged(d) {
+                simulation.fix(d, d3.event.x, d3.event.y);
+            }
+
+            function dragended(d) {
+                if (!d3.event.active) simulation.alphaTarget(0);
+                simulation.unfix(d);
+            }
+
+            function flatten(root) {
+                // hierarchical data to flat data for force layout
+                var nodes = [];
+
+                function recurse(node) {
+                    if (node.children) node.children.forEach(recurse);
+                    if (!node.id) node.id = node.data.name;
+                    else ++i;
+                    nodes.push(node);
                 }
-              }
-              tooltip.transition()
-              .duration(300)
-              .style("opacity",1)
-              .style("display", "block")
-              .style('pointer-events', 'visiblePainted')
-              tooltip.html(
-                "<div class='toolbut'>"+
-                  "<button class='hide' onClick={document.getElementsByClassName('tooltip')[0].style.display='none';}> X </button>" +
-                "</div>"+
-                "<hr/>"+
-                "Name : " + d.data.name + "<hr/>" +
-                "Type : " + d.data.type + "<hr/>" +
-                "Parent : " + d.data.parent + "<hr/>" +
-                "Children : " + tmp + "<hr/>"+
-                "Link : " + d.data.link + "<hr/>"+
-                "<div class='toolbut'>"+
-                "<button> Detail </button>" + 
-                "<button> Delete </button>"+
-                "</div>"
-              )
-              .style("left", (d3.event.pageX) + "px")
-              .style("top", (d3.event.pageY + 10) + "px");
-            })
-          .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended))
-
-        nodeEnter.append("circle")
-        .attr("stroke","#ffc14d")
-        .attr("stroke-width","3")
-        .attr("fill","none")
-        .attr("r",50)
-
-        nodeEnter.append("svg:image")
-        .attr("xlink:href",function(d){
-            if(d.data.type=="EC2")
-                return "/images/compute.svg";
-            if(d.data.type=="SecurityGroup")
-                return "/images/security_group.svg";
-            if(d.data.type=="Subnet")
-                return "/images/ec2-container-registry.svg";
-            if(d.data.type=="VPC")
-                return "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png";
-            if(d.data.type=="cloud")
-                return "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png";
-        })
-        .attr("x", function(d) { return -30;})
-        .attr("y", function(d) { return -35;})
-        .attr("height", 60)
-        .attr("width", 60)
-        .on("click", click);
-      
-        nodeEnter.append("text")
-          .attr("dy", 33)
-          .style("fill","#ffc14d")
-          .style("font-family","NanumSquare")
-          .style("font-weight","bold")
-          .style("font-size","14px")
-          .style("text-anchor","middle")
-          .text(function(d) { 
-            return d.data.name;
-          });
-      
-        nodeSvg = nodeEnter.merge(nodeSvg);
-
-        var addresshow = d3.select(".add_res");
-        var resnoshow = addresshow.select("#cancel");
-        resnoshow.on("click",function(){
-          addresshow.style("display","none");
-        })
-      
-        simulation
-          .nodes(nodes)
-      
-        simulation.force("link")
-          .links(links);
-      
-      }
-
-      function ticked() {
-        
-        linkSvg
-          .attr("x1", function(d) {
-            var angle=Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-            var length=60*Math.cos(angle);
-            return d.source.x+length;
-          })
-          .attr("y1", function(d) {
-            var angle=Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-            var length=60*Math.sin(angle);
-            return d.source.y+length;
-          })
-          .attr("x2", function(d) {
-            var angle=Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-            var length=70*Math.cos(angle);
-            return d.target.x-length;
-          })
-          .attr("y2", function(d) {
-            var angle=Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-            var length=70*Math.sin(angle);
-            return d.target.y-length;
-          });
-      
-        nodeSvg
-          .attr("transform", function(d) {
-            return "translate(" + d.x + ", " + d.y + ")";
-          });
-      }
-      
-      function click(d) {
-        if (d.children) {
-          d._children = d.children;
-          d.children = null;
-          update();
-          simulation.restart()
-          ;
-        } else {
-          d.children = d._children;
-          d._children = null;
-          update();
-          simulation.restart();
+                recurse(root);
+                return nodes;
+            }
         }
-      }
-      
-      function dragstarted(d) {
-        tooltip.style("display", "none")
-        .style('pointer-events', 'visiblePainted')
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart()
-        simulation.fix(d);
-      }
-      
-      function dragged(d) {
-        simulation.fix(d, d3.event.x, d3.event.y);
-      }
-      
-      function dragended(d) {
-        if (!d3.event.active) simulation.alphaTarget(0);
-        simulation.unfix(d);
-      }
-      
-      function flatten(root) {
-        // hierarchical data to flat data for force layout
-        var nodes = [];
-      
-        function recurse(node) {
-          if (node.children) node.children.forEach(recurse);
-          if (!node.id) node.id = node.data.name;
-          else ++i;
-          nodes.push(node);
-        }
-        recurse(root);
-        return nodes;
-      }
-      
     }
-
-    componentDidMount(){
+    /*
+    componentDidMount() {
         this.drawChart();
+    }*/
+
+    async componentDidMount() {
+        this.setState({ keyList: await this.getKeyData() })
+        this.setState({ dataset: await this.getVisualData() })
+
+        if (this.state.dataset != undefined) {
+            this.drawChart();
+        }
+
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <>
-              <div className="tooltip"> 
-              </div>   
-              <svg className="Visual">           
-              </svg>
+                <Modal 
+                    show={this.state.showHide}
+                    size="lg"
+                    dialogClassName="width :50%"
+                    dialogClassName="height:50%"
+                    centered
+                >
+                    <Modal.Header closeButton onClick={() => this.handleModalShowHide()}>
+                    <Modal.Title>Information</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    </Modal.Body>
+                </Modal>
+                <svg className="Visual">
+                </svg>
+                <div className="time">
+                </div>
             </>
         );
     }
 }
-
-let mapStateToProps=(state)=>{
-  console.log(state.show,state.Add)
-}
-
-Visual=connect(mapStateToProps)(Visual);
 
 export default Visual;

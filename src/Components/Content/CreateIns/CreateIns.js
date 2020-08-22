@@ -8282,6 +8282,21 @@ class Index extends React.Component{
     }
 }
 
+class SelVendor extends React.Component{
+    render(){
+        return (
+        <>
+            <label for="recipient-name" class="col-form-label">Select Vendor </label>
+            <select className="form-control" name="instance" onChange={this.props.choose}>
+                <option value="" disabled selected> Vendor </option>
+                <option value="AWS">AWS</option>
+                <option value="NCP">NCP</option>
+            </select>
+        </>
+        )
+    }
+}
+
 class Nextbut extends React.Component{
     render(){
         return(
@@ -8426,6 +8441,7 @@ class CreateIns extends React.Component{
 
         this.state={
             showHide : false,
+            vendor:"",
             type : "",
             ec2_data:{
                 BlockDeviceMappings: [{
@@ -8451,10 +8467,11 @@ class CreateIns extends React.Component{
                     }]
                 }]
             },
-            component:<Index click={this.change_type.bind(this)}/>,
+            component: <SelVendor choose={this.select_vendor.bind(this)}/>,
             but_type : <Nextbut click_but={this.clickNextModal.bind(this)}/>
         }
         
+        this.select_vendor.bind(this);
         this.clickNextModal=this.clickNextModal.bind(this)
         this.clickSubmitbut=this.clickSubmitbut.bind(this)
         this.handleModalShowHide=this.handleModalShowHide.bind(this)
@@ -8467,9 +8484,12 @@ class CreateIns extends React.Component{
         this.setState({showHide:!this.state.showHide,
             but_type : <Nextbut click_but={this.clickNextModal.bind(this)}/>
         });
-        document.getElementsByClassName('tooltip')[0].style.display='none';
     }
     
+    select_vendor(e){
+        this.setState({vendor:e.target.value})
+    }
+
     change_type(e){
         this.setState({type:e.target.value});
     }
@@ -8535,6 +8555,11 @@ class CreateIns extends React.Component{
     }
 
     clickNextModal(){
+        if(this.state.vendor=="AWS"){
+            this.setState({
+                component: <Index click={this.change_type.bind(this)}/>,
+            })
+        }
         if(this.state.type=="EC2"){
             this.setState({component : <EC2
             size={this.change_EbsSize.bind(this)}
@@ -8555,7 +8580,7 @@ class CreateIns extends React.Component{
             alert("Plz input all data");
         }
         else{
-            console.log(this.state.ec2_data)
+            console.log(this.state)
             this.setState({showHide:!this.state.showHide,
                 ec2_data:{
                     BlockDeviceMappings: [{
