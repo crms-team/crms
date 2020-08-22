@@ -38,7 +38,7 @@ async function getAWSData(key){
         compute: await getAWSComputeData(key),
         network: await getAWSNetworkData(key),
         storage: await getAWSStorageData(key),
-        databaes: await getAWSDatabaseData(key)
+        database: await getAWSDatabaseData(key)
     }
 }
 
