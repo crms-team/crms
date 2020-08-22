@@ -10,6 +10,10 @@ const resourceIdKeys = {
     eip: resource => resource['AllocationId'],
     keyPair: resource => resource['KeyPairId'],
     
+    rds: resource => resource['DBInstanceIdentifier'],
+
+    s3: resource => resource['Name'],
+
     vpc: resource => resource['VpcId'],
     subnet: resource => resource['SubnetId'],
     securityGroup: resource => resource['GroupId'],
@@ -71,13 +75,18 @@ function compareResources(type, preData, nowData) {
         }
     }
 
-    return result
+    if (result.create == 0 && result.modify == 0 && result.remove ==0){
+        return undefined
+    } else {
+        return result
+    }
 }
 
 async function history(path, keyId, data, time) {
     let historyData = []
     let prevData = null
     let detail = {}
+    let check = true
 
     try { 
         let readHistory = fs.readFileSync(PATH.normalize(`${path}/data/${keyId}/history.json`))
@@ -92,15 +101,22 @@ async function history(path, keyId, data, time) {
         for (let resourceType in data[session]) {
             let nowResources = data[session][resourceType]
             let preResources = prevData != null ? prevData[session][resourceType]: []
-            detail[session][resourceType] = compareResources(resourceType, preResources, nowResources)                
+            let cpResource = compareResources(resourceType, preResources, nowResources)
+            if (cpResource != undefined) {
+                detail[session][resourceType] = cpResource
+            }
         }
+        check &= Object.keys(detail[session]).length == 0
     }
-    historyData.push({
-        time: time,
-        detail: detail
-    })
-
-    fs.writeFileSync(PATH.normalize(`${path}/data/${keyId}/history.json`), JSON.stringify(historyData))
+    
+    if (check) {
+        historyData.push({
+            time: time,
+            detail: detail
+        })
+    
+        fs.writeFileSync(PATH.normalize(`${path}/data/${keyId}/history.json`), JSON.stringify(historyData))    
+    }
 }
 
 async function saveData(path, keyId, keyVendor, keyData){

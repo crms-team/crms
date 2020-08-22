@@ -3,6 +3,12 @@ const network = require('./network')
 const database = require('./database')
 const storage = require('./storage')
 
+async function getAWSDatabaseData(key) {
+    return {
+        rds: await database.rds.default.get(key)
+    }
+}
+
 async function getAWSStorageData(key) {
     return {
         s3: await storage.s3.default.get(key)
@@ -31,7 +37,8 @@ async function getAWSData(key){
     return {
         compute: await getAWSComputeData(key),
         network: await getAWSNetworkData(key),
-        storage: await getAWSStorageData(key)
+        storage: await getAWSStorageData(key),
+        databaes: await getAWSDatabaseData(key)
     }
 }
 
