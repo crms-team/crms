@@ -15,16 +15,12 @@
     margin:2px;
 }
 
-.tooltip {
+.time{
     position: absolute;
-    background-color: white;
-    width: 300px;
-    height: auto;
-    padding: 15px;
-    border-style: solid;
-    border-radius: 4px;
-    border-width: 1px;
-    margin: 10px;
+    right:0;
+    bottom:0;
+    width:240px;
+    height: 60px;
 }
 
 circle.node {

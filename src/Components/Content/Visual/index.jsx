@@ -4,6 +4,17 @@ import * as d3 from 'd3';
 import './Visual.css'
 import { DataFormat, CreateVisualDataFormat } from "./resource";
 
+const resource_svg = {
+    ec2: "/images/compute.svg",
+    securitygroup: '/images/security_group.svg',
+    subnet: '/images/ec2-container-registry.svg',
+    vpc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png',
+    aws: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png',
+    ebs: '/images/ebs.svg',
+    rds: '/images/trans-line/rds.svg',
+    s3: '/images/storage.svg',
+    internetgateway: '/images/internet-gateway.svg'
+}
 
 class Visual extends Component {
     constructor(props) {
@@ -29,6 +40,7 @@ class Visual extends Component {
             let data = await response.json()
             result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
         }
+        console.log(result)
         return result
     }
 
@@ -56,7 +68,12 @@ class Visual extends Component {
                 var subnet = dataset.filter(item => item.type.toLowerCase() == "subnet")
                 var ec2 = dataset.filter(item => item.type.toLowerCase() == "ec2")
                 var ebs = dataset.filter(item => item.type.toLowerCase() == "ebs")
-                
+                var ig = dataset.filter(item=>item.type.toLowerCase() == "internetgateway")
+                var s3_group = dataset.filter(item=>item.type.toLowerCase() == "s3_group")
+                var s3 = dataset.filter(item=>item.type.toLowerCase() == "s3")
+                var rds_group = dataset.filter(item=>item.type.toLowerCase() == "rds_group")
+                var rds = dataset.filter(item=>item.type.toLowerCase() == "rds")
+
 
                 for (let tmp of cloud) {
                     tmp.children = [];
@@ -105,6 +122,38 @@ class Visual extends Component {
                             }
                             tmp.children.push(tmp_vpc);
                         }
+                        for(let tmp_ig of ig){
+                            if(tmp_vpc.id==tmp_ig.link[0]){
+                                tmp_vpc.children.push(tmp_ig)
+                            }
+                        }
+                        for(let tmp_rds_group of rds_group){
+                            tmp_rds_group.children=[]
+                            if(tmp_vpc.id==tmp_rds_group.link[0]){
+                                for(let tmp_rds of rds){
+                                    for(var i=0;i<tmp_rds.link.length;i++){
+                                        if(tmp_rds.link[i]==tmp_rds_group.id){
+                                            tmp_rds_group.children.push(tmp_rds)
+                                        }
+                                    }
+                                }
+                                tmp_vpc.children.push(tmp_rds_group)
+                            }
+                        }
+
+                    }
+                    for(let tmp_s3_group of s3_group){
+                        tmp_s3_group.children=[]
+                        if(tmp.id==tmp_s3_group.link[0]){
+                            for(let tmp_s3 of s3){
+                                for(var i=0;i<tmp_s3.link.length;i++){
+                                    if(tmp_s3.link[i]==tmp_s3_group.id){
+                                        tmp_s3_group.children.push(tmp_s3)
+                                    }
+                                }
+                            }
+                            tmp.children.push(tmp_s3_group)
+                        }
                     }
                     visualdata = visualdata.concat(tmp);
                 }
@@ -136,7 +185,7 @@ class Visual extends Component {
                 })
                 .append("g")
                 .attr("transform", "translate(40,0)")
-
+            
             svg.append("svg:defs").selectAll("marker")
                 .data(["end"])      // Different link/path types can be defined here
                 .enter().append("svg:marker")    // This section adds in the arrows
@@ -149,6 +198,19 @@ class Visual extends Component {
                 .attr("orient", "auto")
                 .append("svg:path")
                 .attr("d", "M0,-5L10,0L0,5");
+            
+            d3.select(".time")
+                .append("text")
+                .attr("text-anchor","middle")
+                .style("font-family", "NanumSquare")
+                .style("font-weight", "bold")
+                .style("font-size", "15px")
+                .style("color","white")
+                .text(function(){
+                    return new Date();
+                })
+            d3.select(".time").append("image")
+                .attr("xlink:href","https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR_5b8ZALQdHiE71A9ZKbXAL_tyAKGbr_X6wg&usqp=CAU")
 
             function zoomed() {
                 svg.attr("transform", d3.event.transform);
@@ -158,7 +220,7 @@ class Visual extends Component {
             simulation = d3.forceSimulation()
                 .alpha(0.5)
                 .alphaDecay(0.001)
-                .force("link", d3.forceLink(linkSvg).distance(300))
+                .force("link", d3.forceLink(linkSvg).distance(400))
                 .force("charge", d3.forceManyBody().strength(-2000))
                 .force("center", d3.forceCenter(width / 2 + 100, height / 2 + 100))
                 .on("tick", ticked);
@@ -264,21 +326,10 @@ class Visual extends Component {
                             return 50;
                         }
                     })
-                
+
                 nodeEnter.append("svg:image")
                     .attr("xlink:href", function (d) {
-                        if (d.data.type == "ec2")
-                            return "./../../../images/compute.svg";
-                        if (d.data.type == "securitygroup")
-                            return "./../../../images/security_group.svg";
-                        if (d.data.type == "subnet")
-                            return "./../../../images/ec2-container-registry.svg";
-                        if (d.data.type == "vpc")
-                            return "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png";
-                        if (d.data.type == "aws")
-                            return "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png";
-                        if (d.data.type == "ebs")
-                            return "/images/ebs.svg";
+                        return resource_svg[d.data.type]
                     })
                     .attr("x", function (d) { return -30; })
                     .attr("y", function (d) { return -35; })
@@ -402,15 +453,18 @@ class Visual extends Component {
             }
         }
     }
-
-    /*async*/ componentDidMount() {
+    /*
+    componentDidMount() {
         this.drawChart();
-        /*this.setState({ keyList: await this.getKeyData() })
+    }*/
+
+    async componentDidMount() {
+        this.setState({ keyList: await this.getKeyData() })
         this.setState({ dataset: await this.getVisualData() })
 
         if (this.state.dataset != undefined) {
             this.drawChart();
-        }*/
+        }
 
     }
 
@@ -429,11 +483,11 @@ class Visual extends Component {
                     </Modal.Header>
                     <Modal.Body>
                     </Modal.Body>
-                    <Modal.Footer>
-                    </Modal.Footer>
                 </Modal>
                 <svg className="Visual">
                 </svg>
+                <div className="time">
+                </div>
             </>
         );
     }
