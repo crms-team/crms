@@ -7,11 +7,13 @@ const vendors = {
 const resourceIdKeys = {
     ec2: resource => resource['Instances'][0]['InstanceId'],
     ebs: resource => resource['VolumeId'],
+    eip: resource => resource['AllocationId'],
     keyPair: resource => resource['KeyPairId'],
     
     vpc: resource => resource['VpcId'],
     subnet: resource => resource['SubnetId'],
-    securityGroup: resource => resource['GroupId']
+    securityGroup: resource => resource['GroupId'],
+    internetGateway: resource => resource['InternetGatewayId']
 } 
 
 function getLastDataFileName(path, keyId){
@@ -41,7 +43,6 @@ function compareResources(type, preData, nowData) {
 
     let preIdSet = new Set()
     let nowIdSet = new Set()
-
     let idFunc = resourceIdKeys[type]
 
     for (let resource of preData) {
@@ -52,7 +53,6 @@ function compareResources(type, preData, nowData) {
     
     for (let resource of nowData) {
         let id = idFunc(resource)
-        console.log(id)
         nowIdSet.add(id)
         xNowData[id] = resource
     }
@@ -82,7 +82,7 @@ async function history(path, keyId, data, time) {
     try { 
         let readHistory = fs.readFileSync(PATH.normalize(`${path}/data/${keyId}/history.json`))
         let lastFileName = getLastDataFileName(path, keyId)
-        prevData = fs.readFileSync(PATH.normalize(`${path}/data/${keyId}/log/${lastFileName}`))
+        prevData = JSON.parse(fs.readFileSync(PATH.normalize(`${path}/data/${keyId}/log/${lastFileName}`)).toString())
 
         historyData = JSON.parse(readHistory)
     } catch { }
@@ -92,10 +92,9 @@ async function history(path, keyId, data, time) {
         for (let resourceType in data[session]) {
             let nowResources = data[session][resourceType]
             let preResources = prevData != null ? prevData[session][resourceType]: []
-            detail[session][resourceType] = compareResources(resourceType, preResources, nowResources)            
+            detail[session][resourceType] = compareResources(resourceType, preResources, nowResources)                
         }
     }
-
     historyData.push({
         time: time,
         detail: detail
@@ -105,7 +104,8 @@ async function history(path, keyId, data, time) {
 }
 
 async function saveData(path, keyId, keyVendor, keyData){
-    try { 
+    try {
+        console.log(`${(new Date()).toLocaleString()} Start Scanning ${keyId}`) 
         let dataPath = PATH.normalize(`${path}/data/${keyId}/log`)    
         let data = await vendors[keyVendor].data.getAllData(keyData)
         createDataDict(dataPath)
@@ -115,6 +115,7 @@ async function saveData(path, keyId, keyVendor, keyData){
         
         history(path, keyId, data, time)
         fs.writeFileSync(PATH.normalize(`${dataPath}/${fileName}`), JSON.stringify(data))
+        console.log(`${(new Date()).toLocaleString()} Success Scanning ${keyId}`) 
     } catch (e) {
         console.log(e)
         console.log("saveData function Error")

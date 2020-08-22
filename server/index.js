@@ -30,11 +30,11 @@ const PORT = server.config.server_port
 server.keys = require('./system').key
 
 // logging
-//system.log.logger(server.config.path)
+system.log.logger(server.config.path)
 
 server.use(cors())
 server.use(bodyParser.json())
 require('./api')(server)
 server.listen(PORT, ()=>{
-    console.log('>> Statr Node Server 0.0.0.0:' + PORT)
+    console.log('>> Start Node Server 0.0.0.0:' + PORT)
 })

@@ -16,7 +16,8 @@ async function getAWSNetworkData(key) {
     return {
         vpc: await network.vpc.default.get(key),
         subnet: await network.subnet.default.get(key),
-        securityGroup: await network.securityGroup.default.get(key)
+        securityGroup: await network.securityGroup.default.get(key),
+        internetGateway: await network.internetGateway.default.get(key)
     }
 }
 
