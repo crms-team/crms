@@ -24,8 +24,6 @@ class Board extends Component{
                 <Content/>
                 <Sidebar/>
 
-                <Test1 count={this.state.count} />
-                <Test2 count_func={this.setCount} count={this.state.count} />
             </main>
         );
     }
