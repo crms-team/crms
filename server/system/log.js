@@ -1,7 +1,7 @@
 const crms = require('../../crms')
 const key = require('./key')
 
-async function logger (path) {
+async function logger(path) {
     setInterval(()=>{
         let keys = key.getKeyData(path)
         for (let id in keys) {

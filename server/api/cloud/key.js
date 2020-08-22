@@ -95,11 +95,10 @@ module.exports = server => {
     {
         server.get('/api/cloud/key/list', (req, res) => {
             let key_data = key_module.getKeyData(server.config.path)
-
-            let options = Array.from(req.query.options)
             let keys = []
 
-            if (options != []) {
+            if (req.query.options) {
+                let options = Array.from(req.query.options)
                 for (let key in key_data) {
                     let data = {}
                     for (let option of options){

@@ -1,12 +1,6 @@
 const fs = require('fs')
+const PATH = require('path')
 const crms = require('../../../crms')
-
-function getLastDataFileName(path, keyId){
-    let dataDict = `${path}/data/${keyId}`
-    let list = fs.readdirSync(dataDict).sort()
-
-    return list[list.length - 1]
-}
 
 function getType(vendor, resource){
     let types = Object.keys(crms[vendor]['session'])
@@ -82,11 +76,11 @@ module.exports = server => {
                 await crms.data.saveData(server.config.path, keyId, vendor, keys[keyId].keys)
             }                 
             
-            let dataFile = getLastDataFileName(server.config.path, keyId)
+            let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
             res.send({
                 result: true,
                 vendor: vendor, 
-                data: JSON.parse(fs.readFileSync(`${server.config.path}/data/${keyId}/${dataFile}`))
+                data: JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
             })
 
         })
@@ -108,8 +102,8 @@ module.exports = server => {
             }
 
             if (apiType){
-                let dataFile = getLastDataFileName(server.config.path, keyId)
-                let data = JSON.parse(fs.readFileSync(`${server.config.path}/data/${keyId}/${dataFile}`))
+                let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
+                let data = JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
 
                 res.send({
                     result: true,

@@ -1,30 +1,32 @@
 const fs = require('fs')
+const PATH = require('path')
 
 module.exports = {
-    createKeyData: function (path) {
-        fs.mkdir(`${path}/data`, ()=>{})
+    createKeyData: function(path) {
+        fs.mkdir(PATH.normalize(`${path}/data`), () => {})
+        fs.mkdir(PATH.normalize(`${path}/data/log`), () => {})
         return this.setKeyData(path, {})
     },
-    getKeyData: function (path) {
+    getKeyData: function(path) {
         try {
-            return JSON.parse(fs.readFileSync(`${path}/data/key_data.json`))
+            return JSON.parse(fs.readFileSync(PATH.normalize(`${path}/data/key_data.json`)))
         } catch {
             console.log('getKeyData function Error')
             return false
         }
     },
-    setKeyData: function (path, data) {
+    setKeyData: function(path, data) {
         try {
-            fs.writeFileSync(`${path}/data/key_data.json`, JSON.stringify(data))
+            fs.writeFileSync(PATH.normalize(`${path}/data/key_data.json`), JSON.stringify(data))
             return true
         } catch {
             console.log('setKeyData function Error')
             return false
         }
     },
-    existsKeyData: function (path) {
+    existsKeyData: function(path) {
         try {
-            fs.statSync(`${path}/data/key_data.json`)
+            fs.statSync(PATH.normalize(`${path}/data/key_data.json`))
             return true
         } catch {
             return false
