@@ -12,7 +12,7 @@ async function logger(path) {
     scanning(path)
     setInterval(()=>{
         scanning(path)
-    }, 1000 * 60)
+    }, 1000 * 60 * 60)
 }
 
 module.exports = {
