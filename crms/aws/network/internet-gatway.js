@@ -1,5 +1,3 @@
-
-
 const AWS = require('aws-sdk')
 
 async function describeInternetGateways(key, args=undefined) {
