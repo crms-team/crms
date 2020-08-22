@@ -1,4 +1,6 @@
 const key_module = require('../../system').key
+const fs = require('fs')
+const PATH = require('path')
 
 function isKeyFormat(vendor, keys){
     switch (vendor) {
@@ -28,6 +30,9 @@ function setKeyFunc(path, key_id, vendor, keys) {
     if (!key_module.setKeyData(path, data)){
         return {result: false, msg: 'Set Key Error'}
     }
+
+    fs.mkdirSync(PATH.normalize(`${path}/data/${key_id}`))
+
     return {result: true}
 }
 

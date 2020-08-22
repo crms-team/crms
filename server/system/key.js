@@ -4,7 +4,6 @@ const PATH = require('path')
 module.exports = {
     createKeyData: function(path) {
         fs.mkdir(PATH.normalize(`${path}/data`), () => {})
-        fs.mkdir(PATH.normalize(`${path}/data/log`), () => {})
         return this.setKeyData(path, {})
     },
     getKeyData: function(path) {

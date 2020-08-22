@@ -29,14 +29,14 @@ class Visual extends Component {
     }
 
     async getKeyData() {
-        let response = await (await fetch("http://192.168.35.253:4000/api/cloud/key/list")).json()
+        let response = await (await fetch("http://localhost:4000/api/cloud/key/list")).json()
         return response.keys
     }
 
     async getVisualData() {
         let result = []
         for (let key in this.state.keyList) {
-            let response = await fetch(`http://192.168.35.253:4000/api/cloud/data?key_id=${key}`)
+            let response = await fetch(`http://localhost:4000/api/cloud/data?key_id=${key}`)
             let data = await response.json()
             result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
         }

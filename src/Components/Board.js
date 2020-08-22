@@ -1,8 +1,6 @@
 import React,{Component} from 'react';
 import Content from './Content/Content'
 import Sidebar from './Sidebar/Sidebar'
-import Test1 from './test1/test1'
-import Test2 from './test1/test2'
 
 import './Board.css';
 import { connect } from 'react-redux';

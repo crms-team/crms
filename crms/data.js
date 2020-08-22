@@ -87,14 +87,17 @@ async function history(path, keyId, data, time) {
     let prevData = null
     let detail = {}
     let check = true
+    let historyPath = PATH.normalize(`${path}/data/${keyId}/history.json`)
 
     try { 
-        let readHistory = fs.readFileSync(PATH.normalize(`${path}/data/${keyId}/history.json`))
+        let readHistory = fs.readFileSync(historyPath)
         let lastFileName = getLastDataFileName(path, keyId)
         prevData = JSON.parse(fs.readFileSync(PATH.normalize(`${path}/data/${keyId}/log/${lastFileName}`)).toString())
 
         historyData = JSON.parse(readHistory)
-    } catch { }
+    } catch {
+        fs.closeSync(fs.openSync(historyPath, 'w'))
+     }
 
     for (let session in data) { 
         detail[session] = {}
@@ -114,8 +117,8 @@ async function history(path, keyId, data, time) {
             time: time,
             detail: detail
         })
-    
-        fs.writeFileSync(PATH.normalize(`${path}/data/${keyId}/history.json`), JSON.stringify(historyData))    
+
+        fs.writeFileSync(historyPath, JSON.stringify(historyData))    
     }
 }
 
