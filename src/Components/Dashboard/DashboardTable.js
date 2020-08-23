@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './DashboardTable.scss';
+import './dashboardTable.scss';
 
 const DashboardTable = () => {
     return (

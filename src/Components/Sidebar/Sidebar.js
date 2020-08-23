@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Route,Link} from 'react-router-dom';
-import './Sidebar.scss';
+import './sidebar.scss';
 import { 
     FiSettings, 
     FiCreditCard, 

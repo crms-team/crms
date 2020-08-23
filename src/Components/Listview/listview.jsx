@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Sidemenu from '../Sidemenu/Sidemenu';
-import Table from './Table';
+import Sidemenu from '../sidemenu/sidemenu';
+import Table from './table';
 
 class Listview extends Component{
     constructor(props){

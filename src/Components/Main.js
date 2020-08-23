@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import './Main.css';
-import Form from './Form/Form';
-import Card from './Card/Card';
+import './main.css';
+import Form from './form/form';
+import Card from './card/card';
 
 class Main extends Component{
     

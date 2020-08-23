@@ -1,10 +1,8 @@
 import React,{Component} from 'react';
-import Content from './Content/Content'
-import Sidebar from './Sidebar/Sidebar'
-
-import './Board.css';
+import Content from './content/content'
+import './board.css';
 import { connect } from 'react-redux';
-import Sidemenu from './Sidemenu/Sidemenu';
+import Sidemenu from './sidemenu/sidemenu';
 
 class Board extends Component{
     constructor (props) {
