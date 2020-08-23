@@ -80,6 +80,7 @@ module.exports = server => {
             res.send({
                 result: true,
                 vendor: vendor, 
+                time: dataFile.split('.json')[0],
                 data: JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
             })
 
