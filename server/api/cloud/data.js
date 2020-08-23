@@ -154,13 +154,82 @@ module.exports = server => {
                     msg: "this not support resource api"
                 })
             }
+        })
+
+        
+        server.put("/api/cloud/data/:resource", async (req, res) => {
+            let keyId = req.body.key_id
+            let params = req.body.parms
+            let vendor = req.params.vendor
+            let resource = req.params.resource
+            let resourceType = getType(vendor, resource)
+            let keys = server.keys.getKeyData(server.config.path)
+            let checkParms = checkCrmsParms(keyId, resourceType, keys, vendor)
+            
+            if (checkParms) {
+                res.send(checkParms)
+                return 
+            }
+
+            let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['put']
+
+            if (crmsFunction) {
+                try {
+                    crmsFunction(keys[keyId].keys, params)
+                    res.send({
+                        result: true
+                    })
+                } catch {
+                    res.send({
+                        result: false,
+                        msg: "API Error"
+                    })
+                }
+            } else {
+                res.send({
+                    result: false,
+                    msg: "this not support resource api"
+                })
+            }
 
         })
-    }
 
-    {
-        server.get("/api/cloud/data/list/:resource", (req, res) => {
+        server.delete("/api/cloud/data/:resource", async (req, res) => {
+            let keyId = req.body.key_id
+            let params = req.body.parms
+            let vendor = req.params.vendor
+            let resource = req.params.resource
+            let resourceType = getType(vendor, resource)
+            let keys = server.keys.getKeyData(server.config.path)
+            let checkParms = checkCrmsParms(keyId, resourceType, keys, vendor)
+            
+            if (checkParms) {
+                res.send(checkParms)
+                return 
+            }
+
+            let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['delete']
+
+            if (crmsFunction) {
+                try {
+                    crmsFunction(keys[keyId].keys, params)
+                    res.send({
+                        result: true
+                    })
+                } catch {
+                    res.send({
+                        result: false,
+                        msg: "API Error"
+                    })
+                }
+            } else {
+                res.send({
+                    result: false,
+                    msg: "this not support resource api"
+                })
+            }
 
         })
+
     }
 }
