@@ -1,8 +1,8 @@
 import React,{Component} from 'react';
 import './content.css';
-import Visual from './visual';
-import Commit from './commit/commit';
-import CreateIns from './createIns/createIns';
+import Visual from './visualization';
+import Commit from './commit';
+import CreateIns from './create-instance';
 import info from './information/info'
 import {Route} from 'react-router-dom'
 

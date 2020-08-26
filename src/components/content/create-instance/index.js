@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {Button,Modal,ListGroup,Tab,Row,Col,Form,Pagination} from 'react-bootstrap';
-import './createIns.css';
+import './create-instance.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const amiData = {

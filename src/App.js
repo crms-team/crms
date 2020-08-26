@@ -1,10 +1,10 @@
 import React,{Component} from 'react';
-import Board from './Components/board';
+import Board from './components/board';
 import './App.css';
-import Main from './Components/main';
-import Detail from './Components/detail/detail';
-import Listview from './Components/listview/listview';
-import Dashboard from './Components/dashboard/dashboard';
+import Main from './components/main';
+import Detail from './components/detail/detail';
+import Listview from './components/list-view/list-view';
+import Dashboard from './components/dashboard/dashboard';
 
 class App extends Component{
   render(){
