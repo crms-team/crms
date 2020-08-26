@@ -5,10 +5,12 @@
     height: 50px;
     background-color: yellow!;
     position: absolute;
+    overflow: hidden;
 }
 
 .fade.modal.show{
     background: #202024a4;
+    overflow: hidden;
 }
 
 div .modal-content{
@@ -41,6 +43,9 @@ div .modal-content{
     text-shadow: none;
 }
 .modal-body{
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 600px;
     color : #cfcfcf;
 }
 

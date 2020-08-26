@@ -14,6 +14,9 @@ class S3 extends CloudResourceDataFormat{
         this.name = name 
 
         this.data = {
+            Name:data.Name,
+            CreationDate:data.CreationDate,
+            State:""
         }
 
         this.link.push(`${this.keyId}:s3_group`)

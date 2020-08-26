@@ -79,7 +79,8 @@ module.exports = server => {
             let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
             res.send({
                 result: true,
-                vendor: vendor, 
+                vendor: vendor,
+                time: dataFile.split('.json')[0],
                 data: JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
             })
 

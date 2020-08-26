@@ -3,18 +3,9 @@ import {Button,Modal,ListGroup,Tab,Row,Col,Form,Pagination} from 'react-bootstra
 import * as d3 from 'd3';
 import './Visual.css'
 import { DataFormat, CreateVisualDataFormat } from "./resource";
-
-const resource_svg = {
-    ec2: "/images/compute.svg",
-    securitygroup: '/images/security_group.svg',
-    subnet: '/images/ec2-container-registry.svg',
-    vpc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png',
-    aws: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png',
-    ebs: '/images/ebs.svg',
-    rds: '/images/trans-line/rds.svg',
-    s3: '/images/storage.svg',
-    internetgateway: '/images/internet-gateway.svg'
-}
+import MInfo from './modal/info'
+import MButton from './modal/button'
+import { resourceSvg, resourceState } from './resource-params'
 
 class Visual extends Component {
     constructor(props) {
@@ -23,9 +14,13 @@ class Visual extends Component {
         this.state = {
             dataset: undefined,
             keyList: undefined,
-            showHide: false
+            time: undefined,
+            isFirst: true,
+            showHide: false,
+            instanceData: undefined,
         }
         this.drawChart=this.drawChart.bind(this);
+        this.setState = this.setState.bind(this)
     }
 
     async getKeyData() {
@@ -33,22 +28,21 @@ class Visual extends Component {
         return response.keys
     }
 
-    async getVisualData() {
+    async getVisualData(type=undefined) {
         let result = []
         for (let key in this.state.keyList) {
-            let response = await fetch(`http://localhost:4000/api/cloud/data?key_id=${key}`)
+            let ep = `http://localhost:4000/api/cloud/data?key_id=${key}` + (type ? `&type=${type}`: '')
+            let response = await fetch(ep)
             let data = await response.json()
+            this.setState({time: data.time})
             result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
         }
-        console.log(result)
         return result
     }
 
     handleModalShowHide(){
         this.setState({showHide:!this.state.showHide});
     }
-
-
 
     drawChart() {
         if (this.state.dataset != undefined) {
@@ -169,11 +163,7 @@ class Visual extends Component {
             }
 
             var root = d3.hierarchy(aroot);
-
             var i = 0;
-
-            var transform = d3.zoomIdentity;
-
             var nodeSvg, linkSvg, simulation, nodeEnter, linkEnter;
 
             var svg = d3.select("svg")
@@ -183,8 +173,7 @@ class Visual extends Component {
                 .on("contextmenu", function (d, i) {
                     d3.event.preventDefault();
                 })
-                .append("g")
-                .attr("transform", "translate(40,0)")
+                .select("g")
             
             svg.append("svg:defs").selectAll("marker")
                 .data(["end"])      // Different link/path types can be defined here
@@ -199,18 +188,6 @@ class Visual extends Component {
                 .append("svg:path")
                 .attr("d", "M0,-5L10,0L0,5");
             
-            d3.select(".time")
-                .append("text")
-                .attr("text-anchor","middle")
-                .style("font-family", "NanumSquare")
-                .style("font-weight", "bold")
-                .style("font-size", "15px")
-                .style("color","white")
-                .text(function(){
-                    return new Date();
-                })
-            d3.select(".time").append("image")
-                .attr("xlink:href","https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR_5b8ZALQdHiE71A9ZKbXAL_tyAKGbr_X6wg&usqp=CAU")
 
             function zoomed() {
                 svg.attr("transform", d3.event.transform);
@@ -229,7 +206,7 @@ class Visual extends Component {
             
             update(stateFunc,this.state);
 
-            function update(stateFunc,prestate) {
+            function update(stateFunc, preState) {
                 
                 var nodes = flatten(root);
                 var links = root.links();
@@ -286,10 +263,10 @@ class Visual extends Component {
                                         return "1";
                                 }
                             }
-                            if (d.id == thislink.data.link || d.id == thisNode)
+                            if (d.id == thislink.data.link[i] || d.id == thisNode)
                                 return "1";
                             else
-                                return "0.2";
+                                return "0.1";
                         });
                     })
                     .on("mouseout", function (d) {
@@ -298,7 +275,34 @@ class Visual extends Component {
                     })
                     .on("contextmenu", function (d) {
                         d3.event.preventDefault();
-                        stateFunc({showHide:!prestate.showHide})       
+                        if (d.children) {
+                            var check = 0;
+                            if (d.data.type == "subnet") {
+                                for (var i = 0; i < d.children.length; i++) {
+                                    for (var j = 0; j < d.children[i].data.link.length; j++) {
+                                        if (d.children[i].data.link[j].includes(":securitygroup:")) {
+                                            d.data.link.push(d.children[i].data.link[j]);
+                                            check++;
+                                        }
+                                    }
+                                }
+                            }
+                            d._children = d.children;
+                            d.children = null;
+                            update();
+                            simulation.restart();
+                            if (check != 0) {
+                                for (var i = 0; i < check; i++) {
+                                    d.data.link.pop();
+                                }
+                            }
+                        } else {
+                            d.children = d._children;
+                            d._children = null;
+                            update();
+                            simulation.restart();
+                        }
+                        
                     })
                     .call(d3.drag()
                         .on("start", dragstarted)
@@ -306,7 +310,20 @@ class Visual extends Component {
                         .on("end", dragended))
 
                 nodeEnter.append("circle")
-                    .attr("stroke", "#ffc14d")
+                    .attr("stroke", function(d){
+                        let data = d.data
+                        let rType = d.data.type
+                        try { 
+                            let status = resourceState[rType](data.data)
+                            if(rType=="ebs"){
+                                status-=6;
+                            }
+                            let colors = ["blue","gray","#ff7f00","gray","red","green"]    
+                            return colors[status]
+                        } catch (e) {
+                            return "#ffc14d"
+                        }
+                    })
                     .attr("stroke-width", "3")
                     .attr("fill", "none")
                     .attr("r", function (d) {
@@ -329,13 +346,24 @@ class Visual extends Component {
 
                 nodeEnter.append("svg:image")
                     .attr("xlink:href", function (d) {
-                        return resource_svg[d.data.type]
+                        if (d.data.type == "ec2")
+                        return "/images/compute.svg";
+                        if (d.data.type == "securitygroup")
+                            return "/images/security_group.svg";
+                        if (d.data.type == "subnet")
+                            return "/images/ec2-container-registry.svg";
+                        if (d.data.type == "vpc")
+                            return "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png";
+                        if (d.data.type == "aws")
+                            return "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png";
+                        if (d.data.type == "ebs")
+                            return "/images/ebs.svg";
                     })
                     .attr("x", function (d) { return -30; })
                     .attr("y", function (d) { return -35; })
                     .attr("height", 60)
                     .attr("width", 60)
-                    .on("click", click);
+                    .on("click", (d)=>{click(d, stateFunc, preState)});
 
                 nodeEnter.append("text")
                     .attr("dy", 33)
@@ -349,12 +377,6 @@ class Visual extends Component {
                     });
 
                 nodeSvg = nodeEnter.merge(nodeSvg);
-
-                var addresshow = d3.select(".add_res");
-                var resnoshow = addresshow.select("#cancel");
-                resnoshow.on("click", function () {
-                    addresshow.style("display", "none");
-                })
 
                 simulation
                     .nodes(nodes)
@@ -393,35 +415,14 @@ class Visual extends Component {
                         return "translate(" + d.x + ", " + d.y + ")";
                     });
             }
-
-            function click(d) {
-                if (d.children) {
-                    var check = 0;
-                    if (d.data.type == "subnet") {
-                        for (var i = 0; i < d.children.length; i++) {
-                            for (var j = 0; j < d.children[i].data.link.length; j++) {
-                                if (d.children[i].data.link[j].includes(":securitygroup:")) {
-                                    d.data.link.push(d.children[i].data.link[j]);
-                                    check++;
-                                }
-                            }
-                        }
-                    }
-                    d._children = d.children;
-                    d.children = null;
-                    update();
-                    simulation.restart();
-                    if (check != 0) {
-                        for (var i = 0; i < check; i++) {
-                            d.data.link.pop();
-                        }
-                    }
-                } else {
-                    d.children = d._children;
-                    d._children = null;
-                    update();
-                    simulation.restart();
-                }
+            
+            const clickFunc=stateFunc.bind(this);
+            
+            function click(d,clickFunc, preState) {
+                clickFunc({
+                    instanceData:d.data,
+                    showHide:!preState.showHide
+                })
             }
 
             function dragstarted(d) {
@@ -453,17 +454,14 @@ class Visual extends Component {
             }
         }
     }
-    /*
-    componentDidMount() {
-        this.drawChart();
-    }*/
 
     async componentDidMount() {
         this.setState({ keyList: await this.getKeyData() })
         this.setState({ dataset: await this.getVisualData() })
 
-        if (this.state.dataset != undefined) {
+        if (this.state.isFirst) {
             this.drawChart();
+            this.setState({isFirst: false})
         }
 
     }
@@ -477,16 +475,24 @@ class Visual extends Component {
                     dialogClassName="width :50%"
                     dialogClassName="height:50%"
                     centered
+                    scrollable={true}
                 >
                     <Modal.Header closeButton onClick={() => this.handleModalShowHide()}>
-                    <Modal.Title>Information</Modal.Title>
+                    <Modal.Title>{this.state.instanceData ? this.state.instanceData.type : ''}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body >
+                        <MInfo data={this.state.instanceData}/>
                     </Modal.Body>
+                    <Modal.Footer>
+                        <MButton data={this.state.instanceData}/>
+                    </Modal.Footer>
                 </Modal>
                 <svg className="Visual">
+                    <g></g>
                 </svg>
                 <div className="time">
+                    <h className="timetext">{this.state.time}</h>
+                    <button className="refresh" onClick={async ()=>{this.setState({ dataset: await this.getVisualData('data') }); this.drawChart()}}></button>
                 </div>
             </>
         );

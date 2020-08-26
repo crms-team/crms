@@ -12,7 +12,7 @@ class SecurityGroup extends CloudResourceDataFormat{
         this.data = {
             IpPermissions:data.IpPermissions,
             IpPermissionsEngress:data.IpPermissionsEngress,
-            VpcId:data.VpcId,
+            VpcId:data.VpcId
         }       
 
         let securityGroupsId = this.makeId('securitygroups', data.VpcId)
@@ -40,10 +40,14 @@ class Subnet extends CloudResourceDataFormat{
 
         this.data = {
             AvailabilityZone: data.AvailabilityZone,
-            AvailabilityZoneId: data.AvailabilityZoneId,
+            AvailableIpAddressCount:data.AvailableIpAddressCount,
             CidrBlock : data.CidrBlock,
+            MapPublicIpOnLaunch:data.MapPublicIpOnLaunch,
             State: data.State,
             Ipv6CidrBlockAssociationSet: data.Ipv6CidrBlockAssociationSet,
+            SubnetId:data.SubnetId,
+            VpcId:data.VpcId,
+            Tags:data.Tags,
             SubnetArn: data.SubnetArn
         }       
 
@@ -85,7 +89,8 @@ class VPC extends CloudResourceDataFormat{
             InstanceTenancy: data.InstanceTenancy,
             Ipv6CidrBlockAssociationSet: data.Ipv6CidrBlockAssociationSet,
             CidrBlockAssociationSet: data.CidrBlockAssociationSet,
-            IsDefault: data.IsDefault
+            IsDefault: data.IsDefault,
+            Tags:data.Tags
         }       
 
         // add link Cloud (root)
@@ -113,6 +118,9 @@ class InternetGateway extends CloudResourceDataFormat{
         this.name = name === undefined ? data.InternetGatewayId : name        
 
         this.data = {
+            State:data.Attachments[0].State, // 원래 배열이니까 바꿔야함
+            InternetGatewayId:data.InternetGatewayId,
+            Tags:data.Tags
         }       
         
         for (let vpc of data.Attachments) {

@@ -14,8 +14,20 @@ class RDS extends CloudResourceDataFormat{
         this.name = name
 
         this.data = {
+            DBInstanceIdentifier:data.DBInstanceIdentifier,
+            DBInstanceClass:data.DBInstanceClass,
+            Engine:data.Engine,
+            DBInstanceStatus:data.DBInstanceStatus,
+            AllocatedStorage: data.AllocatedStorage,
+            AvailabilityZone:data.AvailabilityZone,
+            DeletionProtection:data.DeletionProtection,
+            LatestRestorableTime:data.LatestRestorableTime,
+            MultiAZ:data.MultiAZ,
+            PubliclyAccessible:data.PubliclyAccessible,
+            StorageType:data.StorageType,
+            DbInstancePort:data.DbInstancePort,
+            StorageEncrypted:data.StorageEncrypted
         }
-
         
         for (let sg of data.VpcSecurityGroups) {
             this.link.push(this.makeId('securitygroup', sg.VpcSecurityGroupId))
