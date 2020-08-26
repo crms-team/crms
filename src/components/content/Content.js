@@ -10,9 +10,9 @@ class Content extends Component{
     render(){
         return(
             <div className="Content">
-                <Route exact path="/" component={Visual}/>
-                <Route exact path="/" component={Commit}/>
-                <Route exact path="/" component={CreateIns}/>
+                <Visual/>
+                <Commit/>
+                <CreateIns/>
                 <Route exact path="/info" component={info}/>
             </div>
         );
