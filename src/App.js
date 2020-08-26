@@ -4,7 +4,7 @@ import './App.css';
 import Main from './components/main';
 import Detail from './components/detail/detail';
 import Listview from './components/list-view/list-view';
-import Dashboard from './components/dashboard/dashboard';
+import Dashboard from './components/dashboard';
 
 class App extends Component{
   render(){
