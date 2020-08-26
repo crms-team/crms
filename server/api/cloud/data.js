@@ -34,7 +34,7 @@ function checkKeyParms(keyId, keys) {
     return undefined
 }
 
-function checkCrmsParms(keyId, resourceType, keys, vendor) {
+function checkCrmsParams(keyId, resourceType, keys, vendor) {
     let checkParms = checkKeyParms(keyId, keys)
 
     if (checkParms) {
@@ -95,7 +95,7 @@ module.exports = server => {
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
             let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParms(keyId, resourceType, keys, vendor)
+            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
 
             if (checkParms) {
                 res.send(checkParms)
@@ -127,7 +127,7 @@ module.exports = server => {
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
             let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParms(keyId, resourceType, keys, vendor)
+            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
             
             if (checkParms) {
                 res.send(checkParms)
@@ -164,9 +164,10 @@ module.exports = server => {
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
             let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParms(keyId, resourceType, keys, vendor)
+            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
             
             if (checkParms) {
+                
                 res.send(checkParms)
                 return 
             }
@@ -196,12 +197,12 @@ module.exports = server => {
 
         server.delete("/api/cloud/data/:resource", async (req, res) => {
             let keyId = req.body.key_id
-            let params = req.body.parms
+            let params = req.body.params
             let vendor = req.params.vendor
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
             let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParms(keyId, resourceType, keys, vendor)
+            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
             
             if (checkParms) {
                 res.send(checkParms)
