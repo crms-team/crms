@@ -2,7 +2,7 @@ import React from 'react';
 // import PropTypes from 'utils/propTypes';
 
 import { Card, CardText, CardTitle, Progress } from 'reactstrap';
-import Typography from './Typography';
+import Typography from './typography';
 
 const NumberWidget = ({
   title,

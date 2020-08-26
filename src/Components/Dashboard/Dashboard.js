@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Sidemenu from '../Sidemenu/Sidemenu';
-import  './Dashboard.scss';
-import DashboardTable from './DashboardTable';
-import NumberWidget from './NumberWidget';
+import Sidemenu from '../sidemenu/sidemenu';
+import  './dashboard.scss';
+import DashboardTable from './dashboardTable';
+import NumberWidget from './numberWidget';
 import { Line as LineChart } from "react-chartjs-2";
 
 function chartData() {

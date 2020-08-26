@@ -1,17 +1,17 @@
 import React,{Component} from 'react';
-import Board from './Components/Board';
+import Board from './Components/board';
 import './App.css';
-import Main from './Components/Main';
-import Detail from './Components/Detail/Detail';
-import Listview from './Components/Listview/Listview';
-import Dashboard from './Components/Dashboard/Dashboard';
+import Main from './Components/main';
+import Detail from './Components/detail/detail';
+import Listview from './Components/listview/listview';
+import Dashboard from './Components/dashboard/dashboard';
 
 class App extends Component{
   render(){
     return(
       <div className="App">
-        {/* <Main/> */}
-        <Board/>
+        <Main/>
+        {/* <Board/> */}
         {/* <Detail /> */}
         {/* <Listview /> */}
         {/* <Dashboard/> */}

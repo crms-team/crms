@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Button,Modal,ListGroup,Tab,Row,Col,Form,Pagination} from 'react-bootstrap';
 import * as d3 from 'd3';
-import './Visual.css'
+import './visual.css'
 import { DataFormat, CreateVisualDataFormat } from "./resource";
 import MInfo from './modal/info'
 import MButton from './modal/button'

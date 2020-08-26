@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './Detail.scss';
-import Sidemenu from '../Sidemenu/Sidemenu';
+import './detail.scss';
+import Sidemenu from '../sidemenu/sidemenu';
 
 const tabName = ['개요','서브넷','포트'];
 

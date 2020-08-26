@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Sidemenu.scss';
+import './sidemenu.scss';
 import { 
     FiSettings, 
     FiCreditCard, 

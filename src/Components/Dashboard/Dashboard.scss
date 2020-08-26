@@ -9,10 +9,10 @@ $lightText : #9298b1;
     width: 100%;
     position: relative;
     height: 100%;
-    
 }
 
 .board-container{
+    
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -68,4 +68,10 @@ NumberWidget + NumberWidget{
 
 .progress{
     background-color: #353741;
+    width: 100%;
+}
+
+.justify-content-between{
+    width: 100%;
+    justify-content: space-between !important;
 }
