@@ -3,7 +3,7 @@ const PATH = require('path')
 
 module.exports = {
     createKeyData: function(path) {
-        fs.mkdir(PATH.normalize(`${path}/data`), () => {})
+        fs.mkdir(PATH.normalize(`${path}/data`), {recursive: true}, () => {})
         return this.setKeyData(path, {})
     },
     getKeyData: function(path) {

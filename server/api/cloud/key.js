@@ -31,7 +31,7 @@ function setKeyFunc(path, key_id, vendor, keys) {
         return {result: false, msg: 'Set Key Error'}
     }
 
-    fs.mkdirSync(PATH.normalize(`${path}/data/${key_id}`))
+    fs.mkdirSync(PATH.normalize(`${path}/data/${key_id}`), {recursive: true})
 
     return {result: true}
 }

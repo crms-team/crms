@@ -53,9 +53,23 @@ function chartData() {
   
     constructor(props) {
       super(props)
+
       this.state = {
-        data: chartData()
+        data: chartData(),
+        statusData: undefined
       }
+    }
+
+    async componentDidMount(){
+        let statusData = await fetch(`http://localhost:4000/api/dashboard`).then(res=>res.json())
+        this.setState({statusData: statusData['data']})
+    }
+
+    getResourceStatusData(resource, type=undefined){
+        if (type){
+            return this.state.statusData ? this.state.statusData[resource][0] + "/" + this.state.statusData[resource][1] : "loading"
+        }
+        return this.state.statusData && this.state.statusData[resource][1] != 0? this.state.statusData[resource][0] / this.state.statusData[resource][1] * 100 : 0
     }
   
     render() {
@@ -70,35 +84,37 @@ function chartData() {
                             <NumberWidget 
                                 className="compute surver"
                                 title = "Server"
-                                number = "1"
+                                number = { this.getResourceStatusData('server', true) }
                                 progress = {{
-                                    value : 50,
+                                    value : this.getResourceStatusData('server'),
                                     label : 'compute'
                                 }}
                             />
                             <NumberWidget 
                                 className="compute volume"
                                 title = "Volume"
-                                number = "20개"
+                                number = {this.getResourceStatusData('volume', true)}
                                 progress = {{
-                                    value : 20,
-                                    label : 'compute'
+                                    value : this.getResourceStatusData('volume'),
+                                    label : 'Volume'
                                 }}
                             />
                             <NumberWidget 
                                 className="compute ip"
                                 title = "IP"
+                                number = {this.getResourceStatusData('ip', true)}
                                 progress = {{
-                                    value : 10,
-                                    label : 'compute'
+                                    value : this.getResourceStatusData('ip'),
+                                    label : 'IP'
                                 }}
                             />
                             <NumberWidget 
                                 className="compute key-pair"
                                 title = "Key Pair"
+                                number = {this.getResourceStatusData('keyPair', true)}
                                 progress = {{
-                                    value : 25,
-                                    label : 'compute'
+                                    value : this.getResourceStatusData('keyPair'),
+                                    label : 'keyPair'
                                 }}
                             />
                         </div>
@@ -108,8 +124,9 @@ function chartData() {
                             <NumberWidget 
                                     className="database db"
                                     title = "Database"
+                                    number = {this.getResourceStatusData('database', true)}
                                     progress = {{
-                                        value : 90,
+                                        value : this.getResourceStatusData('database'),
                                         label : 'database'
                                     }}
                             />
@@ -118,27 +135,30 @@ function chartData() {
                     <div className="resource storage">
                         <div className="compute-list">
                             <NumberWidget 
-                                    className="storage vpc"
+                                    className="network vpc"
                                     title = "VPC"
+                                    number = {this.getResourceStatusData('vpc', true)}
                                     progress = {{
-                                        value : 90,
-                                        label : 'storage'
+                                        value : this.getResourceStatusData('vpc'),
+                                        label : 'VPC'
                                     }}
                             />
                             <NumberWidget 
-                                    className="storage subnet"
+                                    className="network subnet"
                                     title = "Subnet"
+                                    number = {this.getResourceStatusData('subnet', true)}
                                     progress = {{
-                                        value : 5,
-                                        label : 'storage'
+                                        value : this.getResourceStatusData('subnet'),
+                                        label : 'Subnet'
                                     }}
                             />
                             <NumberWidget 
-                                    className="storage security-group"
+                                    className="network security-group"
                                     title = "Security Group"
+                                    number = {this.getResourceStatusData('securityGroup', true)}
                                     progress = {{
-                                        value : 20,
-                                        label : 'storage'
+                                        value : this.getResourceStatusData('securityGroup'),
+                                        label : 'Security Group'
                                     }}
                             />
                         </div>
@@ -146,11 +166,12 @@ function chartData() {
                     <div className="resource network">
                         <div>
                             <NumberWidget 
-                                    className="network security-group"
+                                    className="storage bucket"
                                     title = "Bucket"
+                                    number = {this.getResourceStatusData('storage', true)}
                                     progress = {{
-                                        value : 5,
-                                        label : 'network'
+                                        value : this.getResourceStatusData('storage'),
+                                        label : 'storage'
                                     }}
                             />
                         </div>

@@ -31,7 +31,7 @@ function createDataDict(path) {
     try {
         fs.statSync(path)
     } catch {
-        fs.mkdirSync(path)
+        fs.mkdirSync(path, {recursive: true})
     }
 }
 
