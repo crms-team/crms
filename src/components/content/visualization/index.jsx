@@ -643,7 +643,10 @@ class Visual extends Component {
                         }}
                     >
                         <IconContext.Provider value={{ className: "icon" }}>
-                            <GrFormRefresh />
+                            <GrFormRefresh
+                                className="refresh-icon"
+                                color="red"
+                            />
                         </IconContext.Provider>
                     </button>
                 </div>

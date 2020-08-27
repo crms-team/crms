@@ -23,13 +23,25 @@
     height: 100px;
 }
 .refresh {
-    background: transparent;
+    background: #ffc14d;
+    color: #27262b;
     border: none;
+    color: transparent;
+    z-index: 999;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 0.4rem;
+}
+
+.refresh:hover {
+    box-sizing: border-box;
+    padding: 0;
+    color: #fff;
 }
 
 .refresh .icon {
-    color: red !important;
-    background: pink;
+    font-size: 70px;
+    padding: 0;
 }
 
 circle.node {
