@@ -105,6 +105,10 @@ class Submitbut extends React.Component {
 class EC2 extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            key_name:this.props.key_name
+        }
+
         this.func = this.props.func.bind(this);
     }
 
@@ -143,6 +147,7 @@ class EC2 extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
+                                console.log(this.props.dataset)
                                 this.func("ImageId", val);
                             }}
                         >
@@ -668,6 +673,7 @@ class CreateIns extends React.Component {
         this.state = {
             showHide: false,
             vendor: "",
+            key_name:"",
             type: "",
             data: {},
             component: <SelVendor choose={this.select_vendor.bind(this)} />,
@@ -685,17 +691,21 @@ class CreateIns extends React.Component {
             this.setState({
                 type: "",
                 vendor: "",
-                component: <SelVendor choose={this.select_vendor.bind(this)} />,
+                component: <SelVendor choose={this.select_vendor.bind(this)} />
             });
         }
         this.setState({
             showHide: !this.state.showHide,
-            but_type: <Nextbut click_but={this.clickNextModal.bind(this)} />,
+            but_type: <Nextbut click_but={this.clickNextModal.bind(this)} />
         });
     }
 
     select_vendor(e) {
-        this.setState({ vendor: e.target.value });
+        var index = e.nativeEvent.target.selectedIndex;
+        this.setState({ 
+            vendor: e.target.value,
+            key_name:e.nativeEvent.target[index].text
+         });
     }
 
     select_type(e) {
@@ -715,7 +725,7 @@ class CreateIns extends React.Component {
         }
         if (this.state.type == "EC2") {
             this.setState({
-                component: <EC2 func={this.func.bind(this)} />,
+                component: <EC2 func={this.func.bind(this)} dataset={this.props.dataset} key_name={this.state.key_name}/>,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),

@@ -10,7 +10,7 @@ class Listview extends Component{
     render(){
         return(
             <div className="listview">
-                <Sidemenu />
+                <Sidemenu/>
                 <Table className="table" />
             </div>
         );

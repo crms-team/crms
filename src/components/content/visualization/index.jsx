@@ -6,6 +6,7 @@ import { DataFormat, CreateVisualDataFormat } from "./resource";
 import MInfo from './modal/info'
 import MButton from './modal/button'
 import { resourceSvg, resourceState } from './resource-params'
+import CreateIns from './create-instance';
 
 class Visual extends Component {
     constructor(props) {
@@ -485,6 +486,7 @@ class Visual extends Component {
     render() {
         return (
             <>
+                <CreateIns dataset={this.state.dataset}/>
                 <Modal
                     show={this.state.showHide}
                     size="lg"

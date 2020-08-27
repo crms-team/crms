@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,6 +19,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import './table.scss';
+import {useParams} from 'react-router-dom'
 
 function createData(name, subnetAssociated, shared, external, status, adminState, availabilityZones) {
   return { name,  subnetAssociated, shared, external, status, adminState, availabilityZones};
@@ -68,18 +69,81 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-  { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-  { id: 'subnetAssociated', numeric: false, disablePadding: false, label: 'subnetAssociated' },
-  { id: 'shared', numeric: false, disablePadding: false, label: 'shared' },
-  { id: 'external', numeric: false, disablePadding: false, label: 'external' },
-  { id: 'status', numeric: false, disablePadding: false, label: 'status' },
-  { id: 'adminState', numeric: false, disablePadding: false, label: 'adminState' },
-  { id: 'availabilityZones', numeric: false, disablePadding: false, label: 'availabilityZones' },
-];
+const COLUMES = {
+  server: [
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
+    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'public ip', numeric: false, disablePadding: false, label: 'Public IP' },
+    { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+    { id: 'type', numeric: false, disablePadding: false, label: 'Type' }
+  ],
+  volume:[
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
+    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'state', numeric: false, disablePadding: false, label: 'State' },
+    { id: 'size', numeric: false, disablePadding: false, label: 'Size' },
+    { id: 'type', numeric: false, disablePadding: false, label: 'Type' }
+  ],
+  ip:[
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
+    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'public ip', numeric: false, disablePadding: false, label: 'Public IP' },
+    { id: 'private ip', numeric: false, disablePadding: false, label: 'Private IP' },
+    { id: 'sever id', numeric: false, disablePadding: false, label: 'Server ID' }
+  ],
+  keypair:[
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
+    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'fingerprint', numeric: false, disablePadding: false, label: 'Fingerprint' }
+  ],
+  database:[
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'identifier', numeric: false, disablePadding: true, label: 'Identifier' },
+    { id: 'engine type', numeric: false, disablePadding: false, label: 'Engine type' },
+    { id: 'engine version', numeric: false, disablePadding: false, label: 'Engine version' },
+    { id: 'size', numeric: false, disablePadding: false, label: 'Size' },
+    { id: 'availability', numeric: false, disablePadding: false, label: 'Availability' },
+    { id: 'vpc', numeric: false, disablePadding: false, label: 'VPC' }
+  ],
+  vpc:[
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
+    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'ipv4 cidr', numeric: false, disablePadding: false, label: 'IPv4 CIDR' },
+    { id: 'ipv6 cidr', numeric: false, disablePadding: false, label: 'IPv6 CIDR' }
+  ],
+  subnet:[
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
+    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'vpc', numeric: false, disablePadding: false, label: 'VPC' },
+    { id: 'available ipv4 cidr', numeric: false, disablePadding: false, label: 'Available IPv4 CIDR' },
+    { id: 'ipv4 cidr', numeric: false, disablePadding: false, label: 'IPv4 CIDR' },
+    { id: 'availability zone', numeric: false, disablePadding: false, label: 'Availability Zone' }
+  ],
+  securitygroup:[
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
+    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'vpc id', numeric: false, disablePadding: false, label: 'VPC ID' },
+    { id: 'descryption', numeric: false, disablePadding: false, label: 'Descryption' },
+    { id: 'group name', numeric: false, disablePadding: false, label: 'Group Name' }
+  ],
+  bucket:[
+    { id: 'keyid', numeric: false, disablePadding: true, label: ' KeyID ' },
+    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
+    { id: 'access', numeric: false, disablePadding: false, label: 'Access' },
+    { id: 'region', numeric: false, disablePadding: false, label: 'Region' },
+    { id: 'create data', numeric: false, disablePadding: false, label: 'Create Data' }
+  ]
+}
 
 function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, type } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -95,7 +159,7 @@ function EnhancedTableHead(props) {
             inputProps={{ 'aria-label': 'select all' }}
           />
         </TableCell>
-        {headCells.map((headCell) => (
+        {COLUMES[type].map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -227,6 +291,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EnhancedTable() {
+
+  let {type} =useParams();
+  let subject=type.toUpperCase();
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('subnetAssociated');
@@ -234,6 +301,32 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const [apiData, setApiData] = useState([])
+
+  /*useEffect(async ()=> {
+    let key=JSON.parse(localStorage.getItem('key'))
+    let tmp_type=""
+    let result = []
+
+    for(let i=0;i<key.length;i++){
+      let tmp_data={
+        key:key[i],
+        data:[]
+      }
+      if(type=="server"){
+          tmp_type="ec2"
+      }
+      else if(type=="volume"){
+        tmp_type="ebs"
+      }
+      let response = await fetch(`http://localhost:4000/api/cloud/data/${key[i].vendor}/${tmp_type}?key_id=${key[i].key}&type=data`).then(res=>res.json())
+      tmp_data.data=response.data
+      result.push(tmp_data)
+    }
+
+    setApiData(result)
+  }, [])*/
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -289,7 +382,7 @@ export default function EnhancedTable() {
 
   return (
     <>
-    <h2 className="listview-title">네트워크</h2>
+    <h2 className="listview-title">{subject}</h2>
     <div className="table">
         <div className={classes.root}>
         <Paper className={classes.paper}>
@@ -309,6 +402,7 @@ export default function EnhancedTable() {
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
                 rowCount={rows.length}
+                type={type}
                 />
                 <TableBody>
                 {stableSort(rows, getComparator(order, orderBy))

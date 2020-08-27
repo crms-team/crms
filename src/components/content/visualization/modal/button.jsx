@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 import { Button, Modal, ListGroup, Tab, Row, Col, Form, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { resourceState } from "../resource-params";
+import { Link } from 'react-router-dom';
 
 class Instancebutton extends React.Component {
     constructor(props) {
         super(props)
         let type = props.data.type
-        let status = resourceState[type](props.data.data)
+        let status;
+        try{
+            status=resourceState[type](props.data.data)
+        }
+        catch(e){
+            status=5
+        }
         this.state = {
             type: type,
             status: status
@@ -96,7 +103,7 @@ class Instancebutton extends React.Component {
                             })
                         }
                     }} variant="warning">Delete</Button></td>
-                    <td><Button variant="warning">Detail</Button></td>
+                    <td><Link to="/detail"><Button variant="warning">Detail</Button></Link></td>
                 </tr>
             </table>
         )

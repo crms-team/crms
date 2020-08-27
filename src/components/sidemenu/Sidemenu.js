@@ -64,20 +64,20 @@ class Sidemenu extends Component{
                                 isResource &&
                                 <>
                                     <p className="menulist-in resource">Compute</p>
-                                    <p className="submenu">Server</p>
-                                    <p className="submenu">Volume</p>
-                                    <p className="submenu">IP</p>
-                                    <p className="submenu">Key Pair</p>
+                                    <Link to="/list/server"><p className="submenu">Server</p></Link>
+                                    <Link to="/list/volume"><p className="submenu">Volume</p></Link>
+                                    <Link to="/list/ip"><p className="submenu">IP</p></Link>
+                                    <Link to="/list/keypair"><p className="submenu">Key Pair</p></Link>
                                         
-                                    <p className="menulist-in resource">Database</p>
+                                    <Link to="/list/database"> <p className="menulist-in resource">Database</p></Link>
                                                                     
                                     <p className="menulist-in resource">Network</p>
-                                    <p className="submenu">VPC</p>
-                                    <p className="submenu">Subnet</p>
-                                    <p className="submenu">Security Group</p>
+                                    <Link to="/list/vpc"><p className="submenu">VPC</p></Link>
+                                    <Link to="/list/subnet"><p className="submenu">Subnet</p></Link>
+                                    <Link to="/list/securitygroup"><p className="submenu">Security Group</p></Link>
                                     
                                     <p className="menulist-in resource">Storage</p>
-                                    <p className="submenu">Bucket</p>
+                                    <Link to="bucket"><p className="submenu">Bucket</p></Link>
                                 </>
                             }
                             

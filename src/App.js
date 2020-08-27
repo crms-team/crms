@@ -22,7 +22,7 @@ class App extends Component {
             <div className="App">
                 <Route exact path="/" component={Main} />
                 {this.Auth()}
-                <Route exact path="/listview" component={Listview} />
+                <Route path="/list/:type" component={Listview} />
                 <Route exact path="/board" component={Dashboard} />
                 <Route exact path="/detail" component={Detail} />
                 <Route exact path="/visual" component={Board} />

@@ -61,6 +61,15 @@ function chartData() {
     }
 
     async componentDidMount(){
+        let response = await (await fetch("http://localhost:4000/api/cloud/key/list")).json()
+        let key_id = Object.keys(response.keys);
+        for (let i = 0; i < key_id.length; i++) {
+            key_id[i] = {
+                "key": key_id[i],
+                "vendor": response.keys[key_id[i]].vendor
+            }
+        }
+        localStorage.setItem('key', JSON.stringify(key_id))
         let statusData = await fetch(`http://localhost:4000/api/dashboard`).then(res=>res.json())
         this.setState({statusData: statusData['data']})
     }
