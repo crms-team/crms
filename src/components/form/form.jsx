@@ -14,7 +14,7 @@ class Form extends Component {
     tryLogin = () => {
         fetch(`http://localhost:4000/api/passwd?passwd=${btoa(this.state.value)}`).then(res=>res.json()).then(res=>{
             if (res.result){
-                localStorage.setItem('login', true)
+                sessionStorage.setItem("login", "true")
                 window.location.href='/board'
             } else {
                 alert('Failed Login')

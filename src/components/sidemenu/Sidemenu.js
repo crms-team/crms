@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './sidemenu.scss';
+import {Link} from 'react-router-dom'
 import { 
     FiSettings, 
     FiCreditCard, 
@@ -31,7 +32,7 @@ class Sidemenu extends Component{
                         <ul className="menu">
 
                         {/*     MENU - DASHBOARD      */}
-                        <a href="#dashboard">
+                        <a>
                             <li onClick={()=>{
                                 this.setState({ 
                                     isDashboard : !isDashboard,
@@ -45,13 +46,13 @@ class Sidemenu extends Component{
                         </a>  
                                 { isDashboard &&
                                     <>
-                                        <p className="menulist-in dashboard">Home</p>
+                                        <Link to="/board"> <p className="menulist-in dashboard">Home</p></Link>
                                         <p className="menulist-in dashboard">Log</p>
                                     </>
                                 }
 
                         {/*      MENU - RESOURCE     */}
-                            <a href="#resource">
+                            <a>
                                 <li onClick={()=>{
                                 this.setState({ isResource : !isResource, isDashboard : false, isSetting : false });
                             }}>
@@ -81,19 +82,19 @@ class Sidemenu extends Component{
                             }
                             
                            {/*      MENU - VISUALIZATION    */}         
-                           <a href="#visual"><li>
+                           <Link to="/visual"><li>
                                 <FiLayers className="material-icons"/>
                                 <p className="menulist">Visualization</p>
-                            </li></a>
+                            </li></Link>
 
                             {/*     MENU - BILLING      */}
-                            <a href="#billing"><li>
+                            <a><li>
                                 <FiDatabase className="material-icons"/>
                                 <p className="menulist">Billing</p>
                             </li></a>
 
                             {/*     MENU - SETTING   */}
-                            <a href="#setting"><li onClick={ () => 
+                            <Link to="/setting"><li onClick={ () => 
                                 { this.setState({ 
                                     isSetting : !isSetting, 
                                     isDashboard : false, 
@@ -102,7 +103,7 @@ class Sidemenu extends Component{
                             }}>
                                 <FiSettings className="material-icons"/>
                                 <p className="menulist" >Setting</p>
-                            </li></a>
+                            </li></Link>
                             {
                                 isSetting &&
                                 <>

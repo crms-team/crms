@@ -1,13 +1,12 @@
 .Modal{
     top:20px;
-    right:140px;
+    right:40px;
     width:100px;
     height: 50px;
     background-color: yellow!;
     position: absolute;
     overflow: hidden;
 }
-
 .fade.modal.show{
     background: #202024a4;
     overflow: hidden;

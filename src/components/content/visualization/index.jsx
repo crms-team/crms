@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button,Modal,ListGroup,Tab,Row,Col,Form,Pagination} from 'react-bootstrap';
+import { Button, Modal, ListGroup, Tab, Row, Col, Form, Pagination } from 'react-bootstrap';
 import * as d3 from 'd3';
 import './Visual.css'
 import { DataFormat, CreateVisualDataFormat } from "./resource";
@@ -19,40 +19,47 @@ class Visual extends Component {
             showHide: false,
             instanceData: undefined,
         }
-        this.drawChart=this.drawChart.bind(this);
+        this.drawChart = this.drawChart.bind(this);
         this.setState = this.setState.bind(this)
     }
 
     async getKeyData() {
         let response = await (await fetch("http://localhost:4000/api/cloud/key/list")).json()
+        let key_id = Object.keys(response.keys);
+        for (let i = 0; i < key_id.length; i++) {
+            key_id[i] = {
+                "key": key_id[i],
+                "vendor": response.keys[key_id[i]].vendor
+            }
+        }
+        localStorage.setItem('key', JSON.stringify(key_id))
         return response.keys
     }
 
-    async getVisualData(type=undefined) {
+    async getVisualData(type = undefined) {
         let result = []
         for (let key in this.state.keyList) {
-            let ep = `http://localhost:4000/api/cloud/data?key_id=${key}` + (type ? `&type=${type}`: '')
+            let ep = `http://localhost:4000/api/cloud/data?key_id=${key}` + (type ? `&type=${type}` : '')
             let response = await fetch(ep)
             let data = await response.json()
-            this.setState({time: data.time})
+            this.setState({ time: data.time })
             result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
         }
         return result
     }
 
-    handleModalShowHide(){
-        this.setState({showHide:!this.state.showHide});
+    handleModalShowHide() {
+        this.setState({ showHide: !this.state.showHide });
     }
 
     drawChart() {
         if (this.state.dataset != undefined) {
-            var width = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).width),
-                height = parseInt(window.getComputedStyle(document.querySelector("#root > div > main > div.Content > svg")).height) - 200;
+            var width = parseInt(window.getComputedStyle(document.querySelector("#root")).width),
+                height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
 
             let visualdata = [];
 
-            for (let dataset of this.state.dataset)
-            {
+            for (let dataset of this.state.dataset) {
 
                 var cloud = dataset.filter(item => item.type.toLowerCase() == "aws")
                 var vpc = dataset.filter(item => item.type.toLowerCase() == "vpc")
@@ -62,11 +69,11 @@ class Visual extends Component {
                 var subnet = dataset.filter(item => item.type.toLowerCase() == "subnet")
                 var ec2 = dataset.filter(item => item.type.toLowerCase() == "ec2")
                 var ebs = dataset.filter(item => item.type.toLowerCase() == "ebs")
-                var ig = dataset.filter(item=>item.type.toLowerCase() == "internetgateway")
-                var s3_group = dataset.filter(item=>item.type.toLowerCase() == "s3_group")
-                var s3 = dataset.filter(item=>item.type.toLowerCase() == "s3")
-                var rds_group = dataset.filter(item=>item.type.toLowerCase() == "rds_group")
-                var rds = dataset.filter(item=>item.type.toLowerCase() == "rds")
+                var ig = dataset.filter(item => item.type.toLowerCase() == "internetgateway")
+                var s3_group = dataset.filter(item => item.type.toLowerCase() == "s3_group")
+                var s3 = dataset.filter(item => item.type.toLowerCase() == "s3")
+                var rds_group = dataset.filter(item => item.type.toLowerCase() == "rds_group")
+                var rds = dataset.filter(item => item.type.toLowerCase() == "rds")
 
 
                 for (let tmp of cloud) {
@@ -79,7 +86,7 @@ class Visual extends Component {
                                 if (tmp_vpc.id == tmp_subs.link[0]) {
                                     for (let tmp_sub of subnet) {
                                         tmp_sub.children = [];
-                                        
+
                                         if (tmp_subs.id == tmp_sub.link[0]) {
                                             for (let tmp_ec2 of ec2) {
                                                 for (var i = 0; i < tmp_ec2.link.length; i++) {
@@ -99,7 +106,7 @@ class Visual extends Component {
                                             tmp_subs.children.push(tmp_sub);
                                         }
                                     }
-    
+
                                     tmp_vpc.children.push(tmp_subs);
                                 }
                             }
@@ -116,17 +123,17 @@ class Visual extends Component {
                             }
                             tmp.children.push(tmp_vpc);
                         }
-                        for(let tmp_ig of ig){
-                            if(tmp_vpc.id==tmp_ig.link[0]){
+                        for (let tmp_ig of ig) {
+                            if (tmp_vpc.id == tmp_ig.link[0]) {
                                 tmp_vpc.children.push(tmp_ig)
                             }
                         }
-                        for(let tmp_rds_group of rds_group){
-                            tmp_rds_group.children=[]
-                            if(tmp_vpc.id==tmp_rds_group.link[0]){
-                                for(let tmp_rds of rds){
-                                    for(var i=0;i<tmp_rds.link.length;i++){
-                                        if(tmp_rds.link[i]==tmp_rds_group.id){
+                        for (let tmp_rds_group of rds_group) {
+                            tmp_rds_group.children = []
+                            if (tmp_vpc.id == tmp_rds_group.link[0]) {
+                                for (let tmp_rds of rds) {
+                                    for (var i = 0; i < tmp_rds.link.length; i++) {
+                                        if (tmp_rds.link[i] == tmp_rds_group.id) {
                                             tmp_rds_group.children.push(tmp_rds)
                                         }
                                     }
@@ -136,12 +143,12 @@ class Visual extends Component {
                         }
 
                     }
-                    for(let tmp_s3_group of s3_group){
-                        tmp_s3_group.children=[]
-                        if(tmp.id==tmp_s3_group.link[0]){
-                            for(let tmp_s3 of s3){
-                                for(var i=0;i<tmp_s3.link.length;i++){
-                                    if(tmp_s3.link[i]==tmp_s3_group.id){
+                    for (let tmp_s3_group of s3_group) {
+                        tmp_s3_group.children = []
+                        if (tmp.id == tmp_s3_group.link[0]) {
+                            for (let tmp_s3 of s3) {
+                                for (var i = 0; i < tmp_s3.link.length; i++) {
+                                    if (tmp_s3.link[i] == tmp_s3_group.id) {
                                         tmp_s3_group.children.push(tmp_s3)
                                     }
                                 }
@@ -151,7 +158,7 @@ class Visual extends Component {
                     }
                     visualdata = visualdata.concat(tmp);
                 }
-    
+
             }
 
             let aroot = {
@@ -174,7 +181,7 @@ class Visual extends Component {
                     d3.event.preventDefault();
                 })
                 .select("g")
-            
+
             svg.append("svg:defs").selectAll("marker")
                 .data(["end"])      // Different link/path types can be defined here
                 .enter().append("svg:marker")    // This section adds in the arrows
@@ -187,11 +194,11 @@ class Visual extends Component {
                 .attr("orient", "auto")
                 .append("svg:path")
                 .attr("d", "M0,-5L10,0L0,5");
-            
+
 
             function zoomed() {
                 svg.attr("transform", d3.event.transform);
-                
+
             }
 
             simulation = d3.forceSimulation()
@@ -202,12 +209,12 @@ class Visual extends Component {
                 .force("center", d3.forceCenter(width / 2 + 100, height / 2 + 100))
                 .on("tick", ticked);
 
-            const stateFunc= this.setState.bind(this);
-            
-            update(stateFunc,this.state);
+            const stateFunc = this.setState.bind(this);
+
+            update(stateFunc, this.state);
 
             function update(stateFunc, preState) {
-                
+
                 var nodes = flatten(root);
                 var links = root.links();
 
@@ -302,7 +309,7 @@ class Visual extends Component {
                             update();
                             simulation.restart();
                         }
-                        
+
                     })
                     .call(d3.drag()
                         .on("start", dragstarted)
@@ -310,15 +317,15 @@ class Visual extends Component {
                         .on("end", dragended))
 
                 nodeEnter.append("circle")
-                    .attr("stroke", function(d){
+                    .attr("stroke", function (d) {
                         let data = d.data
                         let rType = d.data.type
-                        try { 
+                        try {
                             let status = resourceState[rType](data.data)
-                            if(rType=="ebs"){
-                                status-=6;
+                            if (rType == "ebs") {
+                                status -= 6;
                             }
-                            let colors = ["blue","gray","#ff7f00","gray","red","green"]    
+                            let colors = ["blue", "gray", "#ff7f00", "gray", "red", "green"]
                             return colors[status]
                         } catch (e) {
                             return "#ffc14d"
@@ -327,7 +334,7 @@ class Visual extends Component {
                     .attr("stroke-width", "3")
                     .attr("fill", "none")
                     .attr("r", function (d) {
-                        if(d.data.type=="CRMS"){
+                        if (d.data.type == "CRMS") {
                             return 150;
                         }
                         if (d.data.type == "aws") {
@@ -347,23 +354,29 @@ class Visual extends Component {
                 nodeEnter.append("svg:image")
                     .attr("xlink:href", function (d) {
                         if (d.data.type == "ec2")
-                        return "/images/compute.svg";
-                        if (d.data.type == "securitygroup")
+                            return "/images/compute.svg";
+                        else if (d.data.type == "securitygroup")
                             return "/images/security_group.svg";
-                        if (d.data.type == "subnet")
+                        else if (d.data.type == "subnet")
                             return "/images/ec2-container-registry.svg";
-                        if (d.data.type == "vpc")
+                        else if (d.data.type == "vpc")
                             return "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png";
-                        if (d.data.type == "aws")
+                        else if (d.data.type == "aws")
                             return "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png";
-                        if (d.data.type == "ebs")
+                        else if (d.data.type == "ebs")
                             return "/images/ebs.svg";
+                        else if (d.data.type == "rds")
+                            return "/images/trans-line/rds.svg"
+                        else if (d.data.type == "s3")
+                            return "/images/storage.svg"
+                        else if (d.data.type == "internetgateway")
+                            return "/images/default/internet-gateway.svg"
                     })
                     .attr("x", function (d) { return -30; })
                     .attr("y", function (d) { return -35; })
                     .attr("height", 60)
                     .attr("width", 60)
-                    .on("click", (d)=>{click(d, stateFunc, preState)});
+                    .on("click", (d) => { click(d, stateFunc, preState) });
 
                 nodeEnter.append("text")
                     .attr("dy", 33)
@@ -387,26 +400,29 @@ class Visual extends Component {
             }
 
             function ticked() {
+                function cal(x, y, x1, y1, type) {
+                    var angle = Math.atan2(y1 - y, x1 - x)
+                }
 
                 linkSvg
                     .attr("x1", function (d) {
                         var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                        var length = 60 * Math.cos(angle);
+                        var length = 150 * Math.cos(angle);
                         return d.source.x + length;
                     })
                     .attr("y1", function (d) {
                         var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                        var length = 60 * Math.sin(angle);
+                        var length = 150 * Math.sin(angle);
                         return d.source.y + length;
                     })
                     .attr("x2", function (d) {
                         var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                        var length = 70 * Math.cos(angle);
+                        var length = 120 * Math.cos(angle);
                         return d.target.x - length;
                     })
                     .attr("y2", function (d) {
                         var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                        var length = 70 * Math.sin(angle);
+                        var length = 120 * Math.sin(angle);
                         return d.target.y - length;
                     });
 
@@ -415,13 +431,13 @@ class Visual extends Component {
                         return "translate(" + d.x + ", " + d.y + ")";
                     });
             }
-            
-            const clickFunc=stateFunc.bind(this);
-            
-            function click(d,clickFunc, preState) {
+
+            const clickFunc = stateFunc.bind(this);
+
+            function click(d, clickFunc, preState) {
                 clickFunc({
-                    instanceData:d.data,
-                    showHide:!preState.showHide
+                    instanceData: d.data,
+                    showHide: !preState.showHide
                 })
             }
 
@@ -461,7 +477,7 @@ class Visual extends Component {
 
         if (this.state.isFirst) {
             this.drawChart();
-            this.setState({isFirst: false})
+            this.setState({ isFirst: false })
         }
 
     }
@@ -469,7 +485,7 @@ class Visual extends Component {
     render() {
         return (
             <>
-                <Modal 
+                <Modal
                     show={this.state.showHide}
                     size="lg"
                     dialogClassName="width :50%"
@@ -478,13 +494,13 @@ class Visual extends Component {
                     scrollable={true}
                 >
                     <Modal.Header closeButton onClick={() => this.handleModalShowHide()}>
-                    <Modal.Title>{this.state.instanceData ? this.state.instanceData.type : ''}</Modal.Title>
+                        <Modal.Title>{this.state.instanceData ? this.state.instanceData.type : ''}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body >
-                        <MInfo data={this.state.instanceData}/>
+                        <MInfo data={this.state.instanceData} />
                     </Modal.Body>
                     <Modal.Footer>
-                        <MButton data={this.state.instanceData}/>
+                        <MButton data={this.state.instanceData} />
                     </Modal.Footer>
                 </Modal>
                 <svg className="Visual">
@@ -492,7 +508,7 @@ class Visual extends Component {
                 </svg>
                 <div className="time">
                     <h className="timetext">{this.state.time}</h>
-                    <button className="refresh" onClick={async ()=>{this.setState({ dataset: await this.getVisualData('data') }); this.drawChart()}}></button>
+                    <button className="refresh" onClick={async () => { this.setState({ dataset: await this.getVisualData('data') }); this.drawChart() }}></button>
                 </div>
             </>
         );
