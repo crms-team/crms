@@ -326,7 +326,7 @@ class Visual extends Component {
                             if (rType == "ebs") {
                                 status -= 6;
                             }
-                            let colors = ["blue", "gray", "#ff7f00", "gray", "red", "green"]
+                            let colors = ["#6c9aff", "#9298b1", "#9298b1", "#9298b1", "#ff5a76", "#93c900"]
                             return colors[status]
                         } catch (e) {
                             return "#ffc14d"
@@ -361,17 +361,27 @@ class Visual extends Component {
                         else if (d.data.type == "subnet")
                             return "/images/ec2-container-registry.svg";
                         else if (d.data.type == "vpc")
-                            return "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png";
+                            return "/images/VPC.svg";
                         else if (d.data.type == "aws")
-                            return "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png";
+                            return "/images/cloud.svg";
                         else if (d.data.type == "ebs")
                             return "/images/ebs.svg";
                         else if (d.data.type == "rds")
-                            return "/images/trans-line/rds.svg"
+                            return "/images/rds group.svg"
                         else if (d.data.type == "s3")
                             return "/images/storage.svg"
                         else if (d.data.type == "internetgateway")
                             return "/images/default/internet-gateway.svg"
+                        else if (d.data.type == "CRMS")
+                            return "/images/CRMS.svg"
+                        else if (d.data.type == "rds_group")
+                            return "/images/rds group.svg"
+                        else if (d.data.type == "s3_group")
+                            return "/images/s3 group.svg"
+                        else if (d.data.type == "securitygroups")
+                            return "/images/securityGroup group.svg"
+                        else if (d.data.type == "subnets")
+                            return "/images/subnet group.svg"  
                     })
                     .attr("x", function (d) { return -30; })
                     .attr("y", function (d) { return -35; })
@@ -436,10 +446,14 @@ class Visual extends Component {
             const clickFunc = stateFunc.bind(this);
 
             function click(d, clickFunc, preState) {
-                clickFunc({
-                    instanceData: d.data,
-                    showHide: !preState.showHide
-                })
+                try{
+                    clickFunc({
+                        instanceData: d.data,
+                        showHide: !preState.showHide
+                    })
+                }catch(e){
+                    return;
+                }
             }
 
             function dragstarted(d) {
