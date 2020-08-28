@@ -233,4 +233,38 @@ module.exports = server => {
         })
 
     }
+
+    {
+        server.post("/api/cloud/data/etc/:vendor/:resource/:func", async (req, res) => {
+            let keyId = req.body.key_id
+            let vendor = req.params.vendor
+            let func = req.params.func
+            let resource = req.params.resource
+            let resourceType = getType(vendor, resource)
+            let keys = server.keys.getKeyData(server.config.path)
+            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
+            let args = req.body.args
+
+            if (checkParms) {
+                res.send(checkParms)
+                return 
+            }
+
+            let crmsFunction = crms[vendor]['session'][resourceType][resource]['etc'][func]
+
+            if (crmsFunction == undefined) {
+                res.send({
+                    result: false,
+                    msg: "not support functions"
+                })
+                return
+            }
+            
+            let result = await crmsFunction(keys[keyId].keys, args)
+
+            res.send({
+                result: result
+            })
+        })
+    }
 }
