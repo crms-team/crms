@@ -6,6 +6,7 @@ import Dashboard from "./components/dashboard";
 import Listview from "./components/list-view/list-view";
 import Detail from "./components/detail/detail";
 import { Route, Redirect } from "react-router-dom";
+import History from "./components/history"
 
 class App extends Component {
     Auth(){
@@ -26,6 +27,7 @@ class App extends Component {
                 <Route exact path="/board" component={Dashboard} />
                 <Route exact path="/detail/:key_id/:type/:id" component={Detail} />
                 <Route exact path="/visual" component={Board} />
+                <Route exact path="/history" component={History}/>
             </div>
         );
     }

@@ -47,7 +47,7 @@ class Sidemenu extends Component{
                                 { isDashboard &&
                                     <>
                                         <Link to="/board"> <p className="menulist-in dashboard">Home</p></Link>
-                                        <p className="menulist-in dashboard">Log</p>
+                                        <Link to="/history"><p className="menulist-in dashboard">Log</p></Link>
                                     </>
                                 }
 
