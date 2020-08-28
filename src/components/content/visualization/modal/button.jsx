@@ -103,7 +103,11 @@ class Instancebutton extends React.Component {
                             })
                         }
                     }} variant="warning">Delete</Button></td>
-                    <td><Link to="/detail"><Button variant="warning">Detail</Button></Link></td>
+                    <td>
+                        <Button variant="warning" onClick={()=>window.location.href=`/detail/${this.props.data.id.split(':')[0]}/${this.state.type}/${this.props.data.id.split(":")[2]}`} >
+                            Detail
+                        </Button>
+                    </td>
                 </tr>
             </table>
         )

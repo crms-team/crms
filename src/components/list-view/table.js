@@ -19,7 +19,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import './table.scss';
-import {useParams} from 'react-router-dom'
+import {useParams, Redirect} from 'react-router-dom'
 
 function createData(keys, data) {
   let result = {}
@@ -30,7 +30,6 @@ function createData(keys, data) {
 
   return result
 }
-
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -267,7 +266,6 @@ const MATCHINGS = {
       }
     },
     subnet: (key_id, resource) => {
-      console.log(resource)
       let attr = resource
       let name = ""
 
@@ -309,7 +307,6 @@ const MATCHINGS = {
       }
     },
     s3: (key_id, resource) => {
-      console.log(resource)
       let attr = resource
       
       return {
@@ -475,6 +472,7 @@ export default function EnhancedTable() {
   
   let {type} =useParams();
   let subject=type.toUpperCase();
+  let keys=JSON.parse(localStorage.getItem('key'))
 
   const [rows, setRows] = useState([]);
   const classes = useStyles();
@@ -485,11 +483,9 @@ export default function EnhancedTable() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const [apiData, setApiData] = useState([])
-
   useEffect(()=> {
+    setRows([]);
     async function test(){
-      let keys=JSON.parse(localStorage.getItem('key'))
       let result = []
       let columes_list = []
 
@@ -503,19 +499,15 @@ export default function EnhancedTable() {
         let response = await fetch(`http://localhost:4000/api/cloud/data/${key.vendor}/${resource_type}?key_id=${key.key}&type=data`).then(res=>res.json())
         if (response.data){
           for (let resource of response.data) {
-            rows.push(createData(columes_list, MATCHINGS[key.vendor][resource_type](key.key, resource)))
+            result.push(createData(columes_list, MATCHINGS[key.vendor][resource_type](key.key, resource)))
           }  
         }
-
-        result.push({
-          key:key.key,
-          data: response.data
-        })
       }
-      setRows(rows)
+
+      setRows(result)
     }
     test();
-  },[rows])
+  },[type])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -532,25 +524,36 @@ export default function EnhancedTable() {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
+  const isSelected = (name) => selected.indexOf(name) !== -1;
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+  const handleClick= (event,name,row)=>{
+    if(event.target.type=="checkbox"){
+      console.log("1");
+      const selectedIndex = selected.indexOf(name);
+      let newSelected = [];
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, name);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1),
       );
+      }
     }
-
-    setSelected(newSelected);
-  };
+    else{
+      let tmp_type=""
+      for(let key of keys){
+        if(key.key==row.key_id){
+          tmp_type=key.vendor
+        }
+      }
+      window.location.href=`/detail/${row.key_id}/${TYPES[tmp_type][type]}/${row.id?row.id: row.identifier ? row.identifier : row.name}`
+    }
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -564,8 +567,6 @@ export default function EnhancedTable() {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
-
-  const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -597,9 +598,8 @@ export default function EnhancedTable() {
                 {stableSort(rows, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
+                    const isItemSelected = isSelected(index+type);
                     const labelId = `enhanced-table-checkbox-${index}`;
-
                     const table =  Object.keys(row).map((v)=>{
                       return <TableCell align="right">{row[v]}</TableCell>
                     })
@@ -607,11 +607,11 @@ export default function EnhancedTable() {
                     return (
                         <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.name)}
                         role="checkbox"
+                        onClick={(event)=> handleClick(event, index+type,row)}
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.name}
+                        key={index+type}
                         selected={isItemSelected}
                         >
                         <TableCell padding="checkbox">
@@ -620,7 +620,7 @@ export default function EnhancedTable() {
                             inputProps={{ 'aria-labelledby': labelId }}
                             />
                         </TableCell>
-                        {table}
+                          {table}
                         </TableRow>
                     );
                     })}

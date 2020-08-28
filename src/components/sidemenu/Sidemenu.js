@@ -77,7 +77,7 @@ class Sidemenu extends Component{
                                     <Link to="/list/securitygroup"><p className="submenu">Security Group</p></Link>
                                     
                                     <p className="menulist-in resource">Storage</p>
-                                    <Link to="bucket"><p className="submenu">Bucket</p></Link>
+                                    <Link to="/list/bucket"><p className="submenu">Bucket</p></Link>
                                 </>
                             }
                             
