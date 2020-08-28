@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './detail.scss';
-import Sidemenu from '../sidemenu/sidemenu';
+import Sidebar from '../sidebar';
 
 const tabName = ['개요','서브넷','포트'];
 
@@ -69,7 +69,7 @@ class Detail extends Component{
 
         return(
             <div className='detail-container'>
-                <Sidemenu />
+                <Sidebar />
                 <div className='tab-container'>
                     <h2 className='tab-title'>Detail Page</h2>
                     <ul className='tabName'>

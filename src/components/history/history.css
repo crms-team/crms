@@ -1,0 +1,10 @@
+.logtable{
+    position: absolute;
+    width:85%;
+    height: 100%;
+    margin:0 auto;
+    float: right;
+    background-color:#27262b!important;
+}
+
+
