@@ -3,17 +3,8 @@ import "./dashboard-table.scss";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 
 function rowColorStyle(row) {
-    console.log(row)
-    if (row["condition"] === "변경") {
-        row["condition"] = "changed";
-    } else if (row["condition"] === "삭제") {
-        row["condition"] = "delete";
-    } else if (row["condition"] === "추가") {
-        row["condition"] = "add";
-    } else {
-        row["condition"] = "other";
-    }
-    return row["condition"];
+    // Transform, Create, Modify, Remove
+    return row.title.split(' ')[0]
 }
 
 class DashboardTable extends Component {

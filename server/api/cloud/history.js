@@ -1,7 +1,6 @@
 const fs = require('fs')
 const PATH = require('path')
 
-
 function getHistoryStatus(history) {
     let statusCount = { remove: 0, create: 0, modify: 0}
     let check = false
@@ -29,7 +28,7 @@ function getHistoryStatus(history) {
         }
     }
 
-    if (count == 1) return status
+    if (count == 1) return status[0].toUpperCase() + status.slice(1)
     else return 'Transform'
 }
 

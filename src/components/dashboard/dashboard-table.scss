@@ -47,25 +47,25 @@
         }
     }
 
-    .changed {
+    .Modify {
         background: #262931;
         &:hover {
             background: #43537c !important;
         }
     }
-    .add {
+    .Create {
         background: #313329;
         &:hover {
             background: #5d643f !important;
         }
     }
-    .delete {
+    .Remove {
         background: #2c2528;
         &:hover {
             background: #743c4d !important;
         }
     }
-    .other {
+    .Transform {
         background: transparent;
     }
 }
