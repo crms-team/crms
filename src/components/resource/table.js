@@ -404,9 +404,9 @@ const useToolbarStyles = makeStyles((theme) => ({
 }));
 
 const EnhancedTableToolbar = (props) => {
-  const classes = useToolbarStyles();
+  let classes = useToolbarStyles();
   const { numSelected } = props;
-
+  classes = {"root":"makeStyles-root-5","highlight":"makeStyles-highlight-6","title":"makeStyles-title-7","icon":"makeStyles-icon-8"}
   return (
     
     <Toolbar
@@ -504,6 +504,7 @@ export default function EnhancedTable() {
 
   useEffect(()=> {
     setRows([]);
+    setSelected([])
     async function test(){
       let result = []
       let columes_list = []
@@ -562,6 +563,7 @@ export default function EnhancedTable() {
           selected.slice(selectedIndex + 1),
         );
       }
+      setSelected(newSelected)
     }
     else{
       let tmp_type=""
