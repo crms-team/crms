@@ -2,14 +2,42 @@ import React, { useState, Component } from "react";
 import { IconContext } from "react-icons";
 import { FiKey, FiUnlock, FiFileText } from "react-icons/fi";
 import "./setting.scss";
+import AddCloudKeyModal from "./setting-modal/addCloudKeyModal";
+import ChangePasswordModal from "./setting-modal/changePasswordModal";
 
 function Setting({ children }) {
+    const [addCloudModalShow, setAddCloudModalShow] = useState(false);
+    const [changePasswordModalShow, setChangePasswordModalShow] = useState(
+        false
+    );
+
     return (
         <>
+            {addCloudModalShow && (
+                <AddCloudKeyModal
+                    show={addCloudModalShow}
+                    onHide={() => setAddCloudModalShow(false)}
+                    title=""
+                />
+            )}
+
+            {changePasswordModalShow && (
+                <ChangePasswordModal
+                    show={changePasswordModalShow}
+                    onHide={() => setChangePasswordModalShow(false)}
+                    title=""
+                />
+            )}
+
             <div className="setting-container">
                 <h1 className="setting-title">Setting Page</h1>
                 <div>
-                    <div className="setting-box">
+                    <div
+                        className="setting-box"
+                        onClick={() => {
+                            setAddCloudModalShow(true);
+                        }}
+                    >
                         <IconContext.Provider value={{ className: "icon" }}>
                             <FiKey />
                         </IconContext.Provider>
@@ -35,7 +63,12 @@ function Setting({ children }) {
                         <div className="setting-box-deco"></div>
                     </div>
 
-                    <div className="setting-box">
+                    <div
+                        className="setting-box"
+                        onClick={() => {
+                            setChangePasswordModalShow(true);
+                        }}
+                    >
                         <IconContext.Provider value={{ className: "icon" }}>
                             <FiUnlock />
                         </IconContext.Provider>

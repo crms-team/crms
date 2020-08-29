@@ -12,11 +12,11 @@ class App extends Component {
         return (
             <div className="App">
                 {/* <Main /> */}
-                <Board />
+                {/* <Board /> */}
                 {/* <Detail /> */}
                 {/* <Listview /> */}
                 {/* <Dashboard/> */}
-                {/* <Setting /> */}
+                <Setting />
             </div>
         );
     }
