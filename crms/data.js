@@ -82,11 +82,11 @@ function compareResources(type, preData, nowData) {
     }
 }
 
-async function history(path, keyId, data, time) {
+function history(path, keyId, data, time) {
     let historyData = []
     let prevData = null
     let detail = {}
-    let check = true
+    let check = false
     let historyPath = PATH.normalize(`${path}/data/${keyId}/history.json`)
 
     try { 
@@ -98,20 +98,21 @@ async function history(path, keyId, data, time) {
     } catch {
         fs.closeSync(fs.openSync(historyPath, 'w'))
      }
-
+     
     for (let session in data) { 
         detail[session] = {}
         for (let resourceType in data[session]) {
             let nowResources = data[session][resourceType]
             let preResources = prevData != null ? prevData[session][resourceType]: []
             let cpResource = compareResources(resourceType, preResources, nowResources)
+
             if (cpResource != undefined) {
                 detail[session][resourceType] = cpResource
             }
         }
-        check &= Object.keys(detail[session]).length == 0
+        check |= Object.keys(detail[session]).length != 0
     }
-    
+
     if (check) {
         historyData.push({
             time: time,
@@ -145,3 +146,4 @@ module.exports = {
     saveData: saveData,
     getLastDataFileName: getLastDataFileName
 }
+
