@@ -1,0 +1,85 @@
+.dashboard__table-container {
+    background: #212125;
+    height: 290px;
+    padding: 20px;
+    padding-bottom: 0;
+    border-radius: 0.4rem;
+    margin-left: 10px;
+    overflow: scroll;
+}
+
+.dashboard__table {
+    border: 1px solid #27262b;
+
+    //border: 1px solid rgb(53, 55, 56);
+    border-radius: 0.5rem;
+    overflow: hidden;
+
+    & .table-bordered {
+        border: none;
+    }
+
+    & .table thead {
+        border-bottom: 3px solid rgb(48, 48, 58);
+    }
+
+    & .table thead th {
+        padding: 0;
+    }
+
+    & .table tbody tr {
+        cursor: pointer;
+
+        &:hover {
+            background: #3c3a4260;
+        }
+    }
+
+    & .table th,
+    .table td {
+        padding: 0;
+    }
+    .table td {
+        width: 5%;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .changed {
+        background: #262931;
+        &:hover {
+            background: #43537c !important;
+        }
+    }
+    .add {
+        background: #313329;
+        &:hover {
+            background: #5d643f !important;
+        }
+    }
+    .delete {
+        background: #2c2528;
+        &:hover {
+            background: #743c4d !important;
+        }
+    }
+    .other {
+        background: transparent;
+    }
+}
+
+.log-page {
+    box-sizing: border-box;
+    margin-top: 8px;
+    width: 100%;
+    border: 2px solid #14141457;
+    border-radius: 0.4rem;
+    transition: 0.2s linear;
+    padding: 8px;
+    font-weight: 900;
+
+    background: #ffc14d;
+    color: #212125;
+}

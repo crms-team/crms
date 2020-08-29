@@ -1,95 +1,85 @@
-import React, { useState, Component } from 'react';
+import React, { useState, Component } from "react";
 import { IconContext } from "react-icons";
-import { FiKey,FiUnlock,FiFileText } from "react-icons/fi";
-import classNames from 'classnames';
-import './Setting.scss';
-import SettingModal from './SettingModal/SettingModal';
-import ChangePasswordModal from './ChangePassword/ChangePasswordModal';
+import { FiKey, FiUnlock, FiFileText } from "react-icons/fi";
+import "./setting.scss";
+import AddCloudKeyModal from "./setting-modal/addCloudKeyModal";
+import ChangePasswordModal from "./setting-modal/changePasswordModal";
 
+function Setting({ children }) {
+    const [addCloudModalShow, setAddCloudModalShow] = useState(false);
+    const [changePasswordModalShow, setChangePasswordModalShow] = useState(
+        false
+    );
 
-
-function Setting ( {children, ...rest} ) {
-    
-    const [modalVisible, setModalVisible] = useState(false);
-
-    const openModal = () => {
-        setModalVisible(true);
-    }
-
-    const closeModal = () =>{
-        setModalVisible(false);
-    }
-
-    // changePass 코드 중복 ㅜㅜ
-    const [passwordModal, setPasswordModal] = useState(false);
-
-    const openPasswordModal = () => {
-        setPasswordModal(true);
-    }
-    const closePasswordModal = () => {
-        setPasswordModal(false);
-    }
-
-    return(
-        
+    return (
         <>
-            {
-                modalVisible && 
-                <SettingModal
-                    visible={modalVisible}
-                    closable={true}
-                    maskClosable={true}
-                    onClose={closeModal}> 
-                </SettingModal>
-                
-            }
+            {addCloudModalShow && (
+                <AddCloudKeyModal
+                    show={addCloudModalShow}
+                    onHide={() => setAddCloudModalShow(false)}
+                    title=""
+                />
+            )}
 
-            {
-                passwordModal &&
+            {changePasswordModalShow && (
                 <ChangePasswordModal
-                    visible={passwordModal}
-                    closable={true}
-                    maskClosable={true}
-                    onClose={closePasswordModal}
-                >
-                </ChangePasswordModal>
-            }
-            
-            <div isOpen={false} className={classNames('setting-container')}>
-                <h1 className={classNames('setting-title')}>Setting Page</h1>
+                    show={changePasswordModalShow}
+                    onHide={() => setChangePasswordModalShow(false)}
+                    title=""
+                />
+            )}
+
+            <div className="setting-container">
+                <h1 className="setting-title">Setting Page</h1>
                 <div>
-
-                    <div className={classNames('setting-box')} onClick={openModal}>
+                    <div
+                        className="setting-box"
+                        onClick={() => {
+                            setAddCloudModalShow(true);
+                        }}
+                    >
                         <IconContext.Provider value={{ className: "icon" }}>
-                        <FiKey/>
+                            <FiKey />
                         </IconContext.Provider>
-                        <h1 className={classNames('setting-subtitle', 'ko')}>클라우드 키 등록</h1>
-                        <h2 className={classNames('setting-subtitle', 'en')}>Register cloud key</h2>
-                        <div className={classNames('setting-box-deco')}></div>
+                        <h1 className="setting-subtitle ko">
+                            클라우드 키 등록
+                        </h1>
+                        <h2 className="setting-subtitle en">
+                            Register cloud key
+                        </h2>
+                        <div className="setting-box-deco"></div>
                     </div>
 
-                    <div className={classNames('setting-box')}>
+                    <div className="setting-box">
                         <IconContext.Provider value={{ className: "icon" }}>
-                        <FiFileText/>
+                            <FiFileText />
                         </IconContext.Provider>
-                        <h1 className={classNames('setting-subtitle', 'ko')}>등록한 클라우드 리스트</h1>
-                        <h2 className={classNames('setting-subtitle', 'en')}>Registered Cloud List</h2>
-                        <div className={classNames('setting-box-deco')}></div>
+                        <h1 className="setting-subtitle ko">
+                            등록한 클라우드 리스트
+                        </h1>
+                        <h2 className="setting-subtitle en">
+                            Registered Cloud List
+                        </h2>
+                        <div className="setting-box-deco"></div>
                     </div>
 
-                    <div className={classNames('setting-box')} onClick={openPasswordModal}>
+                    <div
+                        className="setting-box"
+                        onClick={() => {
+                            setChangePasswordModalShow(true);
+                        }}
+                    >
                         <IconContext.Provider value={{ className: "icon" }}>
-                        <FiUnlock/>
+                            <FiUnlock />
                         </IconContext.Provider>
-                        <h1 className={classNames('setting-subtitle', 'ko')}>비밀번호 변경</h1>
-                        <h2 className={classNames('setting-subtitle', 'en')}>Change password</h2>
-                        <div className={classNames('setting-box-deco')}></div>
+                        <h1 className="setting-subtitle ko">비밀번호 변경</h1>
+                        <h2 className="setting-subtitle en">Change password</h2>
+                        <div className="setting-box-deco"></div>
                     </div>
-
                 </div>
             </div>
         </>
     );
-};
+}
 
 export default Setting;

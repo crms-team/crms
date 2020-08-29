@@ -6,6 +6,7 @@ import Dashboard from "./components/dashboard";
 import Resource from "./components/resource";
 import Detail from "./components/detail/detail";
 import History from "./components/history"
+import Setting from "./components/Setting/setting"
 import "./App.css";
 
 class App extends Component {
@@ -28,6 +29,7 @@ class App extends Component {
                 <Route exact path="/detail/:key_id/:type/:id" component={Detail} />
                 <Route exact path="/visual" component={Visualization} />
                 <Route exact path="/history" component={History}/>
+                <Route exact path="/setting" component={Setting} />
             </div>
         );
     }
