@@ -1,18 +1,16 @@
-$darkGray : #18181f;
-$lightGray : #27262b;
-$point : #ffc14d;
-$text : #6b6e7c;
-$lightText : #9298b1;
+$darkGray: #18181f;
+$lightGray: #27262b;
+$point: #ffc14d;
+$text: #6b6e7c;
+$lightText: #9298b1;
 
-.dashboard-page{
-    
+.dashboard-page {
     width: 100%;
     position: relative;
     height: 100%;
 }
 
-.board-container{
-    
+.board-container {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -22,15 +20,17 @@ $lightText : #9298b1;
     box-sizing: border-box;
     float: right;
     background: transparent !important;
+    height: auto !important;
+    margin-top: 5vh;
 }
 
-.resource-list{
-    .text-muted{
+.resource-list {
+    .text-muted {
         margin-top: 5px;
     }
 }
 
-.card-body{
+.card-body {
     margin-bottom: 10px;
     background: #212125;
     height: 100px;
@@ -46,32 +46,31 @@ $lightText : #9298b1;
     flex-direction: row;
     min-width: 50%;
 
-    & .compute{
+    & .compute {
         width: 50%;
     }
 }
-.chart-container{
+.chart-container {
     display: flex;
     flex-direction: row;
 
-    & h3{
+    & h3 {
         font-size: 15px;
         margin-top: 10px;
         text-indent: 5px;
     }
-    
 }
 
-NumberWidget + NumberWidget{
+NumberWidget + NumberWidget {
     margin-right: 30px;
 }
 
-.progress{
+.progress {
     background-color: #353741;
     width: 100%;
 }
 
-.justify-content-between{
+.justify-content-between {
     width: 100%;
     justify-content: space-between !important;
 }
