@@ -95,6 +95,7 @@ const COLUMES = {
     { id: 'identifier', numeric: false, disablePadding: true, label: 'Identifier' },
     { id: 'engine_type', numeric: false, disablePadding: false, label: 'Engine type' },
     { id: 'engine_version', numeric: false, disablePadding: false, label: 'Engine version' },
+    { id: 'state', numeric: false, disablePadding: false, label: 'State' },
     { id: 'size', numeric: false, disablePadding: false, label: 'Size' },
     { id: 'availability', numeric: false, disablePadding: false, label: 'Availability' },
     { id: 'vpc', numeric: false, disablePadding: false, label: 'VPC' }
@@ -103,6 +104,7 @@ const COLUMES = {
     { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
     { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
     { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'state', numeric: false, disablePadding: false, label: 'State' },
     { id: 'ipv4_cidr', numeric: false, disablePadding: false, label: 'IPv4 CIDR' },
     { id: 'ipv6_cidr', numeric: false, disablePadding: false, label: 'IPv6 CIDR' }
   ],
@@ -110,6 +112,7 @@ const COLUMES = {
     { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
     { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
     { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
+    { id: 'state', numeric: false, disablePadding: false, label: 'State' },
     { id: 'vpc', numeric: false, disablePadding: false, label: 'VPC' },
     { id: 'available_ipv4_cidr', numeric: false, disablePadding: false, label: 'Available IPv4 CIDR' },
     { id: 'ipv4_cidr', numeric: false, disablePadding: false, label: 'IPv4 CIDR' },
@@ -228,12 +231,13 @@ const MATCHINGS = {
     },
     rds: (key_id, resource) => {
       let attr = resource
-
+      console.log(resource)
       return {
         key_id: key_id,
         identifier: attr.DBInstanceIdentifier,
         engine_type: attr.Engine,
         engine_version: attr.EngineVersion,
+        state:attr.DBInstanceStatus,
         size: attr.AllocatedStorage,
         availability: attr.AvailabilityZone,
         vpc: attr.DBSubnetGroup.VpcId
@@ -283,6 +287,7 @@ const MATCHINGS = {
         name: name,
         id: attr.SubnetId,
         vpc: attr.VpcId,
+        state: attr.State,
         available_ipv4_cidr: attr.CidrBlock,
         ipv4_cidr: attr.CidrBlock,
         availability_zone: attr.AvailabilityZone
@@ -542,7 +547,7 @@ export default function EnhancedTable() {
 
   const handleClick= (event,name,row)=>{
     if(event.target.type=="checkbox"){
-      console.log("1");
+      console.log(name)
       const selectedIndex = selected.indexOf(name);
       let newSelected = [];
       if (selectedIndex === -1) {
@@ -555,7 +560,7 @@ export default function EnhancedTable() {
         newSelected = newSelected.concat(
           selected.slice(0, selectedIndex),
           selected.slice(selectedIndex + 1),
-      );
+        );
       }
     }
     else{
@@ -578,11 +583,7 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = 5+rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <>
@@ -613,7 +614,7 @@ export default function EnhancedTable() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                     const isItemSelected = isSelected(index+type);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                    const labelId = `enhanced-table-checkbox-${index+type}`;
                     const table =  Object.keys(row).map((v)=>{
                       return <TableCell align="right">{row[v]}</TableCell>
                     })
