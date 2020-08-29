@@ -1,7 +1,7 @@
 import React, { useState, Component } from "react";
 import { IconContext } from "react-icons";
 import { FiKey, FiUnlock, FiFileText } from "react-icons/fi";
-import "./setting.scss";
+import "./Setting.scss";
 import AddCloudKeyModal from "./setting-modal/addCloudKeyModal";
 import ChangePasswordModal from "./setting-modal/changePasswordModal";
 

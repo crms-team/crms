@@ -111,6 +111,10 @@ function history(path, keyId, data, time) {
             }
         }
         check |= Object.keys(detail[session]).length != 0
+
+        if (JSON.stringify(detail[session]) == '{}') {
+            delete detail[session]
+        }
     }
 
     if (check) {

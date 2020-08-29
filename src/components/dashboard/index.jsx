@@ -56,7 +56,7 @@ function chartData() {
 
       this.state = {
         data: chartData(),
-        statusData: undefined
+        statusData: undefined,
       }
     }
 
@@ -71,7 +71,10 @@ function chartData() {
         }
         localStorage.setItem('key', JSON.stringify(key_id))
         let statusData = await fetch(`http://localhost:4000/api/dashboard`).then(res=>res.json())
-        this.setState({statusData: statusData['data']})
+
+        this.setState({
+            statusData: statusData['data'],
+        })
     }
 
     getResourceStatusData(resource, type=undefined){
@@ -196,8 +199,8 @@ function chartData() {
                         </div>
                     </div>
                     <div className="right-chart">
-                        <h3>이름없음 - 테이블 자리</h3>
-                        <DashboardTable/>
+                        <h3>History Summary</h3>
+                        <DashboardTable />
                     </div>
                 </div>
             </div>
