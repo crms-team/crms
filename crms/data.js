@@ -82,11 +82,11 @@ function compareResources(type, preData, nowData) {
     }
 }
 
-async function history(path, keyId, data, time) {
+function history(path, keyId, data, time) {
     let historyData = []
     let prevData = null
     let detail = {}
-    let check = true
+    let check = false
     let historyPath = PATH.normalize(`${path}/data/${keyId}/history.json`)
 
     try { 
@@ -98,20 +98,21 @@ async function history(path, keyId, data, time) {
     } catch {
         fs.closeSync(fs.openSync(historyPath, 'w'))
      }
-
+     
     for (let session in data) { 
         detail[session] = {}
         for (let resourceType in data[session]) {
             let nowResources = data[session][resourceType]
             let preResources = prevData != null ? prevData[session][resourceType]: []
             let cpResource = compareResources(resourceType, preResources, nowResources)
+
             if (cpResource != undefined) {
                 detail[session][resourceType] = cpResource
             }
         }
-        check &= Object.keys(detail[session]).length == 0
+        check |= Object.keys(detail[session]).length != 0
     }
-    
+
     if (check) {
         historyData.push({
             time: time,
@@ -121,20 +122,31 @@ async function history(path, keyId, data, time) {
         fs.writeFileSync(historyPath, JSON.stringify(historyData))    
     }
 }
+    
+function changeFormat(val) {
+    return val < 10 ? `0${val}` : `${val}`
+}
+
+function getTime() {
+    let date = new Date()
+    let timeString = date.toLocaleTimeString('it-IT').replace(/:/g, '.')
+
+    return `${date.getFullYear()}.${changeFormat(date.getMonth() + 1)}.${changeFormat(date.getDate())} ${timeString}`
+}
 
 async function saveData(path, keyId, keyVendor, keyData){
     try {
-        console.log(`${(new Date()).toLocaleString()} Start Scanning ${keyId}`) 
+        console.log(`${getTime()} Start Scanning ${keyId}`) 
         let dataPath = PATH.normalize(`${path}/data/${keyId}/log`)    
         let data = await vendors[keyVendor].data.getAllData(keyData)
         createDataDict(dataPath)
-        
-        let time = (new Date()).toLocaleString().replace(/:/g, '-')
+
+        let time = getTime()
         let fileName =  `${time}.json`
         
         history(path, keyId, data, time)
         fs.writeFileSync(PATH.normalize(`${dataPath}/${fileName}`), JSON.stringify(data))
-        console.log(`${(new Date()).toLocaleString()} Success Scanning ${keyId}`) 
+        console.log(`${getTime()} Success Scanning ${keyId}`) 
     } catch (e) {
         console.log(e)
         console.log("saveData function Error")
@@ -143,5 +155,7 @@ async function saveData(path, keyId, keyVendor, keyData){
 
 module.exports = {
     saveData: saveData,
-    getLastDataFileName: getLastDataFileName
+    getLastDataFileName: getLastDataFileName,
+    resourceIdKeys: resourceIdKeys
 }
+

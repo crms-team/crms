@@ -59,6 +59,9 @@ function checkCrmsParams(keyId, resourceType, keys, vendor) {
 }
 
 module.exports = server => {
+    
+    // /api/cloud/data
+    // get cloud all data
     {
         server.get("/api/cloud/data", async (req, res)=> {
             let keyId = req.query.key_id
@@ -87,6 +90,8 @@ module.exports = server => {
         })
     }
     
+    // /api/cloud/data/:vendor/:resource
+    // get cloud resource data
     {
         server.get("/api/cloud/data/:vendor/:resource", async (req, res) => {
             let keyId = req.query.key_id
@@ -96,28 +101,46 @@ module.exports = server => {
             let resourceType = getType(vendor, resource)
             let keys = server.keys.getKeyData(server.config.path)
             let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
+            let resourceId = req.query.resource_id
+            let data = null
 
             if (checkParms) {
                 res.send(checkParms)
                 return 
             }
 
+
             if (apiType){
                 let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
-                let data = JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
-
-                res.send({
-                    result: true,
-                    data: data[resourceType][resource]
-                })
+                data = JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))[resourceType][resource]
             } else {
                 let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['get']
-                res.send({
-                    result: true,
-                    data: await crmsFunction(keys[keyId].keys)
-                })
+                data = await crmsFunction(keys[keyId].keys)
             }
 
+            if (resourceId) {
+                let check = true
+                for (let element of data) {
+                    if (crms.data.resourceIdKeys[resource](element) == resourceId) {
+                        data = element
+                        check = false
+                        break
+                    }
+                }
+
+                if (check) {
+                    res.send({
+                        result: false,
+                        msg: 'Not Exists this resource.'
+                    })
+                    return
+                }
+            }
+
+            res.send({
+                result: true,
+                data: data
+            })
         })
 
         server.post("/api/cloud/data/:resource", async (req, res) => {
@@ -232,5 +255,41 @@ module.exports = server => {
 
         })
 
+    }
+
+    // /api/cloud/data/etc/:vendor/:resource/:func
+    // execute cloud resource etc functions
+    {
+        server.post("/api/cloud/data/etc/:vendor/:resource/:func", async (req, res) => {
+            let keyId = req.body.key_id
+            let vendor = req.params.vendor
+            let func = req.params.func
+            let resource = req.params.resource
+            let resourceType = getType(vendor, resource)
+            let keys = server.keys.getKeyData(server.config.path)
+            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
+            let args = req.body.args
+
+            if (checkParms) {
+                res.send(checkParms)
+                return 
+            }
+
+            let crmsFunction = crms[vendor]['session'][resourceType][resource]['etc'][func]
+
+            if (crmsFunction == undefined) {
+                res.send({
+                    result: false,
+                    msg: "not support functions"
+                })
+                return
+            }
+            
+            let result = await crmsFunction(keys[keyId].keys, args)
+
+            res.send({
+                result: result
+            })
+        })
     }
 }
