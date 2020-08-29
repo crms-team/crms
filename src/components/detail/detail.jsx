@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import './detail.scss';
 import Sidebar from '../sidebar';
+import {withRouter} from 'react-router-dom'
+
+import './detail.scss';
+
 
 const tabName = ['개요','서브넷','포트'];
 
@@ -43,6 +46,14 @@ const tabContent = {
 
 class Detail extends Component{
     
+    componentDidMount(){
+        let key_id;
+    }
+    
+    getDetail(){
+        //let url=`http://localhost:4000/api/cloud/data/${vendor}/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`
+    }
+    
     constructor(props){
         super(props);
         this.state = {
@@ -50,6 +61,7 @@ class Detail extends Component{
             activeContent : 0
         }
     }
+    
 
     tabClicked = (idx) => {
         this.setState({
