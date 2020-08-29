@@ -122,20 +122,31 @@ function history(path, keyId, data, time) {
         fs.writeFileSync(historyPath, JSON.stringify(historyData))    
     }
 }
+    
+function changeFormat(val) {
+    return val < 10 ? `0${val}` : `${val}`
+}
+
+function getTime() {
+    let date = new Date()
+    let timeString = date.toLocaleTimeString('it-IT').replace(/:/g, '.')
+
+    return `${date.getFullYear()}.${changeFormat(date.getMonth() + 1)}.${changeFormat(date.getDate())} ${timeString}`
+}
 
 async function saveData(path, keyId, keyVendor, keyData){
     try {
-        console.log(`${(new Date()).toLocaleString()} Start Scanning ${keyId}`) 
+        console.log(`${getTime()} Start Scanning ${keyId}`) 
         let dataPath = PATH.normalize(`${path}/data/${keyId}/log`)    
         let data = await vendors[keyVendor].data.getAllData(keyData)
         createDataDict(dataPath)
-        
-        let time = (new Date()).toLocaleString().replace(/:/g, '-')
+
+        let time = getTime()
         let fileName =  `${time}.json`
         
         history(path, keyId, data, time)
         fs.writeFileSync(PATH.normalize(`${dataPath}/${fileName}`), JSON.stringify(data))
-        console.log(`${(new Date()).toLocaleString()} Success Scanning ${keyId}`) 
+        console.log(`${getTime()} Success Scanning ${keyId}`) 
     } catch (e) {
         console.log(e)
         console.log("saveData function Error")
