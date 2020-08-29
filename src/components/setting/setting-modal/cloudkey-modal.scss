@@ -1,0 +1,120 @@
+@import url("https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css");
+
+.modal-open {
+    padding: 0 !important;
+}
+.modal-backdrop.show {
+    z-index: 0;
+}
+
+.show {
+    padding: 0 !important;
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+.modal {
+    max-width: none;
+    border: none;
+}
+
+.modal-content {
+    width: 450px !important;
+}
+
+.select-container {
+    font-family: nanumsquare;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding-left: 40px;
+    padding-right: 40px;
+    width: 100%;
+
+    & .select-title {
+        margin-bottom: 30px;
+        margin-top: 0;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    & .select__option {
+        width: 100%;
+
+        & .select__option--options:active {
+            outline: none;
+        }
+
+        & .select__option--options:focus {
+            outline: none;
+            border: 2px solid #e99a33;
+        }
+
+        & .select__option--options.region {
+            margin-top: 1.3rem;
+        }
+
+        &.select__bottom-text {
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .select-bottom-text {
+        margin-top: 1.5rem;
+        margin-bottom: 0;
+
+        &:hover {
+            text-decoration: #e99a33 underline;
+        }
+    }
+
+    & .select-input {
+        width: 100%;
+    }
+
+    & .cloud-id {
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 0;
+    }
+
+    & .select-btn {
+        width: 100%;
+        color: #27262b;
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+
+    & .select-Supplier {
+        margin-top: 1rem;
+    }
+}
+
+.select-Supplier {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-bottom-text span:first-child {
+    margin: 0;
+}
+
+.modal__footer-container {
+    font-family: nanumsquare;
+
+    & .modal__footer--button {
+        font-weight: 700;
+    }
+}
+
+.modal-header .close {
+    &:hover {
+        background: transparent;
+    }
+}

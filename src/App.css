@@ -1,25 +1,24 @@
 @import url("https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css");
 
 :root {
-    --text-lightgray-color : #cfcfcf ;
-    --point-color : #ffc14d;
-    --point-hover-color : #e99a33;
-    --text-gray-color : #494949;
-    --text-white-color : #ececec;
+    --text-lightgray-color: #cfcfcf;
+    --point-color: #ffc14d;
+    --point-hover-color: #e99a33;
+    --text-gray-color: #494949;
+    --text-white-color: #ececec;
     --background-color: #27262b;
 }
 
-.App{
+.App {
     background-color: var(--background-color);
     height: 100%;
     margin: 0 auto;
-    font-family: 'NanumSquare', sans-serif !important;
+    font-family: "NanumSquare", sans-serif !important;
 }
 
-
-html, body{
+html,
+body {
     background: var(--background-color);
-    
 }
 
 a{
@@ -27,8 +26,14 @@ a{
     text-decoration: none;
 }
 
-ul, li{
+ul,
+li {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+input[type="password"] {
+    font-family: sans-serif;
+    font-size: 15px;
 }
