@@ -1,12 +1,23 @@
-import React, { Component } from 'react';
-import { Button, Modal, ListGroup, Tab, Row, Col, Form, Pagination } from 'react-bootstrap';
-import * as d3 from 'd3';
+import React, { Component } from "react";
+import {
+    Button,
+    Modal,
+    ListGroup,
+    Tab,
+    Row,
+    Col,
+    Form,
+    Pagination,
+} from "react-bootstrap";
+import * as d3 from "d3";
+import "./visual.css";
 import { DataFormat, CreateVisualDataFormat } from "../resource";
-import MInfo from '../summary'
-import MButton from '../summary/button'
-import { resourceSvg, resourceState } from '../resource-params'
-import CreateModal from '../create';
-import './index.css'
+import CreateModal from '../create'
+import MInfo from "../summary/button";
+import MButton from "../summary";
+import { resourceSvg, resourceState } from "../resource-params";
+import { IconContext } from "react-icons";
+import { GrFormRefresh } from "react-icons/gr";
 
 class Visual extends Component {
     constructor(props) {
@@ -46,7 +57,7 @@ class Visual extends Component {
             this.setState({ time: data.time })
             result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
         }
-        return result
+        return result;
     }
 
     handleModalShowHide() {
@@ -95,11 +106,15 @@ class Visual extends Component {
                                                             for (let j = 0; j < tmp_ebs.link.length; j++) {
                                                                 if (tmp_ebs.link[j] == tmp_ec2.id) {
                                                                     tmp_ec2.children = [];
-                                                                    tmp_ec2.children.push(tmp_ebs);
+                                                                    tmp_ec2.children.push(
+                                                                        tmp_ebs
+                                                                    );
                                                                 }
                                                             }
                                                         }
-                                                        tmp_sub.children.push(tmp_ec2);
+                                                        tmp_sub.children.push(
+                                                            tmp_ec2
+                                                        );
                                                     }
                                                 }
                                             }
@@ -138,10 +153,9 @@ class Visual extends Component {
                                         }
                                     }
                                 }
-                                tmp_vpc.children.push(tmp_rds_group)
+                                tmp_vpc.children.push(tmp_rds_group);
                             }
                         }
-
                     }
                     for (let tmp_s3_group of s3_group) {
                         tmp_s3_group.children = []
@@ -153,21 +167,20 @@ class Visual extends Component {
                                     }
                                 }
                             }
-                            tmp.children.push(tmp_s3_group)
+                            tmp.children.push(tmp_s3_group);
                         }
                     }
                     visualdata = visualdata.concat(tmp);
                 }
-
             }
 
             let aroot = {
-                id: 'CRMSRootId',
-                name: 'CRMS',
-                type: 'CRMS',
+                id: "CRMSRootId",
+                name: "CRMS",
+                type: "CRMS",
                 link: [],
-                children: visualdata
-            }
+                children: visualdata,
+            };
 
             let root = d3.hierarchy(aroot);
             let i = 0;
@@ -201,12 +214,16 @@ class Visual extends Component {
 
             }
 
-            simulation = d3.forceSimulation()
+            simulation = d3
+                .forceSimulation()
                 .alpha(0.5)
                 .alphaDecay(0.001)
                 .force("link", d3.forceLink(linkSvg).distance(400))
                 .force("charge", d3.forceManyBody().strength(-2000))
-                .force("center", d3.forceCenter(width / 2 + 100, height / 2 + 100))
+                .force(
+                    "center",
+                    d3.forceCenter(width / 2 + 100, height / 2 + 100)
+                )
                 .on("tick", ticked);
 
             const stateFunc = this.setState.bind(this);
@@ -223,19 +240,16 @@ class Visual extends Component {
                         for (let j = 0; j < nodes[i].data.link.length; j++) {
                             for (let h = 0; h < nodes.length; h++) {
                                 if (nodes[i].data.link[j] == nodes[h].data.id) {
-                                    links.push({ source: i, target: h })
+                                    links.push({ source: i, target: h });
                                 }
-
                             }
                         }
                     }
                 }
 
-                linkSvg = svg.selectAll(".link")
-                    .data(links, function (d) {
-                        return d.target.id;
-                    })
-
+                linkSvg = svg.selectAll(".link").data(links, function (d) {
+                    return d.target.id;
+                });
 
                 linkSvg.exit().remove();
 
@@ -245,12 +259,11 @@ class Visual extends Component {
                     .style("stroke", "#ffc14d")
                     .attr("marker-end", "url(#end)");
 
-                linkSvg = linkEnter.merge(linkSvg)
+                linkSvg = linkEnter.merge(linkSvg);
 
-                nodeSvg = svg.selectAll(".node")
-                    .data(nodes, function (d) {
-                        return d.id;
-                    })
+                nodeSvg = svg.selectAll(".node").data(nodes, function (d) {
+                    return d.id;
+                });
 
                 nodeSvg.exit().remove();
 
@@ -261,7 +274,10 @@ class Visual extends Component {
                         let thisNode = d.id
                         let thislink = d
                         d3.selectAll(".link").attr("opacity", function (d) {
-                            return (d.source.id == thisNode || d.target.id == thisNode) ? 1 : 0.2
+                            return d.source.id == thisNode ||
+                                d.target.id == thisNode
+                                ? 1
+                                : 0.2;
                         });
                         d3.selectAll(".node").attr("opacity", function (d) {
                             if (d.data.link.length > 0) {
@@ -270,10 +286,12 @@ class Visual extends Component {
                                         return "1";
                                 }
                             }
-                            if (d.id == thislink.data.link[i] || d.id == thisNode)
+                            if (
+                                d.id == thislink.data.link[i] ||
+                                d.id == thisNode
+                            )
                                 return "1";
-                            else
-                                return "0.1";
+                            else return "0.1";
                         });
                     })
                     .on("mouseout", function (d) {
@@ -328,7 +346,7 @@ class Visual extends Component {
                             let colors = ["#6c9aff", "#9298b1", "#9298b1", "#9298b1", "#ff5a76", "#93c900"]
                             return colors[status]
                         } catch (e) {
-                            return "#ffc14d"
+                            return "#ffc14d";
                         }
                     })
                     .attr("stroke-width", "3")
@@ -339,19 +357,24 @@ class Visual extends Component {
                         }
                         if (d.data.type == "aws") {
                             return 100;
-                        }
-                        else if (d.data.type == "vpc")
-                            return 80;
-                        else if (d.data.type == "subnets" || d.data.type == "securitygroups")
+                        } else if (d.data.type == "vpc") return 80;
+                        else if (
+                            d.data.type == "subnets" ||
+                            d.data.type == "securitygroups"
+                        )
                             return 70;
-                        else if (d.data.type == "subnet" || d.data.type == "securitygroup")
+                        else if (
+                            d.data.type == "subnet" ||
+                            d.data.type == "securitygroup"
+                        )
                             return 60;
                         else {
                             return 50;
                         }
-                    })
+                    });
 
-                nodeEnter.append("svg:image")
+                nodeEnter
+                    .append("svg:image")
                     .attr("xlink:href", function (d) {
                         if (d.data.type == "ec2")
                             return "/images/compute.svg";
@@ -382,13 +405,12 @@ class Visual extends Component {
                         else if (d.data.type == "subnets")
                             return "/images/subnet group.svg"  
                     })
-                    .attr("x", function (d) { return -30; })
-                    .attr("y", function (d) { return -35; })
                     .attr("height", 60)
                     .attr("width", 60)
                     .on("click", (d) => { click(d, stateFunc, preState) });
 
-                nodeEnter.append("text")
+                nodeEnter
+                    .append("text")
                     .attr("dy", 33)
                     .style("fill", "#ffc14d")
                     .style("font-family", "NanumSquare")
@@ -401,12 +423,9 @@ class Visual extends Component {
 
                 nodeSvg = nodeEnter.merge(nodeSvg);
 
-                simulation
-                    .nodes(nodes)
+                simulation.nodes(nodes);
 
-                simulation.force("link")
-                    .links(links);
-
+                simulation.force("link").links(links);
             }
 
             function ticked() {
@@ -436,10 +455,9 @@ class Visual extends Component {
                         return d.target.y - length;
                     });
 
-                nodeSvg
-                    .attr("transform", function (d) {
-                        return "translate(" + d.x + ", " + d.y + ")";
-                    });
+                nodeSvg.attr("transform", function (d) {
+                    return "translate(" + d.x + ", " + d.y + ")";
+                });
             }
 
             const clickFunc = stateFunc.bind(this);
@@ -456,7 +474,7 @@ class Visual extends Component {
             }
 
             function dragstarted(d) {
-                if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+                if (!d3.event.active) simulation.alphaTarget(0.3).restart();
                 simulation.fix(d);
             }
 
@@ -487,14 +505,13 @@ class Visual extends Component {
     }
 
     async componentDidMount() {
-        this.setState({ keyList: await this.getKeyData() })
-        this.setState({ dataset: await this.getVisualData() })
+        this.setState({ keyList: await this.getKeyData() });
+        this.setState({ dataset: await this.getVisualData() });
 
         if (this.state.isFirst) {
             this.drawChart();
             this.setState({ isFirst: false })
         }
-
     }
 
     render() {
@@ -524,7 +541,22 @@ class Visual extends Component {
                 </svg>
                 <div className="time">
                     <h className="timetext">{this.state.time}</h>
-                    <button className="refresh" onClick={async () => { this.setState({ dataset: await this.getVisualData('data') }); this.drawChart() }}></button>
+                    <button
+                        className="refresh"
+                        onClick={async () => {
+                            this.setState({
+                                dataset: await this.getVisualData("data"),
+                            });
+                            this.drawChart();
+                        }}
+                    >
+                        <IconContext.Provider value={{ className: "icon" }}>
+                            <GrFormRefresh
+                                className="refresh-icon"
+                                color="red"
+                            />
+                        </IconContext.Provider>
+                    </button>
                 </div>
             </>
         );
