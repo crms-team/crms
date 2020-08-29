@@ -11,6 +11,7 @@ class ContentSummary extends Component{
     render(){
         return(
             <div>
+                {JSON.stringify(this.props.data)}
                 <>1번째</>
             </div>
         )
@@ -37,21 +38,17 @@ class ContentPort extends Component{
     }
 }
 
-const tabContent = {
-    0 : <ContentSummary />,
-    1 : <ContentSubnet />,
-    2 : <ContentPort />    
-}
-
-
-class Detail extends Component{
-    async componentDidMount(){
-        this.setState({
-            data : await this.getDetail()
-        })
+class Detail extends Component{   
+    constructor(props){
+        super(props);
+        this.state = {
+            clickNum : 0,
+            activeContent : 0,
+            data: undefined,
+        }
     }
-    
-    async getDetail(){
+
+    async getDetail() {
         let key_id=this.props.match.params.key_id;
         let resource=this.props.match.params.type;
         let resource_id=this.props.match.params.id;
@@ -67,14 +64,11 @@ class Detail extends Component{
         let resopnse=await (await fetch(url)).json()
         return resopnse.data
     }
-    
-    constructor(props){
-        super(props);
-        this.state = {
-            clickNum : 0,
-            activeContent : 0,
-            data: undefined
-        }
+
+    async componentDidMount(){
+        this.setState({
+            data : await this.getDetail()
+        })
     }
     
 
@@ -114,9 +108,12 @@ class Detail extends Component{
                             })
                         }
                     </ul>
+
                     <div className='tab-content-container'>
                         <div className='tab-content'>
-                            {tabContent[activeContent]}
+                            {activeContent == 0 && <ContentSummary data={this.state.data} /> }
+                            {activeContent == 1 && <ContentSubnet data={this.state.data} /> }
+                            {activeContent == 2 && <ContentPort data={this.state.data} /> }
                         </div>
                     </div>
                 </div>
