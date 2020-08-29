@@ -155,6 +155,7 @@ async function saveData(path, keyId, keyVendor, keyData){
 
 module.exports = {
     saveData: saveData,
-    getLastDataFileName: getLastDataFileName
+    getLastDataFileName: getLastDataFileName,
+    resourceIdKeys: resourceIdKeys
 }
 
