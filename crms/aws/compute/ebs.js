@@ -70,7 +70,7 @@ module.exports = {
         delete: deleteVolume
     },
     etc: {
-        attachVolume: attachVolume,
-        detachVolume: detachVolume
+        attach: attachVolume,
+        detach: detachVolume
     }
 }

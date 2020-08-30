@@ -270,7 +270,7 @@ module.exports = server => {
     // /api/cloud/data/:resource/etc/:func
     // execute cloud resource etc functions
     {
-        server.post("/api/cloud/data/:vendor/:resource/etc/:func", async (req, res) => {
+        server.post("/api/cloud/data/:resource/etc/:func", async (req, res) => {
             let keyId = req.body.key_id
             let func = req.params.func
             let resource = req.params.resource
