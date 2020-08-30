@@ -15,7 +15,7 @@ class App extends Component {
           return <Redirect to="/"/>
       }
       else if((window.location.href=="http://localhost:3000/")&&(sessionStorage.login=="true")){
-          return <Redirect to="/board"/>
+          return <Redirect to="/dashboard"/>
       }
     }  
 
@@ -24,10 +24,10 @@ class App extends Component {
             <div className="App">
                 <Route exact path="/" component={Passwd} />
                 {this.Auth()}
-                <Route exact path="/list/:type" component={Resource} />
-                <Route exact path="/board" component={Dashboard} />
+                <Route exact path="/resources/:type" component={Resource} />
+                <Route exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/detail/:key_id/:type/:id" component={Detail} />
-                <Route exact path="/visual" component={Visualization} />
+                <Route exact path="/visualization" component={Visualization} />
                 <Route exact path="/history" component={History}/>
                 <Route exact path="/setting" component={Setting} />
             </div>

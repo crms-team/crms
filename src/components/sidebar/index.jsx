@@ -46,7 +46,7 @@ class Sidebar extends Component{
                         </a>  
                                 { isDashboard &&
                                     <>
-                                        <Link to="/board"> <p className="menulist-in dashboard">Home</p></Link>
+                                        <Link to="/dashboard"> <p className="menulist-in dashboard">Home</p></Link>
                                         <Link to="/history"><p className="menulist-in dashboard">History</p></Link>
                                     </>
                                 }
@@ -64,25 +64,25 @@ class Sidebar extends Component{
                                 isResource &&
                                 <>
                                     <p className="menulist-in resource">Compute</p>
-                                    <Link to="/list/server"><p className="submenu">Server</p></Link>
-                                    <Link to="/list/volume"><p className="submenu">Volume</p></Link>
-                                    <Link to="/list/ip"><p className="submenu">IP</p></Link>
-                                    <Link to="/list/keypair"><p className="submenu">Key Pair</p></Link>
+                                    <Link to="/resources/server"><p className="submenu">Server</p></Link>
+                                    <Link to="/resources/volume"><p className="submenu">Volume</p></Link>
+                                    <Link to="/resources/ip"><p className="submenu">IP</p></Link>
+                                    <Link to="/resources/keypair"><p className="submenu">Key Pair</p></Link>
                                         
-                                    <Link to="/list/database"> <p className="menulist-in resource">Database</p></Link>
+                                    <Link to="/resources/database"> <p className="menulist-in resource">Database</p></Link>
                                                                     
                                     <p className="menulist-in resource">Network</p>
-                                    <Link to="/list/vpc"><p className="submenu">VPC</p></Link>
-                                    <Link to="/list/subnet"><p className="submenu">Subnet</p></Link>
-                                    <Link to="/list/securitygroup"><p className="submenu">Security Group</p></Link>
+                                    <Link to="/resources/vpc"><p className="submenu">VPC</p></Link>
+                                    <Link to="/resources/subnet"><p className="submenu">Subnet</p></Link>
+                                    <Link to="/resources/securitygroup"><p className="submenu">Security Group</p></Link>
                                     
                                     <p className="menulist-in resource">Storage</p>
-                                    <Link to="/list/bucket"><p className="submenu">Bucket</p></Link>
+                                    <Link to="/resources/bucket"><p className="submenu">Bucket</p></Link>
                                 </>
                             }
                             
                            {/*      MENU - VISUALIZATION    */}         
-                           <Link to="/visual"><li>
+                           <Link to="/visualization"><li>
                                 <FiLayers className="material-icons"/>
                                 <p className="menulist">Visualization</p>
                             </li></Link>

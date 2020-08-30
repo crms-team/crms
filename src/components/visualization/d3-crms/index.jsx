@@ -19,6 +19,67 @@ import { resourceSvg, resourceState } from "../resource-params";
 import { IconContext } from "react-icons";
 import { GrFormRefresh } from "react-icons/gr";
 
+const CIRCLE_SIZE_L1 = 50
+const CIRCLE_SIZE_L2 = 65
+const CIRCLE_SIZE_L3 = 80
+const CIRCLE_SIZE_L4 = 95
+const CIRCLE_SIZE_L5 = 120
+const CIRCLE_SIZE_L6 = 135
+const CIRCLE_SIZE_L7 = 150
+
+const IMAGE_TYPE={
+    ebs:{
+        image:"/images/ebs.svg", circle_size: CIRCLE_SIZE_L1
+    },
+    ec2:{
+        image:"/images/compute.svg", circle_size:CIRCLE_SIZE_L2
+    },
+    rds:{
+        image:"/images/rds group.svg", circle_size:CIRCLE_SIZE_L2
+    },
+    s3:{
+        image:"/images/storage.svg", circle_size:CIRCLE_SIZE_L2
+    },
+    subnet:{
+        image:"/images/ec2-container-registry.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    internetgateway: {
+        image:"/images/internet-gateway.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    securitygroup:{
+        image:"/images/security_group.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    s3_group:{
+        image:"/images/s3 group.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    rds_group:{
+        image:"/images/rds group.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    securitygroups:{
+        image:"/images/securityGroup group.svg", circle_size: CIRCLE_SIZE_L4
+    },
+    subnets:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },
+    vpc:{
+        image:"/images/VPC.svg", circle_size: CIRCLE_SIZE_L5
+    },
+    aws: {
+        image:"/images/cloud.svg", circle_size: CIRCLE_SIZE_L6
+    },
+    CRMS: {
+        image:"/images/CRMS.svg", circle_size: CIRCLE_SIZE_L7
+    }
+}
+
+function getLinkOpacity(source,target){
+    for(let i=0;i<source.children.length;i++){
+        if(source.children[i].id==target.id){
+            return 1
+        }
+    }
+}
+
 class Visual extends Component {
     constructor(props) {
         super(props);
@@ -256,6 +317,7 @@ class Visual extends Component {
                 let linkEnter = linkSvg.enter()
                     .append("line")
                     .attr("class", "link")
+                    .style("stroke-width","2.5")
                     .style("stroke", "#ffc14d")
                     .attr("marker-end", "url(#end)");
 
@@ -280,18 +342,26 @@ class Visual extends Component {
                                 : 0.2;
                         });
                         d3.selectAll(".node").attr("opacity", function (d) {
-                            if (d.data.link.length > 0) {
-                                for (let i = 0; i < d.data.link.length; i++) {
-                                    if (d.data.link[i] == thislink.data.id)
-                                        return "1";
-                                }
+                            if(thislink.id==d.data.id||thislink.id==d.data.name){
+                                return 1;
                             }
-                            if (
-                                d.id == thislink.data.link[i] ||
-                                d.id == thisNode
-                            )
-                                return "1";
-                            else return "0.1";
+                            try{
+                                for(let j=0;j<thislink.children.length;j++){
+                                    if(thislink.children[j].id==d.id){
+                                        return 1
+                                    }
+                                }
+                                for(let i=0;i<d.children.length;i++){
+                                    if(d.children[i].id==thislink.id){
+                                        return 1
+                                    }
+                                }
+                                return 0.2
+                            }
+                            catch{
+                                return 0.2
+                            }
+                            /**/
                         });
                     })
                     .on("mouseout", function (d) {
@@ -352,67 +422,36 @@ class Visual extends Component {
                     .attr("stroke-width", "3")
                     .attr("fill", "none")
                     .attr("r", function (d) {
-                        if (d.data.type == "CRMS") {
-                            return 150;
-                        }
-                        if (d.data.type == "aws") {
-                            return 100;
-                        } else if (d.data.type == "vpc") return 80;
-                        else if (
-                            d.data.type == "subnets" ||
-                            d.data.type == "securitygroups"
-                        )
-                            return 70;
-                        else if (
-                            d.data.type == "subnet" ||
-                            d.data.type == "securitygroup"
-                        )
-                            return 60;
-                        else {
-                            return 50;
-                        }
+                        return IMAGE_TYPE[d.data.type].circle_size
                     });
 
                 nodeEnter
                     .append("svg:image")
                     .attr("xlink:href", function (d) {
-                        if (d.data.type == "ec2")
-                            return "/images/compute.svg";
-                        else if (d.data.type == "securitygroup")
-                            return "/images/security_group.svg";
-                        else if (d.data.type == "subnet")
-                            return "/images/ec2-container-registry.svg";
-                        else if (d.data.type == "vpc")
-                            return "/images/VPC.svg";
-                        else if (d.data.type == "aws")
-                            return "/images/cloud.svg";
-                        else if (d.data.type == "ebs")
-                            return "/images/ebs.svg";
-                        else if (d.data.type == "rds")
-                            return "/images/rds group.svg"
-                        else if (d.data.type == "s3")
-                            return "/images/storage.svg"
-                        else if (d.data.type == "internetgateway")
-                            return "/images/internet-gateway.svg"
-                        else if (d.data.type == "CRMS")
-                            return "/images/CRMS.svg"
-                        else if (d.data.type == "rds_group")
-                            return "/images/rds group.svg"
-                        else if (d.data.type == "s3_group")
-                            return "/images/s3 group.svg"
-                        else if (d.data.type == "securitygroups")
-                            return "/images/securityGroup group.svg"
-                        else if (d.data.type == "subnets")
-                            return "/images/subnet group.svg"  
+                        return IMAGE_TYPE[d.data.type].image
                     })
-                    .attr("height", 60)
-                    .attr("width", 60)
+                    .attr("height", function(d){
+                        return (IMAGE_TYPE[d.data.type].circle_size*(1.5))
+                    })
+                    .attr("width", function(d){
+                        return (IMAGE_TYPE[d.data.type].circle_size*(1.5))
+                    })
+                    .attr("x", function(d){
+                        return -(IMAGE_TYPE[d.data.type].circle_size*(1.5))/2
+                    })
+                    .attr("y", function(d){
+                        return -(IMAGE_TYPE[d.data.type].circle_size*(1.5))/2
+                    })
                     .on("click", (d) => { click(d, stateFunc, preState) });
 
                 nodeEnter
                     .append("text")
-                    .attr("dy", 33)
+                    .attr("dy", (d)=>{
+                        return (IMAGE_TYPE[d.data.type].circle_size*(1.5))/2+3
+                    })
                     .style("fill", "#ffc14d")
+                    .attr('stroke', 'white')
+                    .attr("stroke-width", "0.2")
                     .style("font-family", "NanumSquare")
                     .style("font-weight", "bold")
                     .style("font-size", "14px")
@@ -429,29 +468,25 @@ class Visual extends Component {
             }
 
             function ticked() {
-                function cal(x, y, x1, y1, type) {
-                    let angle = Math.atan2(y1 - y, x1 - x)
-                }
-
                 linkSvg
                     .attr("x1", function (d) {
                         let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                        let length = 150 * Math.cos(angle);
+                        let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.cos(angle)*1.25;
                         return d.source.x + length;
                     })
                     .attr("y1", function (d) {
                         let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                        let length = 150 * Math.sin(angle);
+                        let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.sin(angle)*1.25;
                         return d.source.y + length;
                     })
                     .attr("x2", function (d) {
                         let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                        let length = 120 * Math.cos(angle);
+                        let length = IMAGE_TYPE[d.target.data.type].circle_size * Math.cos(angle)*1.28;
                         return d.target.x - length;
                     })
                     .attr("y2", function (d) {
                         let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                        let length = 120 * Math.sin(angle);
+                        let length = IMAGE_TYPE[d.target.data.type].circle_size * Math.sin(angle)*1.28;
                         return d.target.y - length;
                     });
 
