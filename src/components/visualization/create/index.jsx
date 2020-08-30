@@ -64,9 +64,10 @@ class Index extends React.Component {
                     <option value="EC2">EC2</option>
                     <option value="EIP">EIP</option>
                     <option value="EBS">EBS</option>
+                    <option value="KeyPair">KeyPair</option>
                     <option value="VPC">VPC</option>
                     <option value="Subnet">Subnet</option>
-                    <option value="SecuriyGroup">Security Group</option>
+                    <option value="SecurityGroup">SecurityGroup</option>
                     <option value="RDS">RDS</option>
                     <option value="S3">S3</option>
                 </select>
@@ -580,6 +581,396 @@ class EBS extends React.Component {
                             <option>sc1</option>
                             <option>st1</option>
                         </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Tags</Form.Label>
+                        <Form.Control
+                            placeholder="Enter name"
+                            onChange={(e) => {
+                                let tmp = [
+                                    {
+                                        Key: "Name",
+                                        Value: "",
+                                    },
+                                ];
+                                tmp[0].Value = e.target.value;
+                                this.func("Tags", tmp);
+                            }}
+                        />
+                    </Form.Group>
+                </Tab.Container>
+            </>
+        );
+    }
+}
+
+class KeyPair extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.props.func.bind(this);
+    }
+
+    render() {
+        let func = this.func;
+        return (
+            <>
+                <Tab.Container
+                    id="list-group-tabs-example"
+                    defaultActiveKey="#tag"
+                >
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>KeyName</Form.Label>
+                        <Form.Control
+                            placeholder="Enter KeyName"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("KeyName", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>DryRun</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("DryRun", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                DryRun
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Tags</Form.Label>
+                        <Form.Control
+                            placeholder="Enter name"
+                            onChange={(e) => {
+                                let tmp = [
+                                    {
+                                        Key: "Name",
+                                        Value: "",
+                                    },
+                                ];
+                                tmp[0].Value = e.target.value;
+                                this.func("Tags", tmp);
+                            }}
+                        />
+                    </Form.Group>
+                </Tab.Container>
+            </>
+        );
+    }
+}
+
+class SecurityGroup extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.props.func.bind(this);
+    }
+
+    render() {
+        let func = this.func;
+        return (
+            <>
+                <Tab.Container
+                    id="list-group-tabs-example"
+                    defaultActiveKey="#tag"
+                >
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Description"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Description", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>GroupName</Form.Label>
+                        <Form.Control
+                            placeholder="Enter GroupName"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("GroupName", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>DryRun</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("DryRun", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                DryRun
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Tags</Form.Label>
+                        <Form.Control
+                            placeholder="Enter name"
+                            onChange={(e) => {
+                                let tmp = [
+                                    {
+                                        Key: "Name",
+                                        Value: "",
+                                    },
+                                ];
+                                tmp[0].Value = e.target.value;
+                                this.func("Tags", tmp);
+                            }}
+                        />
+                    </Form.Group>
+                </Tab.Container>
+            </>
+        );
+    }
+}
+
+class VPC extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.props.func.bind(this);
+    }
+
+    render() {
+        let func = this.func;
+        return (
+            <>
+                <Tab.Container
+                    id="list-group-tabs-example"
+                    defaultActiveKey="#tag"
+                >
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>CidrBlock</Form.Label>
+                        <Form.Control
+                            placeholder="Enter CidrBlock"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("CidrBlock", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>AmazonProvidedIpv6CidrBlock</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("AmazonProvidedIpv6CidrBlock", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                AmazonProvidedIpv6CidrBlock
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>DryRun</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("DryRun", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                DryRun
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>InstanceTenancy</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("InstanceTenancy", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                InstanceTenancy
+                            </option>
+                            <option>default</option>
+                            <option>dedicated</option>
+                            <option>host</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Ipv6CidrBlock</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Ipv6CidrBlock"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Ipv6CidrBlock", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Ipv6CidrBlockNetworkBorderGroup</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Ipv6CidrBlockNetworkBorderGroup"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Ipv6CidrBlockNetworkBorderGroup", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Ipv6Pool</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Ipv6Pool"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Ipv6Pool", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Tags</Form.Label>
+                        <Form.Control
+                            placeholder="Enter name"
+                            onChange={(e) => {
+                                let tmp = [
+                                    {
+                                        Key: "Name",
+                                        Value: "",
+                                    },
+                                ];
+                                tmp[0].Value = e.target.value;
+                                this.func("Tags", tmp);
+                            }}
+                        />
+                    </Form.Group>
+                </Tab.Container>
+            </>
+        );
+    }
+}
+
+class Subnet extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.props.func.bind(this);
+    }
+
+    render() {
+        let func = this.func;
+        return (
+            <>
+                <Tab.Container
+                    id="list-group-tabs-example"
+                    defaultActiveKey="#tag"
+                >
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>CidrBlock</Form.Label>
+                        <Form.Control
+                            placeholder="Enter CidrBlock"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("CidrBlock", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Form.Row className="align-items-center">
+                        <Col xs="auto" className="my-1">
+                        <Form.Label className="mr-sm-2">
+                            VpcId
+                        </Form.Label>
+                        </Col>
+                        <Col xs="auto" style={{float:"right!important"}}>
+                            <Button size="sm" style={
+                                {backgroundColor:"#494949",
+                                color:"#ffc14d",
+                                border:"none",
+                                marginBottom:".5rem"
+                                }}
+                            >
+                                <FaSync  style={{
+                                marginBottom:".2rem"
+                                }}/>
+                            </Button>
+                        </Col>
+                    </Form.Row>
+                        <Form.Control as="select">
+                            <option value="" disabled selected>
+                                VpcId
+                            </option>
+                            {
+                            }
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>AvailabilityZone</Form.Label>
+                        <Form.Control
+                            placeholder="Enter AvailabilityZone"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("AvailabilityZone", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>AvailabilityZoneId</Form.Label>
+                        <Form.Control
+                            placeholder="Enter AvailabilityZoneId"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("AvailabilityZoneId", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>DryRun</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("DryRun", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                DryRun
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Ipv6CidrBlock</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Ipv6CidrBlock"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Ipv6CidrBlock", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>OutpostArn</Form.Label>
+                        <Form.Control
+                            placeholder="Enter OutpostArn"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("OutpostArn", val);
+                            }}
+                        />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
@@ -1162,6 +1553,38 @@ class CreateModal extends React.Component {
         else if (this.state.type == "EBS") {
             this.setState({
                 component: <EBS func={this.func.bind(this)} />,
+                but_type: (
+                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
+                ),
+            });
+        }
+        else if (this.state.type == "KeyPair") {
+            this.setState({
+                component: <KeyPair func={this.func.bind(this)} />,
+                but_type: (
+                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
+                ),
+            });
+        }
+        else if (this.state.type == "SecurityGroup") {
+            this.setState({
+                component: <SecurityGroup func={this.func.bind(this)} />,
+                but_type: (
+                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
+                ),
+            });
+        }
+        else if (this.state.type == "Subnet") {
+            this.setState({
+                component: <Subnet func={this.func.bind(this)} />,
+                but_type: (
+                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
+                ),
+            });
+        }
+        else if (this.state.type == "VPC") {
+            this.setState({
+                component: <VPC func={this.func.bind(this)} />,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
