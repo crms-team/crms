@@ -399,7 +399,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     flex: '1 1 100%',
   },
   icon : {
-      color : '#292933'
+      color : '#27262b!important'
   }
 }));
 
