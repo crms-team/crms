@@ -11,6 +11,40 @@ import {
 } from "react-bootstrap";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { FaSync } from 'react-icons/fa';
+
+const TYPEID = {
+    aws: {
+        subnet:{
+            id:"SubnetId",
+            url:"subnet"
+        },
+        vpc:{
+            id:"VpcId",
+            url:"vpc"
+        },
+        securitygroup:{
+            id:"GroupId",
+            url:"securityGroup"
+        },
+        keypair:{
+            id:"KeyPairId",
+            url:"keyPair"
+        }  
+    }
+}
+
+export async function getDynamicOption (key_id,key_vendor,type) {
+    let tmp_type=TYPEID[key_vendor][type]["url"]
+    let url=`http://localhost:4000/api/cloud/data/${key_vendor}/${tmp_type}?key_id=${key_id}&type=data`;
+    let items=[];
+    const response = await fetch(url).then(res=>res.json())
+    for (let i = 0; i < response.data.length; i++) {
+        let tmpOptionId=response.data[i][TYPEID[key_vendor][type]["id"]];
+        items.push(tmpOptionId);
+    }
+    return items;
+}
 
 class Index extends React.Component {
     render() {
@@ -28,6 +62,8 @@ class Index extends React.Component {
                         Resource
                     </option>
                     <option value="EC2">EC2</option>
+                    <option value="EIP">EIP</option>
+                    <option value="EBS">EBS</option>
                     <option value="VPC">VPC</option>
                     <option value="Subnet">Subnet</option>
                     <option value="SecuriyGroup">Security Group</option>
@@ -47,7 +83,7 @@ class SelVendor extends React.Component {
         };
     }
 
-    dynamicoption() {
+    getDynamicKey() {
         let items = [];
         var keys = this.state.key;
         for (let i = 0; i < keys.length; i++) {
@@ -71,7 +107,7 @@ class SelVendor extends React.Component {
                         {" "}
                         Vendor{" "}
                     </option>
-                    {this.dynamicoption()}
+                    {this.getDynamicKey()}
                 </select>
             </>
         );
@@ -106,14 +142,66 @@ class EC2 extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            key_name:this.props.key_name
+            key_name:this.props.key_name,
+            key_vendor:this.props.key_vendor,
+            vpc_items:[],
+            subnet_items:[],
+            security_items:[],
+            key_items:[]
         }
-
         this.func = this.props.func.bind(this);
+        
+        this.init()
     }
+
+    async init(){
+        let vpcList = await this.getVpcList()
+        let subnetList = await this.getSubnetList()
+        let securityList = await this.getSgList()
+        let keyList= await this.getKeypairList()
+
+        this.setState({
+            vpc_items: vpcList,
+            subnet_items: subnetList,
+            security_items:securityList,
+            key_items: keyList
+        })
+    }
+
+    async tmp_get(){
+        let vpcList = await this.getVpcList()
+        
+        this.setState({
+            vpc_items: vpcList,
+        })
+        console.log(this.state)
+    }
+
+    async getVpcList (){
+        console.log("!")
+        return await getDynamicOption(this.state.key_name,this.state.key_vendor,"vpc")
+    }
+
+    async getSubnetList (){
+        return await getDynamicOption(this.state.key_name,this.state.key_vendor,"subnet")
+    }
+
+    async getSgList (){
+        return await getDynamicOption(this.state.key_name,this.state.key_vendor,"securitygroup")
+    }
+
+    async getKeypairList (){
+        return await getDynamicOption(this.state.key_name,this.state.key_vendor,"keypair")
+    }
+    
 
     render() {
         let func = this.func;
+        let vpcList = this.state.vpc_items
+        let subnetList=this.state.subnet_items
+        let securityList=this.state.security_items
+        let keyList=this.state.key_items
+
         return (
             <>
                 <Tab.Container
@@ -147,18 +235,17 @@ class EC2 extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                console.log(this.props.dataset)
                                 this.func("ImageId", val);
                             }}
                         >
                             <option value="" disabled selected>
                                 Ami
                             </option>
-                            <option>ami-05a4cce8936a89f06</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            {
+                               vpcList.map(v=>{
+                                   return <option value={v}>{v}</option>
+                               })
+                            }
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
@@ -210,20 +297,59 @@ class EC2 extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>VPC</Form.Label>
+                    <Form.Row className="align-items-center">
+                        <Col xs="auto" className="my-1">
+                        <Form.Label className="mr-sm-2">
+                            VPC
+                        </Form.Label>
+                        </Col>
+                        <Col xs="auto" style={{float:"right!important"}}>
+                            <Button size="sm" style={
+                                {backgroundColor:"#494949",
+                                color:"#ffc14d",
+                                border:"none",
+                                marginBottom:".5rem"
+                                }}
+                                onClick={()=>this.tmp_get()}
+                            >
+                                <FaSync  style={{
+                                marginBottom:".2rem"
+                                }}/>
+                            </Button>
+                        </Col>
+                    </Form.Row>
                         <Form.Control as="select">
                             <option value="" disabled selected>
                                 VPC
                             </option>
-                            <option>test_vpc</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            {
+                               vpcList.map(v=>{
+                                   return <option value={v}>{v}</option>
+                               })
+                            }
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>Subnet</Form.Label>
+                        <Form.Row className="align-items-center">
+                            <Col xs="auto" className="my-1">
+                            <Form.Label className="mr-sm-2">
+                                Subnet
+                            </Form.Label>
+                            </Col>
+                            <Col xs="auto" className="my-1">
+                                <Button size="sm" style={
+                                    {backgroundColor:"#494949",
+                                    color:"#ffc14d",
+                                    border:"none",
+                                    marginBottom:".5rem"
+                                    }}
+                                >
+                                    <FaSync style={{
+                                marginBottom:".2rem"
+                                }}/>
+                                </Button>
+                            </Col>
+                        </Form.Row>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -234,15 +360,34 @@ class EC2 extends React.Component {
                             <option value="" disabled selected>
                                 Subnet
                             </option>
-                            <option>test_sub</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            {
+                               subnetList.map(v=>{
+                                   return <option value={v}>{v}</option>
+                               })
+                            }
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>SecurityGroup</Form.Label>
+                        <Form.Row className="align-items-center">
+                                <Col xs="auto" className="my-1">
+                                <Form.Label className="mr-sm-2">
+                                    Security Group
+                                </Form.Label>
+                                </Col>
+                                <Col xs="auto" className="my-1">
+                                    <Button size="sm" style={
+                                        {backgroundColor:"#494949",
+                                        color:"#ffc14d",
+                                        border:"none",
+                                        marginBottom:".5rem"
+                                        }}
+                                    >
+                                    <FaSync style={{
+                                    marginBottom:".2rem"
+                                    }}/>
+                                    </Button>
+                                </Col>
+                        </Form.Row>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -254,15 +399,34 @@ class EC2 extends React.Component {
                             <option value="" disabled selected>
                                 SecurityGroup
                             </option>
-                            <option>test_sg</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            {
+                               securityList.map(v=>{
+                                   return <option value={v}>{v}</option>
+                               })
+                            }
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>KeyName</Form.Label>
+                    <Form.Row className="align-items-center">
+                            <Col xs="auto" className="my-1">
+                            <Form.Label className="mr-sm-2">
+                                KeyPair
+                            </Form.Label>
+                            </Col>
+                            <Col xs="auto" className="my-1">
+                                <Button size="sm" style={
+                                    {backgroundColor:"#494949",
+                                    color:"#ffc14d",
+                                    border:"none",
+                                    marginBottom:".5rem"
+                                    }}
+                                >
+                                <FaSync style={{
+                                marginBottom:".2rem"
+                                }}/>
+                                </Button>
+                            </Col>
+                        </Form.Row>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -273,11 +437,200 @@ class EC2 extends React.Component {
                             <option value="" disabled selected>
                                 KeyName
                             </option>
-                            <option>test_sg</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            {
+                               keyList.map(v=>{
+                                   return <option value={v}>{v}</option>
+                               })
+                            }
+                        </Form.Control>
+                    </Form.Group>
+                </Tab.Container>
+            </>
+        );
+    }
+}
+
+class EBS extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.props.func.bind(this);
+    }
+
+    render() {
+        let func = this.func;
+        return (
+            <>
+                <Tab.Container
+                    id="list-group-tabs-example"
+                    defaultActiveKey="#tag"
+                >
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>AvailabilityZone</Form.Label>
+                        <Form.Control
+                            placeholder="Enter AvailabilityZone"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("AvailabilityZone", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>DryRun</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("DryRun", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                DryRun
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Encrypted</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Encrypted", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                Encrypted
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Iops</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Iops"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Iops", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>KmsKeyId</Form.Label>
+                        <Form.Control
+                            placeholder="Enter KmsKeyId"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("KmsKeyId", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>MultiAttachEnabled</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("MultiAttachEnabled", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                MultiAttachEnabled
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>OutpostArn</Form.Label>
+                        <Form.Control
+                            placeholder="Enter OutpostArn"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("OutpostArn", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Size</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Size"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Size", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>VolumeType</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                this.func("VolumeType", e.target.value);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                VolumeType
+                            </option>
+                            <option>standard</option>
+                            <option>io1</option>
+                            <option>io2</option>
+                            <option>gp2</option>
+                            <option>sc1</option>
+                            <option>st1</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Tags</Form.Label>
+                        <Form.Control
+                            placeholder="Enter name"
+                            onChange={(e) => {
+                                let tmp = [
+                                    {
+                                        Key: "Name",
+                                        Value: "",
+                                    },
+                                ];
+                                tmp[0].Value = e.target.value;
+                                this.func("Tags", tmp);
+                            }}
+                        />
+                    </Form.Group>
+                </Tab.Container>
+            </>
+        );
+    }
+}
+
+class EIP extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.props.func.bind(this);
+    }
+
+    render() {
+        let func = this.func;
+        return (
+            <>
+                <Tab.Container
+                    id="list-group-tabs-example"
+                    defaultActiveKey="#tag"
+                >
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Domain</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Domain", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                Domain
+                            </option>
+                            <option>standard</option>
+                            <option>vpc</option>
                         </Form.Control>
                     </Form.Group>
                 </Tab.Container>
@@ -442,7 +795,7 @@ class RDS extends React.Component {
                         />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Iops</Form.Label>
+                        <Form.Label>MaxAllocatedStorage</Form.Label>
                         <Form.Control
                             placeholder="Enter MaxAllocatedStorage"
                             onChange={(e) => {
@@ -468,7 +821,27 @@ class RDS extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>SecurityGroup</Form.Label>
+                        <Form.Row className="align-items-center">
+                            <Col xs="auto" className="my-1">
+                            <Form.Label className="mr-sm-2">
+                                Security Group
+                            </Form.Label>
+                            </Col>
+                            <Col xs="auto" style={{float:"right!important"}}>
+                                <Button size="sm" style={
+                                    {backgroundColor:"#494949",
+                                    color:"#ffc14d",
+                                    border:"none",
+                                    marginBottom:".5rem"
+                                    }}
+                                    onClick={()=>this.tmp_get()}
+                                >
+                                    <FaSync  style={{
+                                    marginBottom:".2rem"
+                                    }}/>
+                                </Button>
+                            </Col>
+                        </Form.Row>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -488,7 +861,27 @@ class RDS extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>VpcSecurityGroupIds</Form.Label>
+                        <Form.Row className="align-items-center">
+                            <Col xs="auto" className="my-1">
+                            <Form.Label className="mr-sm-2">
+                                VPC Security Group
+                            </Form.Label>
+                            </Col>
+                            <Col xs="auto" style={{float:"right!important"}}>
+                                <Button size="sm" style={
+                                    {backgroundColor:"#494949",
+                                    color:"#ffc14d",
+                                    border:"none",
+                                    marginBottom:".5rem"
+                                    }}
+                                    onClick={()=>this.tmp_get()}
+                                >
+                                    <FaSync  style={{
+                                    marginBottom:".2rem"
+                                    }}/>
+                                </Button>
+                            </Col>
+                        </Form.Row>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -610,7 +1003,27 @@ class RDS extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DBSubnetGroupName</Form.Label>
+                        <Form.Row className="align-items-center">
+                            <Col xs="auto" className="my-1">
+                            <Form.Label className="mr-sm-2">
+                                Subnet
+                            </Form.Label>
+                            </Col>
+                            <Col xs="auto" style={{float:"right!important"}}>
+                                <Button size="sm" style={
+                                    {backgroundColor:"#494949",
+                                    color:"#ffc14d",
+                                    border:"none",
+                                    marginBottom:".5rem"
+                                    }}
+                                    onClick={()=>this.tmp_get()}
+                                >
+                                    <FaSync  style={{
+                                    marginBottom:".2rem"
+                                    }}/>
+                                </Button>
+                            </Col>
+                        </Form.Row>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -725,7 +1138,7 @@ class CreateModal extends React.Component {
         }
         if (this.state.type == "EC2") {
             this.setState({
-                component: <EC2 func={this.func.bind(this)} dataset={this.props.dataset} key_name={this.state.key_name}/>,
+                component: <EC2 func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name}/>,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
@@ -733,6 +1146,22 @@ class CreateModal extends React.Component {
         } else if (this.state.type == "RDS") {
             this.setState({
                 component: <RDS func={this.func.bind(this)} />,
+                but_type: (
+                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
+                ),
+            });
+        }
+        else if (this.state.type == "EIP") {
+            this.setState({
+                component: <EIP func={this.func.bind(this)} />,
+                but_type: (
+                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
+                ),
+            });
+        }
+        else if (this.state.type == "EBS") {
+            this.setState({
+                component: <EBS func={this.func.bind(this)} />,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),

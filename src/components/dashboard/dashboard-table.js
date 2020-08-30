@@ -4,7 +4,7 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 
 function rowColorStyle(row) {
     // Transform, Create, Modify, Remove
-    return row.title.split(' ')[0]
+    return row.title
 }
 
 class DashboardTable extends Component {

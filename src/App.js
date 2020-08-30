@@ -6,7 +6,7 @@ import Dashboard from "./components/dashboard";
 import Resource from "./components/resource";
 import Detail from "./components/detail/detail";
 import History from "./components/history"
-import Setting from "./components/setting"
+import Setting from "./components/setting/index"
 import "./App.css";
 
 class App extends Component {

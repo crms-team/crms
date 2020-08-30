@@ -21,7 +21,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PauseIcon from '@material-ui/icons/Pause';
 import './table.scss';
-import {useParams, Redirect} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 
 function createData(keys, data) {
   let result = {}
@@ -231,7 +231,7 @@ const MATCHINGS = {
     },
     rds: (key_id, resource) => {
       let attr = resource
-      console.log(resource)
+
       return {
         key_id: key_id,
         identifier: attr.DBInstanceIdentifier,
@@ -399,13 +399,14 @@ const useToolbarStyles = makeStyles((theme) => ({
     flex: '1 1 100%',
   },
   icon : {
-      color : '#292933'
+      color : 'black!important'
   }
 }));
 
 const EnhancedTableToolbar = (props) => {
   let classes = useToolbarStyles();
-  const { numSelected } = props;
+  const numSelected  = props.numSelected.length;
+  const { data }= props;
   classes = {"root":"makeStyles-root-5","highlight":"makeStyles-highlight-6","title":"makeStyles-title-7","icon":"makeStyles-icon-8"}
   return (
     
@@ -427,17 +428,26 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <>
           <Tooltip title="On">
-            <IconButton aria-label="off">
+            <IconButton 
+              aria-label="off"
+              onClick={()=>console.log(props.numSelected,data[props.numSelected[0]])}
+            >
               <PlayArrowIcon className={classes.icon} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Off">
-              <IconButton aria-label="off">
+              <IconButton 
+                onClick={()=>console.log("2")}
+                aria-label="off"
+              >
               <PauseIcon className={classes.icon} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
-            <IconButton aria-label="delete">
+            <IconButton 
+              aria-label="delete"
+              onClick={()=>console.log("3")}
+            >
               <DeleteIcon className={classes.icon} />
             </IconButton>
           </Tooltip>
@@ -548,7 +558,6 @@ export default function EnhancedTable() {
 
   const handleClick= (event,name,row)=>{
     if(event.target.type=="checkbox"){
-      console.log(name)
       const selectedIndex = selected.indexOf(name);
       let newSelected = [];
       if (selectedIndex === -1) {
@@ -585,7 +594,7 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  const emptyRows = 5+rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <>
@@ -593,7 +602,7 @@ export default function EnhancedTable() {
     <div className="table">
         <div className={classes.root}>
         <Paper className={classes.paper}>
-            <EnhancedTableToolbar numSelected={selected.length} />
+            <EnhancedTableToolbar numSelected={selected} data={rows} />
             <TableContainer>
             <Table
                 className={classes.table}
@@ -615,8 +624,8 @@ export default function EnhancedTable() {
                 {stableSort(rows, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                    const isItemSelected = isSelected(index+type);
-                    const labelId = `enhanced-table-checkbox-${index+type}`;
+                    const isItemSelected = isSelected(index);
+                    const labelId = `enhanced-table-checkbox-${index}`;
                     const table =  Object.keys(row).map((v)=>{
                       return <TableCell align="right">{row[v]}</TableCell>
                     })
@@ -625,10 +634,10 @@ export default function EnhancedTable() {
                         <TableRow
                         hover
                         role="checkbox"
-                        onClick={(event)=> handleClick(event, index+type,row)}
+                        onClick={(event)=> handleClick(event, index,row)}
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={index+type}
+                        key={index}
                         selected={isItemSelected}
                         >
                         <TableCell padding="checkbox">

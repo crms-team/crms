@@ -552,7 +552,7 @@ class Visual extends Component {
     render() {
         return (
             <>
-                <CreateModal dataset={this.state.dataset}/>
+                <CreateModal/>
                 <Modal
                     show={this.state.showHide}
                     size="lg"
