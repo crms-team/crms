@@ -19,7 +19,7 @@ async function getAWSComputeData(key) {
     return {
         ec2: await compute.ec2.default.get(key),
         ebs: await compute.ebs.default.get(key),
-        keyPair: await compute.keyPair.default.get(key),
+        keypair: await compute.keypair.default.get(key),
         eip: await compute.eip.default.get(key)
     }
 }
@@ -28,8 +28,8 @@ async function getAWSNetworkData(key) {
     return {
         vpc: await network.vpc.default.get(key),
         subnet: await network.subnet.default.get(key),
-        securityGroup: await network.securityGroup.default.get(key),
-        internetGateway: await network.internetGateway.default.get(key)
+        securitygroup: await network.securitygroup.default.get(key),
+        internetgateway: await network.internetgateway.default.get(key)
     }
 }
 

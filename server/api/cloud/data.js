@@ -34,29 +34,6 @@ function checkKeyParms(keyId, keys) {
     return undefined
 }
 
-function checkCrmsParams(keyId, resourceType, keys, vendor) {
-    let checkParms = checkKeyParms(keyId, keys)
-
-    if (checkParms) {
-        return checkParms
-    }
-
-    if (resourceType == undefined){
-        return {
-            result: false,
-            msg: "Not Support this resource"
-        }
-    }
-
-    if (vendor != keys[keyId].vendor){
-        return {
-            result: false,
-            msg: "This Key Not Support this vendor"
-        }
-    }
-
-    return undefined
-}
 
 module.exports = server => {
     
@@ -90,23 +67,32 @@ module.exports = server => {
         })
     }
     
-    // /api/cloud/data/:vendor/:resource
+    // /api/cloud/data/:resource
     // get cloud resource data
     {
-        server.get("/api/cloud/data/:vendor/:resource", async (req, res) => {
+        server.get("/api/cloud/data/:resource", async (req, res) => {
+            let data = null
             let keyId = req.query.key_id
             let apiType = req.query.type
-            let vendor = req.params.vendor
             let resource = req.params.resource
-            let resourceType = getType(vendor, resource)
-            let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
             let resourceId = req.query.resource_id
-            let data = null
+            let keys = server.keys.getKeyData(server.config.path)
+            let check = checkKeyParms(keyId, keys)
 
-            if (checkParms) {
-                res.send(checkParms)
-                return 
+            if (check) {
+                res.send(check)
+                return
+            }
+
+            let vendor = keys[keyId].vendor
+            let resourceType = getType(vendor, resource)
+
+            if (resourceType == undefined) { 
+                res.send({
+                    result: false,
+                    msg: "Not Support this resource"
+                })
+                return
             }
 
 
@@ -145,25 +131,34 @@ module.exports = server => {
 
         server.post("/api/cloud/data/:resource", async (req, res) => {
             let keyId = req.body.key_id
-            let params = req.body.parms
-            let vendor = req.params.vendor
+            let args = req.body.args
+            let keys = server.keys.getKeyData(server.config.path)
+            let check = checkKeyParms(keyId, keys)
+
+            if (check) {
+                res.send(check)
+                return
+            }
+
+            let vendor = keys[keyId].vendor
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
-            let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
             
-            if (checkParms) {
-                res.send(checkParms)
-                return 
+            if (resourceType == undefined) { 
+                res.send({
+                    result: false,
+                    msg: "Not Support this resource"
+                })
+                return
             }
 
             let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['post']
 
             if (crmsFunction) {
                 try {
-                    crmsFunction(keys[keyId].keys, params)
                     res.send({
-                        result: true
+                        result: true,
+                        data: await crmsFunction(keys[keyId].keys, args)
                     })
                 } catch {
                     res.send({
@@ -182,26 +177,34 @@ module.exports = server => {
         
         server.put("/api/cloud/data/:resource", async (req, res) => {
             let keyId = req.body.key_id
-            let params = req.body.parms
-            let vendor = req.params.vendor
+            let args = req.body.args
+            let keys = server.keys.getKeyData(server.config.path)
+            let check = checkKeyParms(keyId, keys)
+
+            if (check) {
+                res.send(check)
+                return
+            }
+
+            let vendor = keys[keyId].vendor
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
-            let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
             
-            if (checkParms) {
-                
-                res.send(checkParms)
-                return 
+            if (resourceType == undefined) { 
+                res.send({
+                    result: false,
+                    msg: "Not Support this resource"
+                })
+                return
             }
 
             let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['put']
 
             if (crmsFunction) {
                 try {
-                    crmsFunction(keys[keyId].keys, params)
                     res.send({
-                        result: true
+                        result: true,
+                        data: await crmsFunction(keys[keyId].keys, args)
                     })
                 } catch {
                     res.send({
@@ -215,30 +218,38 @@ module.exports = server => {
                     msg: "this not support resource api"
                 })
             }
-
         })
 
         server.delete("/api/cloud/data/:resource", async (req, res) => {
             let keyId = req.body.key_id
-            let params = req.body.params
-            let vendor = req.params.vendor
+            let args = req.body.args
+            let keys = server.keys.getKeyData(server.config.path)
+            let check = checkKeyParms(keyId, keys)
+
+            if (check) {
+                res.send(check)
+                return
+            }
+
+            let vendor = keys[keyId].vendor
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
-            let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
             
-            if (checkParms) {
-                res.send(checkParms)
-                return 
+            if (resourceType == undefined) { 
+                res.send({
+                    result: false,
+                    msg: "Not Support this resource"
+                })
+                return
             }
 
             let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['delete']
 
             if (crmsFunction) {
                 try {
-                    crmsFunction(keys[keyId].keys, params)
                     res.send({
-                        result: true
+                        result: true,
+                        data: await crmsFunction(keys[keyId].keys, args)
                     })
                 } catch {
                     res.send({
@@ -252,27 +263,36 @@ module.exports = server => {
                     msg: "this not support resource api"
                 })
             }
-
         })
 
     }
 
-    // /api/cloud/data/etc/:vendor/:resource/:func
+    // /api/cloud/data/:resource/etc/:func
     // execute cloud resource etc functions
     {
-        server.post("/api/cloud/data/etc/:vendor/:resource/:func", async (req, res) => {
+        server.post("/api/cloud/data/:resource/etc/:func", async (req, res) => {
             let keyId = req.body.key_id
-            let vendor = req.params.vendor
             let func = req.params.func
             let resource = req.params.resource
-            let resourceType = getType(vendor, resource)
             let keys = server.keys.getKeyData(server.config.path)
-            let checkParms = checkCrmsParams(keyId, resourceType, keys, vendor)
-            let args = req.body.args
 
-            if (checkParms) {
-                res.send(checkParms)
-                return 
+            let check = checkKeyParms(keyId, resourceType, keys, vendor)
+
+            if (check) {
+                res.send(check)
+                return
+            }
+
+            let vendor = keys[keyId].vendor
+            let resourceType = getType(vendor, resource)
+            let args = req.body.args
+            
+            if (resourceType == undefined) { 
+                res.send({
+                    result: false,
+                    msg: "Not Support this resource"
+                })
+                return
             }
 
             let crmsFunction = crms[vendor]['session'][resourceType][resource]['etc'][func]

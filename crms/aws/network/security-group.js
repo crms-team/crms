@@ -17,16 +17,19 @@ async function createSecurityGroup(key, args=undefined) {
     }
 }
 
-async function updateSecurityGroupRuleDescriptions(key, args=undefined) {
+async function updateSecurityGroupRule(key, args=undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     let type = args.type
+    let isAdd = args.method
     let data = args.data
     try {
         if (type == 'egress') {
-            await ec2.updateSecurityGroupRuleDescriptionsEgress(data).promise()
+            if (isAdd) await ec2.authorizeSecurityGroupEgress(data).promise()
+            else await ec2.revokeSecurityGroupEgress(data).promise()
         } else if (type == 'ingress') {
-            await ec2.updateSecurityGroupRuleDescriptionsIngress(data).promise()
+            if (isAdd) await ec2.authorizeSecurityGroupIngress(data).promise()
+            else await ec2.revokeSecurityGroupIngress(data).promise()
         } else {
             return false
         }
@@ -54,7 +57,7 @@ module.exports = {
     default: {
         get: describeSecurityGroups,
         post: createSecurityGroup,
-        put: updateSecurityGroupRuleDescriptions,
+        put: updateSecurityGroupRule,
         delete: deleteSecurityGroup
     },
     etc: {}

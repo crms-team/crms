@@ -4,7 +4,7 @@ import Visualization from "./components/visualization";
 import Passwd from "./components/passwd";
 import Dashboard from "./components/dashboard";
 import Resource from "./components/resource";
-import Detail from "./components/detail/detail";
+import Detail from "./components/detail";
 import History from "./components/history"
 import Setting from "./components/setting/index"
 import "./App.css";
