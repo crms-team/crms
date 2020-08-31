@@ -423,9 +423,6 @@ const EnhancedTableToolbar = (props) => {
                   let id = data[idx].id
                   let key_id = data[idx].key_id
                   let rst = await idType["aws"][type].manage.start(key_id,id)
-                  console.log(rst)
-                  //let rst = await awsManager.EC2Manager.start(key_id, id)
-                  //console.log(rst)
                 }
               }}
             >
@@ -440,9 +437,6 @@ const EnhancedTableToolbar = (props) => {
                     let id = data[idx].id
                     let key_id = data[idx].key_id
                     let rst = await idType["aws"][type].manage.stop(key_id,id)
-                    console.log(rst)
-                    //let rst = await awsManager.EC2Manager.stop(key_id, id)
-                    //console.log(rst)
                   }
                 }}
                 aria-label="off"
@@ -453,7 +447,14 @@ const EnhancedTableToolbar = (props) => {
           <Tooltip title="Delete">
             <IconButton 
               aria-label="delete"
-              onClick={()=>console.log("3")}
+              onClick={async ()=>{
+                let type=props.type
+                for (let idx of props.numSelected){
+                  let id = data[idx].id
+                  let key_id = data[idx].key_id
+                  let rst = await idType["aws"][type].manage.delete(key_id,id)
+                }
+              }}
             >
               <DeleteIcon className={classes.icon} />
             </IconButton>

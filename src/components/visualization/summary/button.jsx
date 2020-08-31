@@ -45,9 +45,12 @@ class Instancebutton extends React.Component {
             <table>
                 <tr>
                     <td>{statusButton && statusButton}</td>
-                    <td><Button onClick={() => {
-                        console.log("!")
-                        }} variant="warning">Delete</Button></td>
+                    <td><Button onClick={async ()=>{
+                        let id = this.props.data.id.split(":")[2]
+                        let key_id = this.props.data.id.split(":")[0]
+                        let rst = await summaryType[this.state.type]["manage"].delete(key_id,id)
+                        console.log(rst)
+                    }} variant="warning">Delete</Button></td>
                     <td>
                         <Button variant="warning" onClick={()=>window.location.href=`/detail/${this.props.data.id.split(':')[0]}/${this.state.type}/${this.props.data.id.split(":")[2]}`} >
                             Detail
