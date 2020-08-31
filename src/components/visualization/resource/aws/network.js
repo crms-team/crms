@@ -141,8 +141,8 @@ class InternetGateway extends CloudResourceDataFormat{
 
 export default {
     subnet: Subnet,
-    securityGroup: SecurityGroup,
+    securitygroup: SecurityGroup,
     vpc: VPC,
-    internetGateway: InternetGateway
+    internetgateway: InternetGateway
 
   }

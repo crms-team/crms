@@ -24,7 +24,7 @@ async function createKeyPair(key, args=undefined) {
         let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
         await ec2.createKeyPair(args).promise()
         return true
-    } catch {
+    } catch(e) {
         console.log("KeyPair POST Error (createKeyPair Error)")
         return false
     }

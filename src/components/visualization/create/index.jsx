@@ -651,22 +651,6 @@ class KeyPair extends React.Component {
                             }}
                         />
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("DryRun", val);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                DryRun
-                            </option>
-                            <option>true</option>
-                            <option>false</option>
-                        </Form.Control>
-                    </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
@@ -674,12 +658,17 @@ class KeyPair extends React.Component {
                             onChange={(e) => {
                                 let tmp = [
                                     {
-                                        Key: "Name",
-                                        Value: "",
+                                        ResourceType : "key-pair",
+                                        Tags: [
+                                            {
+                                                Key: "Name",
+                                                Value: "",
+                                            },
+                                        ],
                                     },
                                 ];
-                                tmp[0].Value = e.target.value;
-                                this.func("Tags", tmp);
+                                tmp[0].Tags[0].Value = e.target.value;
+                                this.func("TagSpecifications", tmp);
                             }}
                         />
                     </Form.Group>
@@ -723,35 +712,24 @@ class SecurityGroup extends React.Component {
                             }}
                         />
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("DryRun", val);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                DryRun
-                            </option>
-                            <option>true</option>
-                            <option>false</option>
-                        </Form.Control>
-                    </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
                             placeholder="Enter name"
                             onChange={(e) => {
-                                let tmp = [
+                                let tmp =[
                                     {
-                                        Key: "Name",
-                                        Value: "",
-                                    },
-                                ];
-                                tmp[0].Value = e.target.value;
-                                this.func("Tags", tmp);
+                                      ResourceType: "security-group",
+                                      Tags: [
+                                        {
+                                          Key: 'Name',
+                                          Value: ''
+                                        },
+                                      ]
+                                    }
+                                ]
+                                tmp[0].Tags[0].Value = e.target.value;
+                                this.func("TagSpecifications", tmp);
                             }}
                         />
                     </Form.Group>
@@ -1618,6 +1596,7 @@ class CreateModal extends React.Component {
     async createInstance(){    
         let key_id = this.state.key_name
         let args=this.state.data
+        console.log(this.state.type,args)
         let rst = await summaryType[this.state.type]["manage"].create(key_id,args)
         console.log(rst)
     }

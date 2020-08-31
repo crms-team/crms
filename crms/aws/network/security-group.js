@@ -11,7 +11,8 @@ async function createSecurityGroup(key, args=undefined) {
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     try {
         return (await ec2.createSecurityGroup(args).promise())['GroupId']
-    } catch {
+    } catch(e) {
+        console.log(e)
         console.log("SecurityGroup POST Error (createSecurityGroup Error)")
         return false
     }

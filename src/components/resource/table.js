@@ -201,17 +201,10 @@ const MATCHINGS = {
     keypair: (key_id, resource) => {
       let attr = resource
       let name = ""
-
-      for (let tag of attr.Tags) {
-        if (tag.Key == "Name")  {
-          name = tag.Value
-          break
-        }
-      }
       
       return {
         key_id: key_id,
-        name: name,
+        name: attr.KeyName,
         id: attr.KeyPairId,
         fingerprint: attr.KeyFingerprint,
       }
@@ -449,9 +442,15 @@ const EnhancedTableToolbar = (props) => {
               aria-label="delete"
               onClick={async ()=>{
                 let type=props.type
+                let id;
                 for (let idx of props.numSelected){
-                  let id = data[idx].id
-                  let key_id = data[idx].key_id
+                  if(type=="keypair"){
+                    id=data[idx].name
+                  }
+                  else{
+                    id = data[idx].id
+                  }
+                    let key_id = data[idx].key_id
                   let rst = await idType["aws"][type].manage.delete(key_id,id)
                 }
               }}

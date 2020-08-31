@@ -356,9 +356,53 @@ class Visual extends Component {
                                             return 1;
                                         }
                                     }
+                                    for(let i=0;i<d.data.link.length;i++){
+                                        if(d.data.link[i]==thislink.data.id){
+                                            return 1;
+                                        }
+                                    }
                                     return 0.2
                                 }
                                 catch{
+                                    try{
+                                        for(let i=0;i<d.children.length;i++){
+                                            if(d.children[i].data.id==thislink.data.id){
+                                                return 1;
+                                            }
+                                        }
+                                        for(let i=0;i<thislink.data.link.length;i++){
+                                            if(thislink.data.link[i]==d.data.id){
+                                                return 1;
+                                            }
+                                        }
+                                        for(let i=0;i<d.data.link.length;i++){
+                                            if(d.data.link[i]==thislink.data.id){
+                                                return 1;
+                                            }
+                                        }
+                                        
+                                    }
+                                    catch{
+                                        try{
+                                            for(let i=0;i<thislink.data.link.length;i++){
+                                                if(thislink.data.link[i]==d.data.id){
+                                                    return 1;
+                                                }
+                                            }
+                                            for(let i=0;i<d.data.link.length;i++){
+                                                if(d.data.link[i]==thislink.data.id){
+                                                    return 1;
+                                                }
+                                            }
+                                        }
+                                        catch{
+                                            for(let i=0;i<d.data.link.length;i++){
+                                                if(d.data.link[i]==thislink.data.id){
+                                                    return 1;
+                                                }
+                                            }
+                                        }
+                                    }
                                     return 0.2;
                                 }
                             }          

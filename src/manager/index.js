@@ -56,7 +56,7 @@ const idType ={
 }
 
 const summaryType ={
-  "ec2": {
+  ec2: {
     manage: awsManager.EC2Manager,
   },
   ebs: {
@@ -73,6 +73,9 @@ const summaryType ={
   },
   vpc: {
     manage: awsManager.VpcManager,
+  },
+  eip: {
+    manage: awsManager.EIPManager,
   },
   subnet: {
     manage: awsManager.SubnetManager,
