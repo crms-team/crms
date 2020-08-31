@@ -22,6 +22,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import PauseIcon from '@material-ui/icons/Pause';
 import './table.scss';
 import {useParams} from 'react-router-dom'
+import { managerType, awsManager, idType } from "../../manager";
 
 function createData(keys, data) {
   let result = {}
@@ -135,20 +136,6 @@ const COLUMES = {
   ]
 }
 
-const TYPES = {
-  aws: {
-    server: 'ec2',
-    volume: 'ebs',
-    ip: 'eip',
-    keypair:'keyPair',
-    database:'rds',
-    vpc:'vpc',
-    subnet:'subnet',
-    securitygroup:'securityGroup',
-    bucket:'s3'
-  }
-}
-
 const MATCHINGS = {
   aws: {
     ec2: (key_id, resource) => {
@@ -211,7 +198,7 @@ const MATCHINGS = {
         sever_id: attr.InstanceId,
       }
     },
-    keyPair: (key_id, resource) => {
+    keypair: (key_id, resource) => {
       let attr = resource
       let name = ""
 
@@ -293,7 +280,7 @@ const MATCHINGS = {
         availability_zone: attr.AvailabilityZone
       }
     },
-    securityGroup: (key_id, resource) => {
+    securitygroup: (key_id, resource) => {
       let attr = resource
       let name = ""
 
@@ -430,14 +417,34 @@ const EnhancedTableToolbar = (props) => {
           <Tooltip title="On">
             <IconButton 
               aria-label="off"
-              onClick={()=>console.log(props.numSelected,data[props.numSelected[0]])}
+              onClick={async ()=>{
+                let type=props.type
+                for (let idx of props.numSelected){
+                  let id = data[idx].id
+                  let key_id = data[idx].key_id
+                  let rst = await idType["aws"][type].manage.start(key_id,id)
+                  console.log(rst)
+                  //let rst = await awsManager.EC2Manager.start(key_id, id)
+                  //console.log(rst)
+                }
+              }}
             >
               <PlayArrowIcon className={classes.icon} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Off">
               <IconButton 
-                onClick={()=>console.log("2")}
+                onClick={async ()=>{
+                  let type=props.type
+                  for (let idx of props.numSelected){
+                    let id = data[idx].id
+                    let key_id = data[idx].key_id
+                    let rst = await idType["aws"][type].manage.stop(key_id,id)
+                    console.log(rst)
+                    //let rst = await awsManager.EC2Manager.stop(key_id, id)
+                    //console.log(rst)
+                  }
+                }}
                 aria-label="off"
               >
               <PauseIcon className={classes.icon} />
@@ -525,8 +532,8 @@ export default function EnhancedTable() {
 
 
       for(let key of keys){
-        let resource_type = TYPES[key.vendor][type]
-        let response = await fetch(`http://localhost:4000/api/cloud/data/${key.vendor}/${resource_type}?key_id=${key.key}&type=data`).then(res=>res.json())
+        let resource_type = managerType[key.vendor][type]
+        let response = await fetch(`http://localhost:4000/api/cloud/data/${resource_type}?key_id=${key.key}`).then(res=>res.json())
         if (response.data){
           for (let resource of response.data) {
             result.push(createData(columes_list, MATCHINGS[key.vendor][resource_type](key.key, resource)))
@@ -581,7 +588,7 @@ export default function EnhancedTable() {
           tmp_type=key.vendor
         }
       }
-      window.location.href=`/detail/${row.key_id}/${TYPES[tmp_type][type]}/${row.id?row.id: row.identifier ? row.identifier : row.name}`
+      window.location.href=`/detail/${row.key_id}/${managerType[tmp_type][type]}/${row.id?row.id: row.identifier ? row.identifier : row.name}`
     }
   }
 
@@ -602,7 +609,7 @@ export default function EnhancedTable() {
     <div className="table">
         <div className={classes.root}>
         <Paper className={classes.paper}>
-            <EnhancedTableToolbar numSelected={selected} data={rows} />
+            <EnhancedTableToolbar numSelected={selected} data={rows} type={type} />
             <TableContainer>
             <Table
                 className={classes.table}

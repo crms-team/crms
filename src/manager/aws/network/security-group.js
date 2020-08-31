@@ -2,7 +2,7 @@ import { Manager } from "../../manager";
 
 export class SecurityGroupManager extends Manager{
     static endpoint() {
-        return 'http://localhost:4000/api/cloud/data/aws/securitygroup'
+        return 'http://localhost:4000/api/cloud/data/securitygroup'
     }
 
     static async create(keyId, args) {

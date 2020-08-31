@@ -2,7 +2,7 @@ import { Manager } from "../../manager";
 
 export class KeyPairManager extends Manager{
     static endpoint() {
-        return 'http://localhost:4000/api/cloud/data/aws/keypair'
+        return 'http://localhost:4000/api/cloud/data/keypair'
     }
 
     static async update(keyId, args) {

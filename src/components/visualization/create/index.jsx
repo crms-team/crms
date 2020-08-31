@@ -36,7 +36,7 @@ const TYPEID = {
 
 export async function getDynamicOption (key_id,key_vendor,type) {
     let tmp_type=TYPEID[key_vendor][type]["url"]
-    let url=`http://localhost:4000/api/cloud/data/${key_vendor}/${tmp_type}?key_id=${key_id}&type=data`;
+    let url=`http://localhost:4000/api/cloud/data/${tmp_type}?key_id=${key_id}&type=data`;
     let items=[];
     const response = await fetch(url).then(res=>res.json())
     for (let i = 0; i < response.data.length; i++) {

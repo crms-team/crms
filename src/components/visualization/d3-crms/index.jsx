@@ -118,6 +118,7 @@ class Visual extends Component {
             this.setState({ time: data.time })
             result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
         }
+        console.log(result);
         return result;
     }
 

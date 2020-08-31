@@ -123,9 +123,9 @@ function chartData() {
                             <NumberWidget 
                                 className="compute key-pair"
                                 title = "Key Pair"
-                                number = {this.getResourceStatusData('keyPair', true)}
+                                number = {this.getResourceStatusData('keypair', true)}
                                 progress = {{
-                                    value : this.getResourceStatusData('keyPair'),
+                                    value : this.getResourceStatusData('keypair'),
                                     label : 'keyPair'
                                 }}
                             />
@@ -167,9 +167,9 @@ function chartData() {
                             <NumberWidget 
                                     className="network security-group"
                                     title = "Security Group"
-                                    number = {this.getResourceStatusData('securityGroup', true)}
+                                    number = {this.getResourceStatusData('securitygroup', true)}
                                     progress = {{
-                                        value : this.getResourceStatusData('securityGroup'),
+                                        value : this.getResourceStatusData('securitygroup'),
                                         label : 'Security Group'
                                     }}
                             />
@@ -179,11 +179,11 @@ function chartData() {
                         <div>
                             <NumberWidget 
                                     className="storage bucket"
-                                    title = "Bucket"
+                                    title = "Storage"
                                     number = {this.getResourceStatusData('storage', true)}
                                     progress = {{
                                         value : this.getResourceStatusData('storage'),
-                                        label : 'storage'
+                                        label : 'Bucket'
                                     }}
                             />
                         </div>

@@ -32,8 +32,8 @@ function getStatusData(vendor, data){
                 }
                 return status
             },
-            keyPair: resource => {
-                let status = [resource.compute.keyPair.length, resource.compute.keyPair.length]
+            keypair: resource => {
+                let status = [resource.compute.keypair.length, resource.compute.keypair.length]
                 return status
             },
             ip: resource =>{ 
@@ -76,8 +76,8 @@ function getStatusData(vendor, data){
                 }
                 return status
             },
-            securityGroup: resource =>{ 
-                let status = [resource.network.securityGroup.length, resource.network.securityGroup.length]
+            securitygroup: resource =>{ 
+                let status = [resource.network.securitygroup.length, resource.network.securitygroup.length]
                 return status
             },
 
@@ -104,11 +104,11 @@ module.exports = server => {
                 server : [0, 0],
                 volume : [0, 0],
                 ip : [0, 0],
-                keyPair : [0, 0],
+                keypair : [0, 0],
                 database : [0, 0],
                 vpc : [0, 0],
                 subnet : [0, 0],
-                securityGroup: [0, 0],
+                securitygroup: [0, 0],
                 storage : [0, 0],
             }
             let keys = server.keys.getKeyData(server.config.path)
