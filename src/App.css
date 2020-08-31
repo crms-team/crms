@@ -37,3 +37,7 @@ input[type="password"] {
     font-family: sans-serif;
     font-size: 15px;
 }
+
+.modal-body::-webkit-scrollbar {
+    display: none;
+}
