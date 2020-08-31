@@ -18,8 +18,8 @@ module.exports = server => {
         })
 
         server.put('/api/passwd', (req, res)=> {
-            if (server.config.passwd == atob(req.query.passwd)){
-                server.config.passwd = atob(req.query.passwd)
+            if (server.config.passwd == atob(req.body.passwd)){
+                server.config.passwd = atob(req.body.new_passwd)
                 fs.writeFileSync(`${server.config.path}/data/crms.config`, JSON.stringify(server.config))
                 res.send({result: true})
             } else {

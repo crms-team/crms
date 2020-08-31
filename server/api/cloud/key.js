@@ -5,9 +5,10 @@ const PATH = require('path')
 function isKeyFormat(vendor, keys){
     switch (vendor) {
         case 'aws': {
-            let existAccessKey = 'accessKeyId' in keys
-            let existSecretKey = 'secretAccessKey' in keys
-            let existRegion = 'region' in keys
+            let keyList = Object.keys(keys)
+            let existAccessKey = keyList.indexOf('accessKeyId') > -1
+            let existSecretKey = keyList.indexOf('secretAccessKey') > -1
+            let existRegion = keyList.indexOf('region') > -1
             return existAccessKey && existSecretKey && existRegion
         } 
         default:
@@ -71,7 +72,6 @@ module.exports = server => {
             
             let vendor = req.body.vendor
             let keys = req.body.keys
-
             res.send(setKeyFunc(server.config.path, vendor, keys))
         })
 
