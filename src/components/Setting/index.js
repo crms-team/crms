@@ -3,7 +3,7 @@ import { IconContext } from "react-icons";
 import { FiKey, FiUnlock, FiFileText } from "react-icons/fi";
 import "./setting.scss";
 import AddCloudKeyModal from "./setting-modal/addCloudKeyModal";
-import ChangePasswordModal from "./setting-modal/changePasswordModal";
+import ChangePasswordModal from "./setting-modal/changePasswdModal";
 
 function Setting({ children }) {
     const [addCloudModalShow, setAddCloudModalShow] = useState(false);
