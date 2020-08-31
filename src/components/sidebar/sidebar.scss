@@ -1,19 +1,18 @@
-$darkGray : #18181f;
-$lightGray : #27262b;
-$point : #ffc14d;
-$text : #6b6e7c;
-$lightText : #9298b1;
+$darkGray: #18181f;
+$lightGray: #27262b;
+$point: #ffc14d;
+$text: #6b6e7c;
+$lightText: #9298b1;
 
-a{
-  text-decoration: none !important;
-  color: $lightText;
+a {
+    text-decoration: none !important;
+    color: $lightText;
 }
 body {
-  position: relative;
+    position: relative;
 }
 
-.Sidebar-container{
-    
+.Sidebar-container {
     z-index: 999;
     background: $darkGray;
     height: 100%;
@@ -24,121 +23,115 @@ body {
     top: 0;
     left: 0;
 
-    & + div{
-      position: relative;
-      height: 100%;
-      background: $darkGray;
+    & + div {
+        position: relative;
+        height: 100%;
+        background: $darkGray;
     }
 
-    li{
-      text-decoration: none;
-      color : $lightText;
+    li {
+        text-decoration: none;
+        color: $lightText;
     }
 }
 
-.Sidebar{
-  background: $darkGray;
-  color : $text;
-  height: 100%;
-  position: relative;
+.Sidebar {
+    background: $darkGray;
+    color: $text;
+    height: 100%;
+    position: relative;
 
-  & .Sidebar-title{
-    text-align: center;
-    font-weight: 700;
-    font-size: 18px;
-    padding-top: .7rem;
-  }
-
-  & hr{
-    border: 1px solid rgba(150, 149, 149, 0.205);
-    width: 70%;
-    margin-bottom: 20px;
-  }
-
-  & ul {
-    margin: 0 auto;
-  }
-
-  & li {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
-    cursor: pointer;
-    padding: 10px;
-    padding-left: 15px;
-    border: 1px solid transparent;
-    transition: linear 0.2s;
-    width: 90%;
-    margin: 0 auto;
-
-    
-    &:hover{
-      // border: 1px solid #ffc14d;
-      background: rgba(37, 42, 53, 0.651);
-      transition: linear 0.2s;
-      color: rgb(236, 236, 236);
-      
-      .material-icons{
-        color : $point;
-        transition: .2 linear;
-      }
+    & .Sidebar-title {
+        text-align: center;
+        font-weight: 700;
+        font-size: 18px;
+        padding-top: 0.7rem;
     }
 
-    p {
-      margin-left: 10px;
-      margin-bottom: 0;
-      text-align: center;  
-
+    & hr {
+        border: 1px solid rgba(150, 149, 149, 0.205);
+        width: 70%;
+        margin-bottom: 20px;
     }
 
-  }
+    & ul {
+        margin: 0 auto;
+    }
 
-  li + li {
-    margin-top: 5px;
-  }
+    & li {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        text-align: center;
+        cursor: pointer;
+        padding: 10px;
+        padding-left: 15px;
+        border: 1px solid transparent;
+        transition: linear 0.2s;
+        width: 90%;
+        margin: 0 auto;
 
-  .menu{
+        &:hover {
+            // border: 1px solid #ffc14d;
+            background: rgba(37, 42, 53, 0.651);
+            transition: linear 0.2s;
+            color: rgb(236, 236, 236);
 
-    transition: .2 linear;
-    & p{
-      font-size: 15px;
-      cursor: pointer;
-        &:hover{
-          transition: .2s linear;
+            .material-icons {
+                color: $point;
+                transition: 0.2 linear;
+            }
         }
 
+        p {
+            margin-left: 10px;
+            margin-bottom: 0;
+            text-align: center;
+        }
     }
 
-    & .menulist-in{
-      font-weight: 700;
-      font-size: 15px;
-      transition: .4s linear;
-      margin-top: 10px;
-      text-indent: 36px;
-      
-      &:hover{
-        color : $point;
-      }
-      
-      &::before{
-        content: ' ';
-        width: 12px;
-        height: 12px;
-        position: absolute;
-        left: 25px;
-        z-index: 11;
-        background-color: rgba(59, 56, 92, 0.212);
-      }
+    li + li {
+        margin-top: 5px;
     }
-    & .submenu {
-      color: "#9298b1" !important;
-      text-indent: 57px;
-      font-size: 13px;
-      &:hover{
-        color : $point;
-      }
-    }
-  }
 
+    .menu {
+        transition: 0.2 linear;
+        & p {
+            font-size: 15px;
+            cursor: pointer;
+            &:hover {
+                transition: 0.2s linear;
+            }
+        }
+
+        & .menulist-in {
+            font-weight: 700;
+            font-size: 15px;
+            transition: 0.4s linear;
+            margin-top: 10px;
+            text-indent: 36px;
+
+            &:hover {
+                color: $point;
+            }
+
+            &::before {
+                content: " ";
+                width: 12px;
+                height: 12px;
+                position: absolute;
+                left: 25px;
+                z-index: 11;
+                background-color: rgba(59, 56, 92, 0.212);
+            }
+        }
+        & .submenu {
+            color: "#9298b1" !important;
+            text-indent: 57px;
+            font-size: 13px;
+            &:hover {
+                color: $point;
+            }
+        }
+    }
 }

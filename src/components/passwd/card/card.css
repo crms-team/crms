@@ -1,9 +1,10 @@
-.card{
+.card {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: transparent;
+    border: transparent;
 }
 
 .card__title {
@@ -13,14 +14,14 @@
     margin: 1rem 0;
     align-self: flex-start;
 }
-.card__description--title{
+.card__description--title {
     max-width: 55vw;
-    color : var(--text-lightgray-color);
+    color: var(--text-lightgray-color);
     background-color: rgba(248, 248, 248, 0.075);
     margin: 0;
     display: inline-block;
     align-self: flex-start;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
 }
 
 .card__description {
