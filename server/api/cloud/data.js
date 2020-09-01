@@ -276,7 +276,7 @@ module.exports = server => {
             let resource = req.params.resource
             let keys = server.keys.getKeyData(server.config.path)
 
-            let check = checkKeyParms(keyId, resourceType, keys, vendor)
+            let check = checkKeyParms(keyId, keys)
 
             if (check) {
                 res.send(check)

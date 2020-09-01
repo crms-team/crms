@@ -240,20 +240,12 @@ class Detail extends Component {
         let key_id = this.props.match.params.key_id;
         let resource = this.props.match.params.type;
         let resource_id = this.props.match.params.id;
-        let keys = JSON.parse(localStorage.getItem("key"));
-        let vendor;
-        for (let key of keys) {
-            if (key.key == key_id) {
-                vendor = key.vendor;
-                break;
-            }
-        }
 
         this.state = {
             clickNum: 0,
             activeContent: 0,
             resource: resource,
-            endpoint: `http://localhost:4000/api/cloud/data/${vendor}/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
+            endpoint: `http://localhost:4000/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
         };
     }
 

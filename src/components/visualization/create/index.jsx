@@ -12,6 +12,12 @@ import {
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaSync } from 'react-icons/fa';
+import { managerType, awsManager, summaryType } from '../../../manager'
+
+const EC2Data={
+    Ami:[],
+    Type:[{"InstanceType":"t2.micro","CurrentGeneration":true,"FreeTierEligible":true,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"xen","ProcessorInfo":{"SupportedArchitectures":["i386","x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":1,"DefaultCores":1,"DefaultThreadsPerCore":1,"ValidCores":[1],"ValidThreadsPerCore":[1]},"MemoryInfo":{"SizeInMiB":1024},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"unsupported","EncryptionSupport":"supported","NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Low to Moderate","MaximumNetworkInterfaces":2,"Ipv4AddressesPerInterface":2,"Ipv6AddressesPerInterface":2,"Ipv6Supported":true,"EnaSupport":"unsupported","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t2.large","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"xen","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.3},"VCpuInfo":{"DefaultVCpus":2,"DefaultCores":2,"DefaultThreadsPerCore":1,"ValidCores":[1,2],"ValidThreadsPerCore":[1]},"MemoryInfo":{"SizeInMiB":8192},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"unsupported","EncryptionSupport":"supported","NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Low to Moderate","MaximumNetworkInterfaces":3,"Ipv4AddressesPerInterface":12,"Ipv6AddressesPerInterface":12,"Ipv6Supported":true,"EnaSupport":"unsupported","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t2.2xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"xen","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.3},"VCpuInfo":{"DefaultVCpus":8,"DefaultCores":8,"DefaultThreadsPerCore":1,"ValidCores":[1,2,3,4,5,6,7,8],"ValidThreadsPerCore":[1]},"MemoryInfo":{"SizeInMiB":32768},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"unsupported","EncryptionSupport":"supported","NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Moderate","MaximumNetworkInterfaces":3,"Ipv4AddressesPerInterface":15,"Ipv6AddressesPerInterface":15,"Ipv6Supported":true,"EnaSupport":"unsupported","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t3a.small","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.2},"VCpuInfo":{"DefaultVCpus":2,"DefaultCores":1,"DefaultThreadsPerCore":2,"ValidCores":[1],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":2048},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":175,"BaselineThroughputInMBps":21.875,"BaselineIops":1000,"MaximumBandwidthInMbps":2085,"MaximumThroughputInMBps":260.625,"MaximumIops":11800},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 5 Gigabit","MaximumNetworkInterfaces":2,"Ipv4AddressesPerInterface":4,"Ipv6AddressesPerInterface":4,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t3a.medium","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.2},"VCpuInfo":{"DefaultVCpus":2,"DefaultCores":1,"DefaultThreadsPerCore":2,"ValidCores":[1],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":4096},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":350,"BaselineThroughputInMBps":43.75,"BaselineIops":2000,"MaximumBandwidthInMbps":2085,"MaximumThroughputInMBps":260.625,"MaximumIops":11800},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 5 Gigabit","MaximumNetworkInterfaces":3,"Ipv4AddressesPerInterface":6,"Ipv6AddressesPerInterface":6,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t3a.2xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.2},"VCpuInfo":{"DefaultVCpus":8,"DefaultCores":4,"DefaultThreadsPerCore":2,"ValidCores":[2,4],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":32768},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":695,"BaselineThroughputInMBps":86.875,"BaselineIops":4000,"MaximumBandwidthInMbps":2780,"MaximumThroughputInMBps":347.5,"MaximumIops":15700},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 5 Gigabit","MaximumNetworkInterfaces":4,"Ipv4AddressesPerInterface":15,"Ipv6AddressesPerInterface":15,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t3.medium","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":2,"DefaultCores":1,"DefaultThreadsPerCore":2,"ValidCores":[1],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":4096},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":347,"BaselineThroughputInMBps":43.375,"BaselineIops":2000,"MaximumBandwidthInMbps":2085,"MaximumThroughputInMBps":260.625,"MaximumIops":11800},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 5 Gigabit","MaximumNetworkInterfaces":3,"Ipv4AddressesPerInterface":6,"Ipv6AddressesPerInterface":6,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t3.large","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":2,"DefaultCores":1,"DefaultThreadsPerCore":2,"ValidCores":[1],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":8192},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":695,"BaselineThroughputInMBps":86.875,"BaselineIops":4000,"MaximumBandwidthInMbps":2780,"MaximumThroughputInMBps":347.5,"MaximumIops":15700},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 5 Gigabit","MaximumNetworkInterfaces":3,"Ipv4AddressesPerInterface":12,"Ipv6AddressesPerInterface":12,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t3.xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":4,"DefaultCores":2,"DefaultThreadsPerCore":2,"ValidCores":[2],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":16384},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":695,"BaselineThroughputInMBps":86.875,"BaselineIops":4000,"MaximumBandwidthInMbps":2780,"MaximumThroughputInMBps":347.5,"MaximumIops":15700},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 5 Gigabit","MaximumNetworkInterfaces":4,"Ipv4AddressesPerInterface":15,"Ipv6AddressesPerInterface":15,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"t3.2xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":8,"DefaultCores":4,"DefaultThreadsPerCore":2,"ValidCores":[2,4],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":32768},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":695,"BaselineThroughputInMBps":86.875,"BaselineIops":4000,"MaximumBandwidthInMbps":2780,"MaximumThroughputInMBps":347.5,"MaximumIops":15700},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 5 Gigabit","MaximumNetworkInterfaces":4,"Ipv4AddressesPerInterface":15,"Ipv6AddressesPerInterface":15,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":true,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"m5ad.large","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.2},"VCpuInfo":{"DefaultVCpus":2,"DefaultCores":1,"DefaultThreadsPerCore":2,"ValidCores":[1],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":8192},"InstanceStorageSupported":true,"InstanceStorageInfo":{"TotalSizeInGB":75,"Disks":[{"SizeInGB":75,"Count":1,"Type":"ssd"}]},"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":650,"BaselineThroughputInMBps":81.25,"BaselineIops":3600,"MaximumBandwidthInMbps":2880,"MaximumThroughputInMBps":360,"MaximumIops":16000},"NvmeSupport":"required"},"NetworkInfo":{"NetworkPerformance":"Up to 10 Gigabit","MaximumNetworkInterfaces":3,"Ipv4AddressesPerInterface":10,"Ipv6AddressesPerInterface":10,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["cluster","partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":false,"DedicatedHostsSupported":false,"AutoRecoverySupported":false},{"InstanceType":"m5ad.2xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.2},"VCpuInfo":{"DefaultVCpus":8,"DefaultCores":4,"DefaultThreadsPerCore":2,"ValidCores":[2,4],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":32768},"InstanceStorageSupported":true,"InstanceStorageInfo":{"TotalSizeInGB":300,"Disks":[{"SizeInGB":300,"Count":1,"Type":"ssd"}]},"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":1580,"BaselineThroughputInMBps":197.5,"BaselineIops":8333,"MaximumBandwidthInMbps":2880,"MaximumThroughputInMBps":360,"MaximumIops":16000},"NvmeSupport":"required"},"NetworkInfo":{"NetworkPerformance":"Up to 10 Gigabit","MaximumNetworkInterfaces":4,"Ipv4AddressesPerInterface":15,"Ipv6AddressesPerInterface":15,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["cluster","partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":false,"DedicatedHostsSupported":false,"AutoRecoverySupported":false},{"InstanceType":"m5ad.4xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.2},"VCpuInfo":{"DefaultVCpus":16,"DefaultCores":8,"DefaultThreadsPerCore":2,"ValidCores":[2,4,6,8],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":65536},"InstanceStorageSupported":true,"InstanceStorageInfo":{"TotalSizeInGB":600,"Disks":[{"SizeInGB":300,"Count":2,"Type":"ssd"}]},"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":2880,"BaselineThroughputInMBps":360,"BaselineIops":16000,"MaximumBandwidthInMbps":2880,"MaximumThroughputInMBps":360,"MaximumIops":16000},"NvmeSupport":"required"},"NetworkInfo":{"NetworkPerformance":"Up to 10 Gigabit","MaximumNetworkInterfaces":8,"Ipv4AddressesPerInterface":30,"Ipv6AddressesPerInterface":30,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["cluster","partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":false,"DedicatedHostsSupported":false,"AutoRecoverySupported":false},{"InstanceType":"m5ad.8xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":32,"DefaultCores":16,"DefaultThreadsPerCore":2,"ValidCores":[4,6,8,10,12,14,16],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":131072},"InstanceStorageSupported":true,"InstanceStorageInfo":{"TotalSizeInGB":1200,"Disks":[{"SizeInGB":600,"Count":2,"Type":"ssd"}]},"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":4750,"BaselineThroughputInMBps":593.75,"BaselineIops":20000,"MaximumBandwidthInMbps":4750,"MaximumThroughputInMBps":593.75,"MaximumIops":20000},"NvmeSupport":"required"},"NetworkInfo":{"NetworkPerformance":"Up to 10 Gigabit","MaximumNetworkInterfaces":8,"Ipv4AddressesPerInterface":30,"Ipv6AddressesPerInterface":30,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["cluster","partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":false,"DedicatedHostsSupported":false,"AutoRecoverySupported":false},{"InstanceType":"m5ad.12xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.2},"VCpuInfo":{"DefaultVCpus":48,"DefaultCores":24,"DefaultThreadsPerCore":2,"ValidCores":[6,12,18,24],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":196608},"InstanceStorageSupported":true,"InstanceStorageInfo":{"TotalSizeInGB":1800,"Disks":[{"SizeInGB":900,"Count":2,"Type":"ssd"}]},"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":6780,"BaselineThroughputInMBps":847.5,"BaselineIops":30000,"MaximumBandwidthInMbps":6780,"MaximumThroughputInMBps":847.5,"MaximumIops":30000},"NvmeSupport":"required"},"NetworkInfo":{"NetworkPerformance":"10 Gigabit","MaximumNetworkInterfaces":8,"Ipv4AddressesPerInterface":30,"Ipv6AddressesPerInterface":30,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["cluster","partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":false,"DedicatedHostsSupported":false,"AutoRecoverySupported":false},{"InstanceType":"m5a.2xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":8,"DefaultCores":4,"DefaultThreadsPerCore":2,"ValidCores":[2,4],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":32768},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":1580,"BaselineThroughputInMBps":197.5,"BaselineIops":8333,"MaximumBandwidthInMbps":2880,"MaximumThroughputInMBps":360,"MaximumIops":16000},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 10 Gigabit","MaximumNetworkInterfaces":4,"Ipv4AddressesPerInterface":15,"Ipv6AddressesPerInterface":15,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["cluster","partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":false,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"m5a.4xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":16,"DefaultCores":8,"DefaultThreadsPerCore":2,"ValidCores":[2,4,6,8],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":65536},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":2880,"BaselineThroughputInMBps":360,"BaselineIops":16000,"MaximumBandwidthInMbps":2880,"MaximumThroughputInMBps":360,"MaximumIops":16000},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"Up to 10 Gigabit","MaximumNetworkInterfaces":8,"Ipv4AddressesPerInterface":30,"Ipv6AddressesPerInterface":30,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["cluster","partition","spread"]},"HibernationSupported":true,"BurstablePerformanceSupported":false,"DedicatedHostsSupported":false,"AutoRecoverySupported":true},{"InstanceType":"m5a.16xlarge","CurrentGeneration":true,"FreeTierEligible":false,"SupportedUsageClasses":["on-demand","spot"],"SupportedRootDeviceTypes":["ebs"],"SupportedVirtualizationTypes":["hvm"],"BareMetal":false,"Hypervisor":"nitro","ProcessorInfo":{"SupportedArchitectures":["x86_64"],"SustainedClockSpeedInGhz":2.5},"VCpuInfo":{"DefaultVCpus":64,"DefaultCores":32,"DefaultThreadsPerCore":2,"ValidCores":[8,10,12,14,16,18,20,22,24,26,28,30,32],"ValidThreadsPerCore":[1,2]},"MemoryInfo":{"SizeInMiB":262144},"InstanceStorageSupported":false,"EbsInfo":{"EbsOptimizedSupport":"default","EncryptionSupport":"supported","EbsOptimizedInfo":{"BaselineBandwidthInMbps":9500,"BaselineThroughputInMBps":1187.5,"BaselineIops":40000,"MaximumBandwidthInMbps":9500,"MaximumThroughputInMBps":1187.5,"MaximumIops":40000},"NvmeSupport":"unsupported"},"NetworkInfo":{"NetworkPerformance":"12 Gigabit","MaximumNetworkInterfaces":15,"Ipv4AddressesPerInterface":50,"Ipv6AddressesPerInterface":50,"Ipv6Supported":true,"EnaSupport":"required","EfaSupported":false},"PlacementGroupInfo":{"SupportedStrategies":["cluster","partition","spread"]},"HibernationSupported":false,"BurstablePerformanceSupported":false,"DedicatedHostsSupported":false,"AutoRecoverySupported":true}]
+}
 
 const TYPEID = {
     aws: {
@@ -25,18 +31,18 @@ const TYPEID = {
         },
         securitygroup:{
             id:"GroupId",
-            url:"securityGroup"
+            url:"securitygroup"
         },
         keypair:{
-            id:"KeyPairId",
-            url:"keyPair"
+            id:"KeyName",
+            url:"keypair"
         }  
     }
 }
 
 export async function getDynamicOption (key_id,key_vendor,type) {
     let tmp_type=TYPEID[key_vendor][type]["url"]
-    let url=`http://localhost:4000/api/cloud/data/${key_vendor}/${tmp_type}?key_id=${key_id}&type=data`;
+    let url=`http://localhost:4000/api/cloud/data/${tmp_type}?key_id=${key_id}&type=data`;
     let items=[];
     const response = await fetch(url).then(res=>res.json())
     for (let i = 0; i < response.data.length; i++) {
@@ -61,15 +67,15 @@ class Index extends React.Component {
                     <option value="" disabled selected>
                         Resource
                     </option>
-                    <option value="EC2">EC2</option>
-                    <option value="EIP">EIP</option>
-                    <option value="EBS">EBS</option>
-                    <option value="KeyPair">KeyPair</option>
-                    <option value="VPC">VPC</option>
-                    <option value="Subnet">Subnet</option>
-                    <option value="SecurityGroup">SecurityGroup</option>
-                    <option value="RDS">RDS</option>
-                    <option value="S3">S3</option>
+                    <option value="ec2">EC2</option>
+                    <option value="eip">EIP</option>
+                    <option value="ebs">EBS</option>
+                    <option value="keypair">KeyPair</option>
+                    <option value="vpc">VPC</option>
+                    <option value="subnet">Subnet</option>
+                    <option value="securitygroup">SecurityGroup</option>
+                    <option value="rds">RDS</option>
+                    <option value="s3">S3</option>
                 </select>
             </>
         );
@@ -179,7 +185,6 @@ class EC2 extends React.Component {
     }
 
     async getVpcList (){
-        console.log("!")
         return await getDynamicOption(this.state.key_name,this.state.key_vendor,"vpc")
     }
 
@@ -243,8 +248,8 @@ class EC2 extends React.Component {
                                 Ami
                             </option>
                             {
-                               vpcList.map(v=>{
-                                   return <option value={v}>{v}</option>
+                               EC2Data.Ami.map(v=>{
+                                   return <option value={v.ImageId}>{v.Description}</option>
                                })
                             }
                         </Form.Control>
@@ -261,12 +266,30 @@ class EC2 extends React.Component {
                             <option value="" disabled selected>
                                 InstanceType
                             </option>
-                            <option>m5d.large</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            {
+                               EC2Data.Type.map(v=>{
+                                   return <option value={v.InstanceType}>{v.InstanceType}</option>
+                               })
+                            }
                         </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>MaxCount</Form.Label>
+                        <Form.Control
+                            placeholder="Enter MaxCount"
+                            onChange={(e) => {
+                                this.func("MaxCount", parseInt(e.target.value))
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>MinCount</Form.Label>
+                        <Form.Control
+                            placeholder="Enter MinCount"
+                            onChange={(e) => {
+                                this.func("MinCount", parseInt(e.target.value))
+                            }}
+                        />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>EBS size</Form.Label>
@@ -281,7 +304,7 @@ class EC2 extends React.Component {
                                         },
                                     },
                                 ];
-                                tmp[0].Ebs.VolumeSize = e.target.value;
+                                tmp[0].Ebs.VolumeSize = parseInt(e.target.value);
                                 this.func("BlockDeviceMappings", tmp);
                             }}
                         />
@@ -411,7 +434,7 @@ class EC2 extends React.Component {
                     <Form.Row className="align-items-center">
                             <Col xs="auto" className="my-1">
                             <Form.Label className="mr-sm-2">
-                                KeyPair
+                                KeyName
                             </Form.Label>
                             </Col>
                             <Col xs="auto" className="my-1">
@@ -628,22 +651,6 @@ class KeyPair extends React.Component {
                             }}
                         />
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("DryRun", val);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                DryRun
-                            </option>
-                            <option>true</option>
-                            <option>false</option>
-                        </Form.Control>
-                    </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
@@ -651,12 +658,17 @@ class KeyPair extends React.Component {
                             onChange={(e) => {
                                 let tmp = [
                                     {
-                                        Key: "Name",
-                                        Value: "",
+                                        ResourceType : "key-pair",
+                                        Tags: [
+                                            {
+                                                Key: "Name",
+                                                Value: "",
+                                            },
+                                        ],
                                     },
                                 ];
-                                tmp[0].Value = e.target.value;
-                                this.func("Tags", tmp);
+                                tmp[0].Tags[0].Value = e.target.value;
+                                this.func("TagSpecifications", tmp);
                             }}
                         />
                     </Form.Group>
@@ -700,35 +712,24 @@ class SecurityGroup extends React.Component {
                             }}
                         />
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("DryRun", val);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                DryRun
-                            </option>
-                            <option>true</option>
-                            <option>false</option>
-                        </Form.Control>
-                    </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
                             placeholder="Enter name"
                             onChange={(e) => {
-                                let tmp = [
+                                let tmp =[
                                     {
-                                        Key: "Name",
-                                        Value: "",
-                                    },
-                                ];
-                                tmp[0].Value = e.target.value;
-                                this.func("Tags", tmp);
+                                      ResourceType: "security-group",
+                                      Tags: [
+                                        {
+                                          Key: 'Name',
+                                          Value: ''
+                                        },
+                                      ]
+                                    }
+                                ]
+                                tmp[0].Tags[0].Value = e.target.value;
+                                this.func("TagSpecifications", tmp);
                             }}
                         />
                     </Form.Group>
@@ -1504,8 +1505,16 @@ class CreateModal extends React.Component {
         });
     }
 
+    async getAmiData(key_id){
+        let url=`http://localhost:4000/api/cloud/data/ami?key_id=${key_id}`
+        let items=[];
+        const response = await fetch(url).then(res=>res.json())
+        console.log(response)
+    }
+
     select_vendor(e) {
         var index = e.nativeEvent.target.selectedIndex;
+        this.getAmiData(e.nativeEvent.target[index].text)
         this.setState({ 
             vendor: e.target.value,
             key_name:e.nativeEvent.target[index].text
@@ -1527,14 +1536,14 @@ class CreateModal extends React.Component {
                 component: <Index click={this.select_type.bind(this)} />,
             });
         }
-        if (this.state.type == "EC2") {
+        if (this.state.type == "ec2") {
             this.setState({
                 component: <EC2 func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name}/>,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
             });
-        } else if (this.state.type == "RDS") {
+        } else if (this.state.type == "rds") {
             this.setState({
                 component: <RDS func={this.func.bind(this)} />,
                 but_type: (
@@ -1542,7 +1551,7 @@ class CreateModal extends React.Component {
                 ),
             });
         }
-        else if (this.state.type == "EIP") {
+        else if (this.state.type == "eip") {
             this.setState({
                 component: <EIP func={this.func.bind(this)} />,
                 but_type: (
@@ -1550,7 +1559,7 @@ class CreateModal extends React.Component {
                 ),
             });
         }
-        else if (this.state.type == "EBS") {
+        else if (this.state.type == "ebs") {
             this.setState({
                 component: <EBS func={this.func.bind(this)} />,
                 but_type: (
@@ -1558,7 +1567,7 @@ class CreateModal extends React.Component {
                 ),
             });
         }
-        else if (this.state.type == "KeyPair") {
+        else if (this.state.type == "keypair") {
             this.setState({
                 component: <KeyPair func={this.func.bind(this)} />,
                 but_type: (
@@ -1566,7 +1575,7 @@ class CreateModal extends React.Component {
                 ),
             });
         }
-        else if (this.state.type == "SecurityGroup") {
+        else if (this.state.type == "securitygroup") {
             this.setState({
                 component: <SecurityGroup func={this.func.bind(this)} />,
                 but_type: (
@@ -1574,7 +1583,7 @@ class CreateModal extends React.Component {
                 ),
             });
         }
-        else if (this.state.type == "Subnet") {
+        else if (this.state.type == "subnet") {
             this.setState({
                 component: <Subnet func={this.func.bind(this)} />,
                 but_type: (
@@ -1582,7 +1591,7 @@ class CreateModal extends React.Component {
                 ),
             });
         }
-        else if (this.state.type == "VPC") {
+        else if (this.state.type == "vpc") {
             this.setState({
                 component: <VPC func={this.func.bind(this)} />,
                 but_type: (
@@ -1592,8 +1601,16 @@ class CreateModal extends React.Component {
         }
     }
 
+    async createInstance(){    
+        let key_id = this.state.key_name
+        let args=this.state.data
+        console.log(this.state.type,args)
+        let rst = await summaryType[this.state.type]["manage"].create(key_id,args)
+        console.log(rst)
+    }
+
     clickSubmitbut() {
-        console.log(this.state.data);
+        this.createInstance();
         this.setState({ showHide: !this.state.showHide, data: {} });
     }
 

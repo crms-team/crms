@@ -97,69 +97,50 @@ class Dashboard extends React.Component {
     }
 
     render() {
-        return (
-            <div className="dashboard-page">
-                <Sidebar />
-                <div className="board-container">
-                    <h3>Dashboard</h3>
-                    <div className="resource-list">
-                        <div className="resource compute">
-                            <div className="compute-list">
-                                <NumberWidget
-                                    className="compute surver"
-                                    title="Server"
-                                    number={this.getResourceStatusData(
-                                        "server",
-                                        true
-                                    )}
-                                    progress={{
-                                        value: this.getResourceStatusData(
-                                            "server"
-                                        ),
-                                        label: "compute",
-                                    }}
-                                />
-                                <NumberWidget
-                                    className="compute volume"
-                                    title="Volume"
-                                    number={this.getResourceStatusData(
-                                        "volume",
-                                        true
-                                    )}
-                                    progress={{
-                                        value: this.getResourceStatusData(
-                                            "volume"
-                                        ),
-                                        label: "Volume",
-                                    }}
-                                />
-                                <NumberWidget
-                                    className="compute ip"
-                                    title="IP"
-                                    number={this.getResourceStatusData(
-                                        "ip",
-                                        true
-                                    )}
-                                    progress={{
-                                        value: this.getResourceStatusData("ip"),
-                                        label: "IP",
-                                    }}
-                                />
-                                <NumberWidget
-                                    className="compute key-pair"
-                                    title="Key Pair"
-                                    number={this.getResourceStatusData(
-                                        "keyPair",
-                                        true
-                                    )}
-                                    progress={{
-                                        value: this.getResourceStatusData(
-                                            "keyPair"
-                                        ),
-                                        label: "keyPair",
-                                    }}
-                                />
-                            </div>
+      return (
+        <div className="dashboard-page">
+            <Sidebar/>
+            <div className="board-container">
+                <h3>Dashboard</h3>
+                <div className="resource-list">
+                    <div className="resource compute">
+                        <div className="compute-list">
+                            <NumberWidget 
+                                className="compute surver"
+                                title = "Server"
+                                number = { this.getResourceStatusData('server', true) }
+                                progress = {{
+                                    value : this.getResourceStatusData('server'),
+                                    label : 'compute'
+                                }}
+                            />
+                            <NumberWidget 
+                                className="compute volume"
+                                title = "Volume"
+                                number = {this.getResourceStatusData('volume', true)}
+                                progress = {{
+                                    value : this.getResourceStatusData('volume'),
+                                    label : 'Volume'
+                                }}
+                            />
+                            <NumberWidget 
+                                className="compute ip"
+                                title = "IP"
+                                number = {this.getResourceStatusData('ip', true)}
+                                progress = {{
+                                    value : this.getResourceStatusData('ip'),
+                                    label : 'IP'
+                                }}
+                            />
+                            <NumberWidget 
+                                className="compute key-pair"
+                                title = "Key Pair"
+                                number = {this.getResourceStatusData('keypair', true)}
+                                progress = {{
+                                    value : this.getResourceStatusData('keypair'),
+                                    label : 'keyPair'
+                                }}
+                            />
                         </div>
                         <div className="resource database">
                             <div>
@@ -211,16 +192,11 @@ class Dashboard extends React.Component {
                                 />
                                 <NumberWidget
                                     className="network security-group"
-                                    title="Security Group"
-                                    number={this.getResourceStatusData(
-                                        "securityGroup",
-                                        true
-                                    )}
-                                    progress={{
-                                        value: this.getResourceStatusData(
-                                            "securityGroup"
-                                        ),
-                                        label: "Security Group",
+                                    title = "Security Group"
+                                    number = {this.getResourceStatusData('securitygroup', true)}
+                                    progress = {{
+                                        value : this.getResourceStatusData('securitygroup'),
+                                        label : 'Security Group'
                                     }}
                                 />
                             </div>
@@ -229,16 +205,11 @@ class Dashboard extends React.Component {
                             <div>
                                 <NumberWidget
                                     className="storage bucket"
-                                    title="Bucket"
-                                    number={this.getResourceStatusData(
-                                        "storage",
-                                        true
-                                    )}
-                                    progress={{
-                                        value: this.getResourceStatusData(
-                                            "storage"
-                                        ),
-                                        label: "storage",
+                                    title = "Storage"
+                                    number = {this.getResourceStatusData('storage', true)}
+                                    progress = {{
+                                        value : this.getResourceStatusData('storage'),
+                                        label : 'Bucket'
                                     }}
                                 />
                             </div>
@@ -263,7 +234,9 @@ class Dashboard extends React.Component {
                     </div>
                 </div>
             </div>
-        );
+        </div>
+        )
+        
     }
 }
 

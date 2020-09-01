@@ -3,7 +3,7 @@ import { Manager } from "../../manager";
 
 export class RDSManager extends Manager {
     static endpoint() {
-        return 'http://localhost:4000/api/cloud/data/aws/rds'
+        return 'http://localhost:4000/api/cloud/data/rds'
     }
 
     static async update(keyId, args) {

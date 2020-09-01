@@ -66,8 +66,10 @@ class DashboardTable extends Component {
                         Time
                     </TableHeaderColumn>
                 </BootstrapTable>
-                <button className="log-page">
-                    <a href="#"></a>More Historys
+                <button className="log-page" onClick={()=>{
+                    window.location.href=`/history`
+                }}>
+                    More Historys
                 </button>
             </div>
         );

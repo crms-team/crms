@@ -8,7 +8,7 @@ const resourceIdKeys = {
     ec2: resource => resource['Instances'][0]['InstanceId'],
     ebs: resource => resource['VolumeId'],
     eip: resource => resource['AllocationId'],
-    keyPair: resource => resource['KeyPairId'],
+    keypair: resource => resource['KeyPairId'],
     
     rds: resource => resource['DBInstanceIdentifier'],
 
@@ -16,8 +16,8 @@ const resourceIdKeys = {
 
     vpc: resource => resource['VpcId'],
     subnet: resource => resource['SubnetId'],
-    securityGroup: resource => resource['GroupId'],
-    internetGateway: resource => resource['InternetGatewayId']
+    securitygroup: resource => resource['GroupId'],
+    internetgateway: resource => resource['InternetGatewayId']
 } 
 
 function getLastDataFileName(path, keyId){
@@ -103,7 +103,7 @@ function history(path, keyId, data, time) {
         detail[session] = {}
         for (let resourceType in data[session]) {
             let nowResources = data[session][resourceType]
-            let preResources = prevData != null ? prevData[session][resourceType]: []
+            let preResources = prevData != null ? prevData[session][resourceType.toLocaleLowerCase()]: []
             let cpResource = compareResources(resourceType, preResources, nowResources)
 
             if (cpResource != undefined) {

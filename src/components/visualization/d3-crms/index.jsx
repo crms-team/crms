@@ -72,14 +72,6 @@ const IMAGE_TYPE={
     }
 }
 
-function getLinkOpacity(source,target){
-    for(let i=0;i<source.children.length;i++){
-        if(source.children[i].id==target.id){
-            return 1
-        }
-    }
-}
-
 class Visual extends Component {
     constructor(props) {
         super(props);
@@ -131,7 +123,6 @@ class Visual extends Component {
                 height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
 
             let visualdata = [];
-
             for (let dataset of this.state.dataset) {
                 let cloud = dataset.filter(item => item.type.toLowerCase() == "aws")
                 let vpc = dataset.filter(item => item.type.toLowerCase() == "vpc")
@@ -146,7 +137,6 @@ class Visual extends Component {
                 let s3 = dataset.filter(item => item.type.toLowerCase() == "s3")
                 let rds_group = dataset.filter(item => item.type.toLowerCase() == "rds_group")
                 let rds = dataset.filter(item => item.type.toLowerCase() == "rds")
-
 
                 for (let tmp of cloud) {
                     tmp.children = [];
@@ -234,6 +224,8 @@ class Visual extends Component {
                     visualdata = visualdata.concat(tmp);
                 }
             }
+
+            console.log(visualdata)
 
             let aroot = {
                 id: "CRMSRootId",
@@ -335,6 +327,7 @@ class Visual extends Component {
                     .on("mouseover", function (d) {
                         let thisNode = d.id
                         let thislink = d
+                        let tmp=0;
                         d3.selectAll(".link").attr("opacity", function (d) {
                             return d.source.id == thisNode ||
                                 d.target.id == thisNode
@@ -345,23 +338,73 @@ class Visual extends Component {
                             if(thislink.id==d.data.id||thislink.id==d.data.name){
                                 return 1;
                             }
-                            try{
-                                for(let j=0;j<thislink.children.length;j++){
-                                    if(thislink.children[j].id==d.id){
-                                        return 1
+                            else{
+                                try{
+                                    for(let i=0;i<thislink.children.length;i++){
+                                        if(thislink.children[i].data.id==d.data.id){
+                                            return 1;
+                                        }
                                     }
-                                }
-                                for(let i=0;i<d.children.length;i++){
-                                    if(d.children[i].id==thislink.id){
-                                        return 1
+                                    for(let i=0;i<d.children.length;i++){
+                                        if(d.children[i].data.id==thislink.data.id){
+                                            return 1;
+                                        }
                                     }
+                                    for(let i=0;i<thislink.data.link.length;i++){
+                                        if(thislink.data.link[i]==d.data.id){
+                                            return 1;
+                                        }
+                                    }
+                                    for(let i=0;i<d.data.link.length;i++){
+                                        if(d.data.link[i]==thislink.data.id){
+                                            return 1;
+                                        }
+                                    }
+                                    return 0.2
                                 }
-                                return 0.2
-                            }
-                            catch{
-                                return 0.2
-                            }
-                            /**/
+                                catch{
+                                    try{
+                                        for(let i=0;i<d.children.length;i++){
+                                            if(d.children[i].data.id==thislink.data.id){
+                                                return 1;
+                                            }
+                                        }
+                                        for(let i=0;i<thislink.data.link.length;i++){
+                                            if(thislink.data.link[i]==d.data.id){
+                                                return 1;
+                                            }
+                                        }
+                                        for(let i=0;i<d.data.link.length;i++){
+                                            if(d.data.link[i]==thislink.data.id){
+                                                return 1;
+                                            }
+                                        }
+                                        
+                                    }
+                                    catch{
+                                        try{
+                                            for(let i=0;i<thislink.data.link.length;i++){
+                                                if(thislink.data.link[i]==d.data.id){
+                                                    return 1;
+                                                }
+                                            }
+                                            for(let i=0;i<d.data.link.length;i++){
+                                                if(d.data.link[i]==thislink.data.id){
+                                                    return 1;
+                                                }
+                                            }
+                                        }
+                                        catch{
+                                            for(let i=0;i<d.data.link.length;i++){
+                                                if(d.data.link[i]==thislink.data.id){
+                                                    return 1;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    return 0.2;
+                                }
+                            }          
                         });
                     })
                     .on("mouseout", function (d) {
