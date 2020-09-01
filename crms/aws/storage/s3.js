@@ -3,7 +3,51 @@ const AWS = require('aws-sdk')
 async function listBuckets(key, args=undefined) {
     AWS.config.update(key)
     let s3 = new AWS.S3({ apiVersion: '2006-03-01' })
-    return (await s3.listBuckets().promise())['Buckets']
+    let result = []
+
+    let buckets = (await s3.listBuckets().promise())['Buckets']
+
+    for (let bucket of buckets) {
+        let encryption = null
+        let publicAccess = null
+        let tags = null
+        let location = null
+
+        try {
+            encryption = (await s3.getBucketEncryption({
+                Bucket: bucket.Name
+            }).promise())['ServerSideEncryptionConfiguration']
+        } catch { }
+
+        try {
+            publicAccess = (await s3.getPublicAccessBlock({
+                Bucket: bucket.Name
+            }).promise())['PublicAccessBlockConfiguration']
+        } catch {}
+
+        try {
+            tags = (await s3.getBucketTagging({
+                Bucket: bucket.Name
+            }).promise())['TagSet']
+        } catch {}
+
+        try {
+            location = (await s3.getBucketLocation({
+                Bucket: bucket.Name
+            }).promise())['LocationConstraint']
+        } catch { }
+
+        result.push({
+            Name: bucket.Name,
+            CreationDate: bucket.CreationDate,
+            Encryption: encryption,
+            PublicAccessBlockConfiguration: publicAccess,
+            Tags: tags,
+            LocationConstraint: location
+        })
+    }
+
+    return result
 }
 
 async function createBucket(key, args=undefined) {
