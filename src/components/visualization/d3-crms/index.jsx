@@ -457,13 +457,13 @@ class Visual extends Component {
                             if (rType == "ebs") {
                                 status -= 6;
                             }
-                            let colors = ["#6c9aff", "#9298b1", "#9298b1", "#9298b1", "#ff5a76", "#93c900"]
+                            let colors = ["#93c900", "#ff5a76", "#ff5a76", "#ff5a76", "#9298b1","#6c9aff"]
                             return colors[status]
                         } catch (e) {
                             return "#ffc14d";
                         }
                     })
-                    .attr("stroke-width", "3")
+                    .attr("stroke-width", "10")
                     .attr("fill", "none")
                     .attr("r", function (d) {
                         return IMAGE_TYPE[d.data.type].circle_size

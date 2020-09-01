@@ -116,6 +116,7 @@ class ContentSummary extends Component {
             rootData: data, 
             keyList: [resource]
         });
+        console.log(this.state.data)
     }
 
     getViewData(keyList){
