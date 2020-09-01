@@ -21,7 +21,23 @@ $lightText: #9298b1;
     float: right;
     background: transparent !important;
     height: auto !important;
-    margin-top: 5vh;
+    margin-top: 2vh;
+}
+
+.dashboard-option {
+    width: 15%;
+    float: right;
+
+    & .select__option--options.form-control {
+        border: 2px solid #ffc14d;
+        background: transparent;
+        color: #6b6e7c;
+
+        &:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    }
 }
 
 .resource-list {
