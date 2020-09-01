@@ -44,7 +44,7 @@ const TYPEID = {
 
 export async function getDynamicOption (key_id,key_vendor,type) {
     let tmp_type=TYPEID[key_vendor][type]["url"]
-    let url=`http://localhost:4000/api/cloud/data/${tmp_type}?key_id=${key_id}&type=data`;
+    let url=`http://localhost:4000/api/cloud/data/${tmp_type}?key_id=${key_id}`;
     let items=[];
     const response = await fetch(url).then(res=>res.json())
     if(type=="subnet"){
@@ -837,27 +837,11 @@ class VPC extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("AmazonProvidedIpv6CidrBlock", val);
+                                this.func("AmazonProvidedIpv6CidrBlock", ("true"==val));
                             }}
                         >
                             <option value="" disabled selected>
                                 AmazonProvidedIpv6CidrBlock
-                            </option>
-                            <option>true</option>
-                            <option>false</option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("DryRun", val);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                DryRun
                             </option>
                             <option>true</option>
                             <option>false</option>
@@ -881,48 +865,20 @@ class VPC extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Ipv6CidrBlock</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Ipv6CidrBlock"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Ipv6CidrBlock", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Ipv6CidrBlockNetworkBorderGroup</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Ipv6CidrBlockNetworkBorderGroup"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Ipv6CidrBlockNetworkBorderGroup", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Ipv6Pool</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Ipv6Pool"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Ipv6Pool", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
                             placeholder="Enter name"
                             onChange={(e) => {
-                                let tmp = [
+                                let tmp=  [{
+                                    ResourceType: "vpc",
+                                    Tags :[
                                     {
                                         Key: "Name",
                                         Value: "",
                                     },
-                                ];
-                                tmp[0].Value = e.target.value;
-                                this.func("Tags", tmp);
+                                ]}]
+                                tmp[0].Tags[0].Value = e.target.value;
+                                this.func("TagSpecifications", tmp);
                             }}
                         />
                     </Form.Group>
@@ -936,6 +892,62 @@ class Subnet extends React.Component {
     constructor(props) {
         super(props);
         this.func = this.props.func.bind(this);
+        this.state={
+            key_name:this.props.key_name,
+            key: JSON.parse(localStorage.getItem("key")),
+            key_vendor:this.props.key_vendor,
+            vpcList:[],
+            AZ:[]
+        }
+
+        this.getDynamicAZ(this.props.key_name)
+        this.getVpcList()
+    }
+
+    async getDynamicAZ(key_name) {
+        let key_region="";
+        let key=this.state.key
+        for(let i=0;i<key.length;i++){
+            if(key[i].key==key_name){
+                key_region=key[i].region
+                break;
+            }
+        }
+        let items = [];
+        let response = await fetch('http://192.168.35.125:4000/api/cloud/data/ebs/etc/zones', {
+            method: 'post',
+            headers:{
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify({
+                key_id: key_name,
+                args: {
+                Filters: [
+                    {
+                        Name: 'region-name',
+                        Values: [key_region]
+                    }
+                ]
+            }
+        })}).then(res=>res.json())
+        console.log(response)
+        for(let i=0;i<response.data.length;i++){
+            items.push(<option value={response.data[i].ZoneName}>{response.data[i].ZoneName}</option>)
+        }
+        this.setState({
+            AZ : items
+        })
+    }
+
+    async getVpcList (){
+        let items=[]
+        let response = await getDynamicOption(this.state.key_name,this.state.key_vendor,"vpc")
+        for(let i=0;i<response.length;i++){
+            items.push(<option value={response[i]}>{response[i]}</option>)
+        }
+        this.setState({
+            vpcList:items
+        })
     }
 
     render() {
@@ -977,48 +989,31 @@ class Subnet extends React.Component {
                             </Button>
                         </Col>
                     </Form.Row>
-                        <Form.Control as="select">
+                        <Form.Control as="select" onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("VpcId", val);
+                            }}>
                             <option value="" disabled selected>
                                 VpcId
                             </option>
                             {
+                                this.state.vpcList
                             }
                         </Form.Control>
                     </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>AvailabilityZone</Form.Label>
-                        <Form.Control
-                            placeholder="Enter AvailabilityZone"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("AvailabilityZone", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>AvailabilityZoneId</Form.Label>
-                        <Form.Control
-                            placeholder="Enter AvailabilityZoneId"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("AvailabilityZoneId", val);
-                            }}
-                        />
-                    </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
+                        <Form.Label>AvailabilityZone</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("DryRun", val);
+                                this.func("AvailabilityZone", val);
                             }}
                         >
                             <option value="" disabled selected>
-                                DryRun
+                                AvailabilityZone
                             </option>
-                            <option>true</option>
-                            <option>false</option>
+                            {this.state.AZ}
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
@@ -1032,28 +1027,21 @@ class Subnet extends React.Component {
                         />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>OutpostArn</Form.Label>
-                        <Form.Control
-                            placeholder="Enter OutpostArn"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("OutpostArn", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
                             placeholder="Enter name"
                             onChange={(e) => {
-                                let tmp = [
+                                let tmp =[
                                     {
-                                        Key: "Name",
-                                        Value: "",
-                                    },
+                                        ResourceType : "subnet",
+                                        Tags:[{
+                                            Key: "Name",
+                                            Value: "",
+                                        }]
+                                    }
                                 ];
-                                tmp[0].Value = e.target.value;
-                                this.func("Tags", tmp);
+                                tmp[0].Tags[0].Value = e.target.value;
+                                this.func("TagSpecifications", tmp);
                             }}
                         />
                     </Form.Group>
@@ -1576,7 +1564,7 @@ class CreateModal extends React.Component {
         }
         else if (this.state.type == "subnet") {
             this.setState({
-                component: <Subnet func={this.func.bind(this)} />,
+                component: <Subnet func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name}/>,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
