@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import "./cloudkey-modal.scss";
+import './addCloudKeyModal.scss'
 
 const awsRegions = [
     { value: "us-east-1", name: "미국 동부 (버지니아 북부) us-east-1" },
