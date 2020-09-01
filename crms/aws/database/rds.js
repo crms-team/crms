@@ -55,6 +55,12 @@ async function startDBInstance(key, args=undefined) {
     }    
 }
 
+async function describeDBEngineVersions(key, args=undefined) {
+    AWS.config.update(key)
+    let rds = new AWS.RDS({ apiVersion: '2014-10-31' })
+    return (await rds.describeDBEngineVersions(args).promise())['DBEngineVersions']
+}
+
 async function stopDBInstance(key, args=undefined) {
     AWS.config.update(key)
     let rds = new AWS.RDS({ apiVersion: '2014-10-31' })
@@ -79,7 +85,8 @@ module.exports = {
     },
     etc: {
         start: startDBInstance,
-        stop: stopDBInstance
+        stop: stopDBInstance,
+        versions: describeDBEngineVersions
     }
 }
 
