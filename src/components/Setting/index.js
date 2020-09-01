@@ -1,6 +1,7 @@
 import React, { useState, Component } from "react";
 import { IconContext } from "react-icons";
 import { FiKey, FiUnlock, FiFileText } from "react-icons/fi";
+import { GrFormPrevious } from "react-icons/gr";
 import "./setting.scss";
 import AddCloudKeyModal from "./setting-modal/addCloudKeyModal";
 import ChangePasswordModal from "./setting-modal/changePasswdModal";
@@ -28,6 +29,16 @@ function Setting({ children }) {
                     title=""
                 />
             )}
+
+            <div className="previous-btn-container">
+                <a href="#" className="previous-btn">
+                    <IconContext.Provider value={{ className: "previous" }}>
+                        <div>
+                            <GrFormPrevious />
+                        </div>
+                    </IconContext.Provider>
+                </a>
+            </div>
 
             <div className="setting-container">
                 <h1 className="setting-title">Setting Page</h1>
