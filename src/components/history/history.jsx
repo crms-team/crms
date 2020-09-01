@@ -330,37 +330,39 @@ export default function EnhancedTable() {
     const [rows, setRows] = React.useState([])
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    useEffect(async () => {
-        let rowList = []
-        let response = await (await fetch("http://localhost:4000/api/cloud/history")).json()
-
-        for(let data of response.history) {
-            let compute = makeValue(data.detail.compute)
-            let database = makeValue(data.detail.database)
-            let network = makeValue(data.detail.network)
-            let storage = makeValue(data.detail.storage)
+    useEffect(() => {
+        async function getData() {
+            let rowList = []
+            let response = await (await fetch("http://localhost:4000/api/cloud/history")).json()
             
-            let history = []
-
-            for (let session in data.detail){
-                for (let resource in data.detail[session]) {
-                    for (let state in data.detail[session][resource]) {
-                        for (let id in data.detail[session][resource][state]) {
-                            history.push({
-                                session: session,
-                                resource: resource,
-                                id: data.detail[session][resource][state][id],
-                                state: state
-                            })
+            for(let data of response.history) {
+                let compute = makeValue(data.detail.compute)
+                let database = makeValue(data.detail.database)
+                let network = makeValue(data.detail.network)
+                let storage = makeValue(data.detail.storage)
+                
+                let history = []
+            
+                for (let session in data.detail){
+                    for (let resource in data.detail[session]) {
+                        for (let state in data.detail[session][resource]) {
+                            for (let id in data.detail[session][resource][state]) {
+                                history.push({
+                                    session: session,
+                                    resource: resource,
+                                    id: data.detail[session][resource][state][id],
+                                    state: state
+                                })
+                            }
                         }
                     }
-                }
-            }            
-    
-            rowList.push(createDetailData(data.keyId, data.title, data.time, compute, database, network, storage, 1, rowList.length + 1, history))
+                }            
+            
+                rowList.push(createDetailData(data.keyId, data.title, data.time, compute, database, network, storage, 1, rowList.length + 1, history))
+            }
+            setRows(rowList)
         }
-        console.log(rowList)
-        setRows(rowList)
+        getData()
     }, [])
 
     const handleRequestSort = (event, property) => {
@@ -445,5 +447,3 @@ export default function EnhancedTable() {
         </>
     );
 }
-
-
