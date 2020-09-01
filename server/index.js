@@ -24,6 +24,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const server = express()
 const cors = require('cors');
+const { Router } = require('react-router-dom')
 
 // add server.config
 server.config = system.config.getConfig(PATH)   
@@ -33,14 +34,21 @@ server.keys = require('./system').key
 // logging
 //system.log.logger(server.config.path)
 
-// using build react 
-if (fs.existsSync(__dirname + '/../build')){
-    server.use(express.static(path.join(__dirname, '../build')))
-}
-
 server.use(cors())
 server.use(bodyParser.json())
 require('./api')(server)
 server.listen(PORT, ()=>{
     console.log('>> Start Node Server 0.0.0.0:' + PORT)
 })
+
+// using build react 
+if (fs.existsSync(__dirname + '/../build')){
+    server.use(express.static(path.join(__dirname, '../build')))
+    const router = express.Router()
+
+    router.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, '../build/index.html'))
+    })
+
+    server.use(router)
+}
