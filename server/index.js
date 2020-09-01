@@ -1,6 +1,7 @@
 // init crms
 const system = require('./system')
 const path = require('path')
+const fs = require('fs')
 
 const PATH = __dirname.split(path.sep).slice(0, -1).join(path.sep)
 
@@ -31,6 +32,11 @@ server.keys = require('./system').key
 
 // logging
 //system.log.logger(server.config.path)
+
+// using build react 
+if (fs.existsSync(__dirname + '/../build')){
+    server.use(express.static(path.join(__dirname, '../build')))
+}
 
 server.use(cors())
 server.use(bodyParser.json())

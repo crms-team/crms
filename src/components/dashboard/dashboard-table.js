@@ -21,9 +21,7 @@ class DashboardTable extends Component {
     }
 
     async componentDidMount() {
-        let historys = await fetch(
-            `http://localhost:4000/api/cloud/history?count=5`
-        ).then((res) => res.json());
+        let historys = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/history?count=5`).then(res=>res.json())
 
         let dataset = [];
         let i = 1;

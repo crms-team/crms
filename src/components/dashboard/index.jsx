@@ -63,7 +63,7 @@ class Dashboard extends React.Component {
 
     async componentDidMount() {
         let response = await (
-            await fetch("http://localhost:4000/api/cloud/key/list")
+            await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key/list`)
         ).json();
         let key_id = Object.keys(response.keys);
         for (let i = 0; i < key_id.length; i++) {
@@ -74,7 +74,7 @@ class Dashboard extends React.Component {
         }
         localStorage.setItem("key", JSON.stringify(key_id));
         let statusData = await fetch(
-            `http://localhost:4000/api/dashboard`
+            `${process.env.REACT_APP_SERVER_URL}/api/dashboard`
         ).then((res) => res.json());
 
         this.setState({
@@ -82,7 +82,7 @@ class Dashboard extends React.Component {
         });
     }
 
-    getResourceStatusData(resource, type = undefined) {
+    getResourceStatusData(resource, type=undefined) {
         if (type) {
             return this.state.statusData
                 ? this.state.statusData[resource][0] +
@@ -90,6 +90,7 @@ class Dashboard extends React.Component {
                       this.state.statusData[resource][1]
                 : "loading";
         }
+
         return this.state.statusData && this.state.statusData[resource][1] != 0
             ? (this.state.statusData[resource][0] /
                   this.state.statusData[resource][1]) *
@@ -161,12 +162,12 @@ class Dashboard extends React.Component {
                                     className="compute key-pair"
                                     title="Key Pair"
                                     number={this.getResourceStatusData(
-                                        "keyPair",
+                                        "keypair",
                                         true
                                     )}
                                     progress={{
                                         value: this.getResourceStatusData(
-                                            "keyPair"
+                                            "keypair"
                                         ),
                                         label: "keyPair",
                                     }}

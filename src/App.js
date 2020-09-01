@@ -14,7 +14,7 @@ class App extends Component {
       if(sessionStorage.login==undefined){
           return <Redirect to="/"/>
       }
-      else if((window.location.href=="http://localhost:3000/")&&(sessionStorage.login=="true")){
+      else if((window.location.href==`${process.env.REACT_APP_SERVER_URL}/`)&&(sessionStorage.login=="true")){
           return <Redirect to="/dashboard"/>
       }
     }  

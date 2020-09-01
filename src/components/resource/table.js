@@ -533,7 +533,7 @@ export default function EnhancedTable() {
 
       for(let key of keys){
         let resource_type = managerType[key.vendor][type]
-        let response = await fetch(`http://localhost:4000/api/cloud/data/${resource_type}?key_id=${key.key}`).then(res=>res.json())
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${resource_type}?key_id=${key.key}`).then(res=>res.json())
         if (response.data){
           for (let resource of response.data) {
             result.push(createData(columes_list, MATCHINGS[key.vendor][resource_type](key.key, resource)))

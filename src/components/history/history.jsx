@@ -333,7 +333,7 @@ export default function EnhancedTable() {
     useEffect(() => {
         async function getData() {
             let rowList = []
-            let response = await (await fetch("http://localhost:4000/api/cloud/history")).json()
+            let response = await (await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/history`)).json()
             
             for(let data of response.history) {
                 let compute = makeValue(data.detail.compute)
