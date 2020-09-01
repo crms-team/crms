@@ -1,17 +1,16 @@
 const AWS = require('aws-sdk')
 
 async function describeImages(key, args=undefined) {
-    const data = ["Amazon Linux 2 AMI 2.0.20200722.0 x86_64 HVM gp2","Canonical, Ubuntu, 18.04 LTS, amd64 bionic image build on 2020-08-10","Canonical, Ubuntu, 16.04 LTS, amd64 xenial image build on 2020-07-29","SUSE Linux Enterprise Server 15 SP2 (HVM, 64-bit, SSD-Backed)","Provided by Red Hat, Inc.","Microsoft Windows Server 2019 with Desktop Experience Locale English AMI provided by Amazon","Microsoft Windows Server 2019 with Containers Locale English AMI provided by Amazon","Microsoft Windows Server 1909 Core Locale English AMI provided by Amazon","Microsoft Windows Server 2016 with Desktop Experience Locale English AMI provided by Amazon","Microsoft Windows Server 2016 with Containers Locale English AMI provided by Amazon","Microsoft Windows Server 2016 Full Locale English with SQL Standard 2019 AMI provided by Amazon","Microsoft Windows Server 2012 R2 RTM 64-bit Locale English with SQL Standard 2016 AMI provided by Amazon","Microsoft Windows Server 2012 R2 RTM 64-bit Locale English with SQL Enterprise 2016 AMI provided by Amazon","Amazon Linux 2 with .Net Core, PowerShell, Mono, and MATE Desktop Environment","Canonical, Ubuntu, 20.04 LTS, amd64 focal image build on 2020-07-29","SUSE Linux Enterprise Server 12 SP5 (HVM, 64-bit, SSD-Backed)"]
-
+    const data = ["amzn2-ami-hvm-2.0.20200722.0-x86_64-gp2","ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200810","ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20200729","suse-sles-15-sp2-v20200721-hvm-ssd-x86_64","RHEL-8.2.0_HVM-20200423-x86_64-0-Hourly2-GP2","Windows_Server-2019-English-Full-Base-2020.08.12","Windows_Server-2019-English-Full-ContainersLatest-2020.08.12","Windows_Server-1909-English-Core-Base-2020.08.12","Windows_Server-2016-English-Full-Base-2020.08.12","Windows_Server-2016-English-Full-Containers-2020.08.12","Windows_Server-2016-English-Full-SQL_2019_Standard-2020.08.12","Windows_Server-2012-R2_RTM-English-64Bit-SQL_2016_SP2_Standard-2020.08.12","Windows_Server-2012-R2_RTM-English-64Bit-SQL_2016_SP2_Enterprise-2020.08.12","amzn2-x86_64-MATEDE_DOTNET-2020.04.14","ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20200729","suse-sles-12-sp5-v20200615-hvm-ssd-x86_64"]
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     return (await ec2.describeImages({
         Filters: [
             {
-                Name: 'description',
+                Name: 'name',
                 Values: data
             }
-        ]
+        ],
     }).promise())['Images']
 }
 

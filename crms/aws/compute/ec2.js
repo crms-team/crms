@@ -54,7 +54,8 @@ async function runInstances(key, args = undefined) {
     try {
         await ec2.runInstances(args).promise()
         return true
-    } catch {
+    } catch(e) {
+        console.log(e)
         console.log("EC2 POST Error (runInstances Error)")
         return false
     }
