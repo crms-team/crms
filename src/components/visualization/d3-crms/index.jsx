@@ -89,7 +89,7 @@ class Visual extends Component {
     }
 
     async getKeyData() {
-        let response = await (await fetch("http://localhost:4000/api/cloud/key/list")).json()
+        let response = await (await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key/list`)).json()
         let key_id = Object.keys(response.keys);
         for (let i = 0; i < key_id.length; i++) {
             key_id[i] = {
@@ -104,7 +104,7 @@ class Visual extends Component {
     async getVisualData(type = undefined) {
         let result = []
         for (let key in this.state.keyList) {
-            let ep = `http://localhost:4000/api/cloud/data?key_id=${key}` + (type ? `&type=${type}` : '')
+            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key}` + (type ? `&type=${type}` : '')
             let response = await fetch(ep)
             let data = await response.json()
             this.setState({ time: data.time })

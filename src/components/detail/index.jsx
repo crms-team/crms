@@ -245,7 +245,7 @@ class Detail extends Component {
             clickNum: 0,
             activeContent: 0,
             resource: resource,
-            endpoint: `http://localhost:4000/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
+            endpoint: `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
         };
     }
 

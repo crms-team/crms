@@ -62,7 +62,7 @@ class Dashboard extends React.Component {
 
     async componentDidMount() {
         let response = await (
-            await fetch("http://localhost:4000/api/cloud/key/list")
+            await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key/list`)
         ).json();
         let key_id = Object.keys(response.keys);
         for (let i = 0; i < key_id.length; i++) {
@@ -73,7 +73,7 @@ class Dashboard extends React.Component {
         }
         localStorage.setItem("key", JSON.stringify(key_id));
         let statusData = await fetch(
-            `http://localhost:4000/api/dashboard`
+            `${process.env.REACT_APP_SERVER_URL}/api/dashboard`
         ).then((res) => res.json());
 
         this.setState({

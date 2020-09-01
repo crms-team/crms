@@ -3,7 +3,7 @@ import { Manager } from "../../manager";
 
 export class SubnetManager extends Manager {
     static endpoint() {
-        return 'http://localhost:4000/api/cloud/data/subnet'
+        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/subnet`
     }
 
     static async update(keyId, args) {

@@ -40,7 +40,7 @@ function AddCloudKeyModal(props) {
     let [overlapCheck, setOverlapCheck] = React.useState(false)
 
     async function handleCheckOverlap() {
-        let response = await (await fetch(`http://localhost:4000/api/cloud/key?key_id=${cloudId.current.value}`)).json()
+        let response = await (await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key?key_id=${cloudId.current.value}`)).json()
         response.result ? alert("중복되었습니다") : alert("성공");
         setOverlapCheck(!response.result)
     }
@@ -67,7 +67,7 @@ function AddCloudKeyModal(props) {
         }
 
 
-        let response = await fetch(`http://localhost:4000/api/cloud/key`, {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers:{

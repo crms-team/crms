@@ -18,7 +18,7 @@ function ChangePasswordModal(props) {
             return;
         }
 
-        let response = await( await fetch(`http://localhost:4000/api/passwd?passwd=${btoa(original.current.value)}`)).json()
+        let response = await( await fetch(`${process.env.REACT_APP_SERVER_URL}/api/passwd?passwd=${btoa(original.current.value)}`)).json()
 
         if(!response.result) {
             alert("현재 비밀번호와 다릅니다.");
@@ -30,7 +30,7 @@ function ChangePasswordModal(props) {
             new_passwd: btoa(new_passwd.current.value)
         }
 
-        await fetch('http://localhost:4000/api/passwd', {
+        await fetch(`${process.env.REACT_APP_SERVER_URL}/api/passwd`, {
             method: 'PUT',
             body: JSON.stringify(data),
             headers:{
