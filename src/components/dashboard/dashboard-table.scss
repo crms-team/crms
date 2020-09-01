@@ -1,11 +1,15 @@
 .dashboard__table-container {
     background: #212125;
-    height: 290px;
+    height: 330px;
     padding: 20px;
     padding-bottom: 0;
     border-radius: 0.4rem;
     margin-left: 10px;
     overflow: scroll;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .dashboard__table {
