@@ -32,8 +32,8 @@ function setKeyFunc(path, key_id, vendor, keys) {
         return {result: false, msg: 'Set Key Error'}
     }
 
-    fs.mkdirSync(PATH.normalize(`${path}/data/${key_id}`), {recursive: true})
-
+    fs.mkdirSync(PATH.normalize(`${path}/data/${key_id}/log`), {recursive: true})
+    fs.writeFileSync(PATH.normalize(`${path}/data/history.json`), '[]')
     return {result: true}
 }
 

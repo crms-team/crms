@@ -3,17 +3,15 @@ const PATH = require('path')
 
 function getHistoryStatus(history) {
     let statusCount = { remove: 0, create: 0, modify: 0}
-    let check = false
     
     for (let session in history){
         for (let type in history[session]) {
             for (let status in history[session][type]) {
-                statusCount[status] += 1
-                check = statusCount.remove != 0 && statusCount.create != 0 && statusCount.modify != 0 
+                statusCount[status] += history[session][type][status].length
+            }
 
-                if (check) {
-                    return 'Transform'
-                }
+            if (statusCount.remove != 0 && statusCount.create != 0 && statusCount.modify != 0) {
+                return 'Transform'
             }
         }
     }
