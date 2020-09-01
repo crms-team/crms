@@ -447,6 +447,13 @@ const EnhancedTableToolbar = (props) => {
                   if(type=="keypair"){
                     id=data[idx].name
                   }
+                  else if(type=="bucket"){
+                    id=data[idx].name
+                  }
+                  else if(type=="database"){
+                    console.log(data[idx])
+                    id=data[idx].identifier
+                  }
                   else{
                     id = data[idx].id
                   }
