@@ -130,7 +130,7 @@ const COLUMES = {
   bucket:[
     { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
     { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'access', numeric: false, disablePadding: false, label: 'Access' },
+    { id: 'encryption', numeric: false, disablePadding: false, label: 'Encrpytion' },
     { id: 'region', numeric: false, disablePadding: false, label: 'Region' },
     { id: 'create_data', numeric: false, disablePadding: false, label: 'Create Data' }
   ]
@@ -299,8 +299,8 @@ const MATCHINGS = {
       return {
         key_id: key_id,
         name: attr.Name,
-        access: attr.Name,
-        region: attr.Name,
+        encryption: attr.Encryption == null ? "null" : attr.Encryption,
+        region: attr.LocationConstraint,
         create_data: attr.CreationDate,
       }
     }
@@ -378,7 +378,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   title: {
     flex: '1 1 100%',
   },
-  icon : {
+  rowIconButton : {
       color : '#27262b!important'
   }
 }));
@@ -387,7 +387,7 @@ const EnhancedTableToolbar = (props) => {
   let classes = useToolbarStyles();
   const numSelected  = props.numSelected.length;
   const { data }= props;
-  classes = {"root":"makeStyles-root-5","highlight":"makeStyles-highlight-6","title":"makeStyles-title-7","icon":"makeStyles-icon-8"}
+  classes = {"root":"makeStyles-root-5","highlight":"makeStyles-highlight-6","title":"makeStyles-title-7"}
   return (
     
     <Toolbar
@@ -419,7 +419,7 @@ const EnhancedTableToolbar = (props) => {
                 }
               }}
             >
-              <PlayArrowIcon className={classes.icon} />
+              <PlayArrowIcon className="rowIconButton" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Off">
@@ -434,7 +434,7 @@ const EnhancedTableToolbar = (props) => {
                 }}
                 aria-label="off"
               >
-              <PauseIcon className={classes.icon} />
+              <PauseIcon className="rowIconButton" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
@@ -455,14 +455,14 @@ const EnhancedTableToolbar = (props) => {
                 }
               }}
             >
-              <DeleteIcon className={classes.icon} />
+              <DeleteIcon className="rowIconButton" />
             </IconButton>
           </Tooltip>
         </>
       ) : (
         <Tooltip title="Filter list">
           <IconButton aria-label="filter list">
-            <FilterListIcon className={classes.icon} />
+            <FilterListIcon className="rowIconButton" />
           </IconButton>
         </Tooltip>
       )}
@@ -554,7 +554,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n, i) => i);
       setSelected(newSelecteds);
       return;
     }
