@@ -5,15 +5,18 @@ import { GrFormPrevious } from "react-icons/gr";
 import "./setting.scss";
 import AddCloudKeyModal from "./setting-modal/addCloudKeyModal";
 import ChangePasswordModal from "./setting-modal/changePasswdModal";
+import CloudListModal from "./setting-modal/cloudListModal";
 
 function Setting({ children }) {
     const [addCloudModalShow, setAddCloudModalShow] = useState(false);
     const [changePasswordModalShow, setChangePasswordModalShow] = useState(
         false
     );
+    const [cloudListModalShow, setcloudListModalShow] = useState(false);
 
     return (
         <>
+            {/* Open and close the setting page modal */}
             {addCloudModalShow && (
                 <AddCloudKeyModal
                     show={addCloudModalShow}
@@ -30,6 +33,14 @@ function Setting({ children }) {
                 />
             )}
 
+            {cloudListModalShow && (
+                <CloudListModal
+                    show={cloudListModalShow}
+                    onHide={() => setcloudListModalShow(false)}
+                    title=""
+                />
+            )}
+
             <div className="previous-btn-container">
                 <a href="#" className="previous-btn">
                     <IconContext.Provider value={{ className: "previous" }}>
@@ -39,6 +50,8 @@ function Setting({ children }) {
                     </IconContext.Provider>
                 </a>
             </div>
+
+            {/* setting page */}
 
             <div className="setting-container">
                 <h1 className="setting-title">Setting Page</h1>
@@ -61,7 +74,12 @@ function Setting({ children }) {
                         <div className="setting-box-deco"></div>
                     </div>
 
-                    <div className="setting-box">
+                    <div
+                        className="setting-box"
+                        onClick={() => {
+                            setcloudListModalShow(true);
+                        }}
+                    >
                         <IconContext.Provider value={{ className: "icon" }}>
                             <FiFileText />
                         </IconContext.Provider>
