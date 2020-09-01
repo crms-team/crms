@@ -170,7 +170,7 @@ class ContentSummary extends Component {
                         })
                     }
                 </div>
-                <div style={{ width: "100%", float: "left" }}>
+                <div style={{ width: "100%", float: "left", marginBottom: "20px" }}>
                     {   
                         keys.length != 0 && 
                         <table
