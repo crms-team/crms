@@ -1,6 +1,7 @@
 const key_module = require('../../system').key
 const fs = require('fs')
 const PATH = require('path')
+const crms = require('../../../crms')
 
 function isKeyFormat(vendor, keys){
     switch (vendor) {
@@ -59,6 +60,7 @@ module.exports = server => {
             let keys = req.body.keys
 
             res.send(setKeyFunc(server.config.path, key_id, vendor, keys))
+            crms.data.saveData(server.config.path, key_id, vendor, keys)
         })
         
         server.put('/api/cloud/key', (req, res) => {
