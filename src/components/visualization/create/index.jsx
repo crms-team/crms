@@ -1509,8 +1509,14 @@ class CreateModal extends React.Component {
         let url=`http://localhost:4000/api/cloud/data/ami?key_id=${key_id}`
         let items=[];
         const response = await fetch(url).then(res=>res.json())
-        console.log(response)
+        for (let i = 0; i < response.data.length; i++) {
+            items.push(response.data[i]);
+        }
+        EC2Data.Ami=items;
+        console.log(EC2Data.Ami);
+
     }
+
 
     select_vendor(e) {
         var index = e.nativeEvent.target.selectedIndex;
