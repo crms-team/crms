@@ -308,7 +308,8 @@ module.exports = server => {
             let result = await crmsFunction(keys[keyId].keys, args)
 
             res.send({
-                result: result
+                result: true,
+                data: result
             })
         })
     }

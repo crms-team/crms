@@ -67,7 +67,7 @@ function AddCloudKeyModal(props) {
         }
 
 
-        let response = await fetch(`http://192.168.35.125:4000/api/cloud/key`, {
+        let response = await fetch(`http://localhost:4000/api/cloud/key`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers:{

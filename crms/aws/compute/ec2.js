@@ -9,7 +9,7 @@ async function describeInstances(key, args = undefined) {
 async function describeInstanceTypes(key, args = undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
-    return (await ec2.describeInstanceTypes().promise())['InstanceTypes']
+    return (await ec2.describeInstanceTypeOfferings(args).promise())['InstanceTypeOfferings']
 }
 
 async function stopInstances(key, args = undefined) {
