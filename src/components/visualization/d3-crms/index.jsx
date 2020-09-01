@@ -110,7 +110,6 @@ class Visual extends Component {
             this.setState({ time: data.time })
             result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
         }
-        console.log(result);
         return result;
     }
 
@@ -124,7 +123,6 @@ class Visual extends Component {
                 height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
 
             let visualdata = [];
-
             for (let dataset of this.state.dataset) {
                 let cloud = dataset.filter(item => item.type.toLowerCase() == "aws")
                 let vpc = dataset.filter(item => item.type.toLowerCase() == "vpc")
@@ -139,7 +137,6 @@ class Visual extends Component {
                 let s3 = dataset.filter(item => item.type.toLowerCase() == "s3")
                 let rds_group = dataset.filter(item => item.type.toLowerCase() == "rds_group")
                 let rds = dataset.filter(item => item.type.toLowerCase() == "rds")
-
 
                 for (let tmp of cloud) {
                     tmp.children = [];
@@ -227,6 +224,8 @@ class Visual extends Component {
                     visualdata = visualdata.concat(tmp);
                 }
             }
+
+            console.log(visualdata)
 
             let aroot = {
                 id: "CRMSRootId",
