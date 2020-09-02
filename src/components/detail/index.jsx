@@ -270,6 +270,9 @@ class ContentUpdate extends Component {
                 ec2item.push(<option>{ec2list.Instances[i].InstanceId}</option>)
             }
         }
+        else if(resource == "rds"){
+            await this.getEngineVersion(response.data.Engine)
+        }
 
         this.setState({
             data: data,
@@ -283,6 +286,31 @@ class ContentUpdate extends Component {
         let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ec2?key_id=${this.props.modkey}`
         let tmp_ec2 = await fetch(url).then(res => res.json());
         return tmp_ec2.data[0]
+    }
+
+    async getEngineVersion(engine){
+        let items=[]
+        let response= await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/rds/etc/versions`, {
+            method: 'post',
+            headers:{
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify({
+                key_id: this.props.modkey,
+                args: {
+                    Engine: engine
+                }
+           }
+        )}).then(res=>res.json())
+
+        for(let i=0;i<response.data.length;i++){
+            items.push(<option value={response.data[i].EngineVersion}>{response.data[i].EngineVersion}</option>)
+        }
+
+        this.setState({
+            tmp_version:items
+        })
+
     }
 
     modifyInstance(resource, data) {
@@ -623,85 +651,6 @@ class ContentUpdate extends Component {
                 </>
             )
         }
-        else if (resource == "subnet") {
-            return (
-                <>
-                    <Form>
-                        <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Form.Label>AssignIpv6AddressOnCreation</Form.Label>
-                            <Form.Control
-                                as="select"
-                                onChange={(e) => {
-                                    let tmp = {
-                                        Value: ("true" == e.target.value)
-                                    }
-                                    func("AssignIpv6AddressOnCreation", tmp)
-                                }}
-                            >
-                                <option value="" disabled selected>
-                                    AssignIpv6AddressOnCreation
-                            </option>
-                                <option>true</option>
-                                <option>false</option>
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="CustomerOwnedIpv4Pool">
-                            <Form.Label>CustomerOwnedIpv4Pool</Form.Label>
-                            <Form.Control
-                                placeholder="Enter Size"
-                                onChange={(e) => {
-                                    let tmp = e.target.value
-                                    func("CustomerOwnedIpv4Pool", tmp)
-                                }}
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Form.Label>MapCustomerOwnedIpOnLaunch</Form.Label>
-                            <Form.Control
-                                as="select"
-                                onChange={(e) => {
-                                    let tmp = {
-                                        Value: ("true" == e.target.value)
-                                    }
-                                    func("CustomerOwnedIpv4Pool", this.state.data.CustomerOwnedIpv4Pool)
-                                    func("MapCustomerOwnedIpOnLaunch", tmp)
-                                }}
-                            >
-                                <option value="" disabled selected>
-                                    MapCustomerOwnedIpOnLaunch
-                            </option>
-                                <option>true</option>
-                                <option>false</option>
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Form.Label>MapPublicIpOnLaunch</Form.Label>
-                            <Form.Control
-                                as="select"
-                                onChange={(e) => {
-                                    let tmp = {
-                                        Value: ("true" == e.target.value)
-                                    }
-                                    func("MapPublicIpOnLaunch", tmp)
-                                }}
-                            >
-                                <option value="" disabled selected>
-                                    MapPublicIpOnLaunch
-                            </option>
-                                <option>true</option>
-                                <option>false</option>
-                            </Form.Control>
-                        </Form.Group>
-                    </Form>
-                    <Button variant="warning" onClick={async () => {
-                        tmp_data.SubnetId = this.state.data.SubnetId
-                        console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
-                    }}>
-                        Modify
-                </Button>
-                </>
-            )
-        }
         else if (resource == "eip") {
             if (this.state.data.AssociationId == undefined) {
                 return (
@@ -714,7 +663,7 @@ class ContentUpdate extends Component {
                                     as="select"
                                     onChange={(e) => {
                                         func("InstanceId", e.target.value)
-                                        func("AllocationId",this.state.data.AllocationId)
+                                        func("AllocationId", this.state.data.AllocationId)
                                     }}
                                 >
                                     <option value="" disabled selected>
@@ -726,28 +675,28 @@ class ContentUpdate extends Component {
                                 </Form.Control>
                                 <Form.Label>EC2 Classic Attach</Form.Label>
                                 <Form.Group controlId="exampleForm.ControlSelect1">
-                                <Form.Label>InstanceId</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    onChange={(e) => {
-                                        func("InstanceId", e.target.value)
-                                        func("PublicIp",this.state.data.PublicIp)
-                                    }}
-                                >
-                                    <option value="" disabled selected>
-                                        InstanceId
+                                    <Form.Label>InstanceId</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        onChange={(e) => {
+                                            func("InstanceId", e.target.value)
+                                            func("PublicIp", this.state.data.PublicIp)
+                                        }}
+                                    >
+                                        <option value="" disabled selected>
+                                            InstanceId
                                     </option>
-                                    {
-                                        this.state.ec2item
-                                    }
-                                </Form.Control>
-                            </Form.Group>
+                                        {
+                                            this.state.ec2item
+                                        }
+                                    </Form.Control>
+                                </Form.Group>
                             </Form.Group>
                         </Form>
                         <Button variant="warning" onClick={async () => {
                             await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
                         }}>
-                        Modify
+                            Modify
                         </Button>
                     </>
                 )
@@ -788,7 +737,7 @@ class ContentUpdate extends Component {
                         <Button variant="warning" onClick={async () => {
                             await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
                         }}>
-                        Modify
+                            Modify
                         </Button>
                     </>
                 )
@@ -798,7 +747,6 @@ class ContentUpdate extends Component {
             return (
                 <>
                     <Button variant="warning" onClick={async () => {
-                        tmp_data.SubnetId = this.state.data.SubnetId
                         console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                     }}>
                         Modify
@@ -806,7 +754,174 @@ class ContentUpdate extends Component {
                 </>
             )
         }
-        
+        else if (resource == "rds") {
+            tmp_data.DBInstanceIdentifier=this.state.data.DBInstanceIdentifier
+            return (
+                <>
+                    <Form>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                            <Form.Label>EngineVersion</Form.Label>
+                            <Form.Control
+                                as="select"
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    func("EngineVersion", val);
+                                }}
+                            >
+                                <option value="" disabled selected>
+                                    EngineVersion
+                            </option>
+                                {this.state.tmp_version}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>MasterUserPassword</Form.Label>
+                            <Form.Control
+                                placeholder="Enter MasterUserPassword"
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    func("MasterUserPassword", val);
+                                }}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                            <Form.Label>DBInstanceClass</Form.Label>
+                            <Form.Control
+                                as="select"
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    func("DBInstanceClass", val);
+                                }}
+                            >
+                                <option value="" disabled selected>
+                                    DBInstanceClass
+                            </option>
+                                <option>db.t2.small</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>AllocatedStorage</Form.Label>
+                            <Form.Control
+                                placeholder="Enter AllocatedStorage"
+                                onChange={(e) => {
+                                    let val = parseInt(e.target.value);
+                                    func("AllocatedStorage", val);
+                                }}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                            <Form.Label>StorageType</Form.Label>
+                            <Form.Control
+                                as="select"
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    func("StorageType", val);
+                                }}
+                            >
+                                <option value="" disabled selected>
+                                    StorageType
+                            </option>
+                                <option>standard</option>
+                                <option>gp2</option>
+                                <option>io1</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>MaxAllocatedStorage</Form.Label>
+                            <Form.Control
+                                placeholder="Enter MaxAllocatedStorage"
+                                onChange={(e) => {
+                                    let val = parseInt(e.target.value);
+                                    func("MaxAllocatedStorage", val);
+                                }}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                            <Form.Label>MultiAZ</Form.Label>
+                            <Form.Control
+                                as="select"
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    func("MultiAZ", ("true" == val));
+                                }}
+                            >
+                                <option value="" disabled selected>
+                                    MultiAZ
+                            </option>
+                                <option>True</option>
+                                <option>False</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>BackupRetentionPeriod</Form.Label>
+                            <Form.Control
+                                placeholder="Enter BackupRetentionPeriod"
+                                onChange={(e) => {
+                                    let val = parseInt(e.target.value);
+                                    func("BackupRetentionPeriod", val);
+                                }}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                            <Form.Label>CopyTagsToSnapshot</Form.Label>
+                            <Form.Control
+                                as="select"
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    func("CopyTagsToSnapshot", ("true" == val));
+                                }}
+                            >
+                                <option value="" disabled selected>
+                                    CopyTagsToSnapshot
+                            </option>
+                                <option>True</option>
+                                <option>False</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                            <Form.Label>AutoMinorVersionUpgrade</Form.Label>
+                            <Form.Control
+                                as="select"
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    func("AutoMinorVersionUpgrade", ("true" == val));
+                                }}
+                            >
+                                <option value="" disabled selected>
+                                    AutoMinorVersionUpgrade
+                            </option>
+                                <option>True</option>
+                                <option>False</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                            <Form.Label>DeletionProtection</Form.Label>
+                            <Form.Control
+                                as="select"
+                                onChange={(e) => {
+                                    let val = e.target.value;
+                                    func("DeletionProtection", ("true" == val));
+                                }}
+                            >
+                                <option value="" disabled selected>
+                                    DeletionProtection
+                            </option>
+                                <option>True</option>
+                                <option>False</option>
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+
+                    <Button variant="warning" onClick={async () => {
+                        console.log(tmp_data)
+                        console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
+                    }}>
+                        Modify
+                </Button>
+                </>
+            )
+        }
+
     }
 
     render() {
@@ -833,7 +948,7 @@ class Detail extends Component {
             clickNum: 0,
             activeContent: 0,
             resource: resource,
-            endpoint: `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
+            endpoint: `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}`,
         };
 
     }

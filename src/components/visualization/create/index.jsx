@@ -244,7 +244,6 @@ class EC2 extends React.Component {
         this.setState({
             tmp_subnet:items
         })
-        console.log(this.state)
     }
 
     render() {
@@ -930,7 +929,6 @@ class Subnet extends React.Component {
                 ]
             }
         })}).then(res=>res.json())
-        console.log(response)
         for(let i=0;i<response.data.length;i++){
             items.push(<option value={response.data[i].ZoneName}>{response.data[i].ZoneName}</option>)
         }
@@ -1097,6 +1095,20 @@ class RDS extends React.Component {
             key: this.props.key_name,
             tmp_version:[]
         }
+
+        this.init()
+    }
+
+    async init(){
+        let subnetList = await this.getSubnetList()
+        this.setState({
+            subnet_items: subnetList,
+        })
+    }
+
+
+    async getSubnetList (){
+        return await getDynamicOption(this.state.key,this.props.key_vendor,"subnet")
     }
 
     async getEngineVersion(engine){
@@ -1114,7 +1126,6 @@ class RDS extends React.Component {
            }
         )}).then(res=>res.json())
         
-        console.log(response)
 
         for(let i=0;i<response.data.length;i++){
             items.push(<option value={response.data[i].EngineVersion}>{response.data[i].EngineVersion}</option>)
@@ -1127,6 +1138,7 @@ class RDS extends React.Component {
     }
 
     render() {
+        let subnet_list=  this.state.subnet_items
         let func = this.func;
         return (
             <>
@@ -1224,6 +1236,25 @@ class RDS extends React.Component {
                                 this.func("AllocatedStorage", val);
                             }}
                         />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>DBSubnetGroupName</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("DBSubnetGroupName", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                DBSubnetGroupName
+                            </option>
+                            {
+                                subnet_list.map(v=>{
+                                    return <option value={v.SubnetId}>{v.SubnetId}</option>
+                                })
+                            }
+                        </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>StorageEncrypted</Form.Label>
@@ -1525,7 +1556,7 @@ class CreateModal extends React.Component {
             });
         } else if (this.state.type == "rds") {
             this.setState({
-                component: <RDS func={this.func.bind(this)} key_name={this.state.key_name} />,
+                component: <RDS func={this.func.bind(this)} key_name={this.state.key_name}  key_vendor={this.state.vendor} />,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
