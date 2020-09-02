@@ -544,7 +544,7 @@ class EBS extends React.Component {
             }
         }
         let items = [];
-        let response = await fetch('http://192.168.35.125:4000/api/cloud/data/ebs/etc/zones', {
+        let response = await fetch('http://localhost:4000/api/cloud/data/ebs/etc/zones', {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'
@@ -914,7 +914,7 @@ class Subnet extends React.Component {
             }
         }
         let items = [];
-        let response = await fetch('http://192.168.35.125:4000/api/cloud/data/ebs/etc/zones', {
+        let response = await fetch('http://localhost:4000/api/cloud/data/ebs/etc/zones', {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'
@@ -1099,7 +1099,7 @@ class RDS extends React.Component {
 
     async getEngineVersion(engine){
         let items=[]
-        let response= await fetch('http://192.168.35.125:4000/api/cloud/data/rds/etc/versions', {
+        let response= await fetch('http://localhost:4000/api/cloud/data/rds/etc/versions', {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'

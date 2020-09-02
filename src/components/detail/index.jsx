@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 
 import "./detail.scss";
 
-const tabName = ["Information", "Object View"];
+const tabName = ["Information", "Modify"];
 
 const thStyle = { width: "46%", "text-align": "right", paddingRight: "4%" };
 const tdStyle = { width: "46%", "text-align": "left", paddingRight: "4%" };
@@ -116,7 +116,6 @@ class ContentSummary extends Component {
             rootData: data, 
             keyList: [resource]
         });
-        console.log(this.state.data)
     }
 
     getViewData(keyList){
@@ -234,6 +233,51 @@ class ContentSummary extends Component {
     }
 }
 
+class ContentUpdate extends Component{
+    constructor(props){
+        super(props)
+        this.state={}
+    }
+
+    async componentDidMount() {
+        let response = await (await fetch(this.props.endpoint)).json();
+        let resource = this.props.resource
+        let data = response.data
+
+        if (resource == 'ec2') data = data['Instances'][0]
+
+        this.setState({ 
+            data: data,
+            resource: resource,
+        });
+    }
+
+    modifyInstance(resource,data){
+        let items=[];
+        if(resource=="ec2"){
+            return (<>
+                <select>
+                    <option></option>
+                    <option></option>
+                </select>
+                <br/>
+                <input></input>         
+                </>   
+                )
+        }
+    }
+
+    render(){
+        return(
+         <>
+         {this.modifyInstance(this.state.resource,this.state.data)}
+         </>
+        )
+    }
+}
+
+
+
 class Detail extends Component {
     constructor(props) {
         super(props);
@@ -248,6 +292,29 @@ class Detail extends Component {
             resource: resource,
             endpoint: `http://localhost:4000/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
         };
+        
+    }
+
+    async componentDidMount() {
+        let response = await (await fetch(this.state.endpoint)).json();
+        let resource = this.state.resource
+        let data = response.data
+
+        if (resource == 'ec2') data = data['Instances'][0]
+
+        this.setState({ 
+            data: data,
+            rootData: data, 
+            keyList: [resource]
+        });
+    }
+
+    tabcontent(index,url,resource_data){
+        let content={
+            0 : <ContentSummary endpoint={url} resource={resource_data}/>,
+            1 : <ContentUpdate endpoint={url} resource={resource_data}/>
+        }
+        return content[index]
     }
 
     tabClicked = (idx) => {
@@ -296,7 +363,7 @@ class Detail extends Component {
                         style={{ overflowY: "scroll" }}
                     >
                         <div className="tab-content">
-                            <ContentSummary endpoint={this.state.endpoint} resource={this.state.resource}/>
+                            {this.tabcontent(activeContent,this.state.endpoint,this.state.resource)}
                         </div>
                     </div>
                 </div>
