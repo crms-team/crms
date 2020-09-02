@@ -2,7 +2,7 @@ import { Manager } from "../../manager";
 
 export class EIPManager extends Manager{
     static endpoint() {
-        return 'http://localhost:4000/api/cloud/data/eip'
+        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/eip`
     }
     static async create(keyId, args) {
         return await fetch(this.endpoint(), {

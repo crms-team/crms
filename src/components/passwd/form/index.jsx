@@ -12,7 +12,7 @@ class Form extends Component {
     }
 
     tryLogin = () => {
-        fetch(`http://localhost:4000/api/passwd?passwd=${btoa(this.state.value)}`).then(res=>res.json()).then(res=>{
+        fetch(`${process.env.REACT_APP_SERVER_URL}/api/passwd?passwd=${btoa(this.state.value)}`).then(res=>res.json()).then(res=>{
             if (res.result){
                 sessionStorage.setItem("login", "true")
                 window.location.href='/dashboard'

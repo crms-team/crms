@@ -184,8 +184,8 @@ class ContentSummary extends Component {
                     >
                         {keys.map((val, idx) => {
                             let type = typeof data[val];
-
-                            if (type == "object") {
+                            
+                            if (data[val] != null && type == "object") {
                                 let Testtype =
                                     "length" in data[val] ? "list" : "json";
                                 return (
@@ -214,7 +214,7 @@ class ContentSummary extends Component {
                                     <tr>
                                         <th style={thStyle}>{val}</th>{" "}
                                         <td style={tdStyle}>
-                                            { data[val].toString()}
+                                            { data[val] != null ?data[val].toString() : "null"}
                                         </td>
                                     </tr>
                                 );
@@ -290,7 +290,7 @@ class Detail extends Component {
             clickNum: 0,
             activeContent: 0,
             resource: resource,
-            endpoint: `http://localhost:4000/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
+            endpoint: `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
         };
         
     }

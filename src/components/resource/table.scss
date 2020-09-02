@@ -17,6 +17,7 @@ button:focus{
     font-size: 25px;
 }
 
+
 .table{
     background: transparent !important;
     margin: 0;
@@ -79,6 +80,9 @@ button:focus{
         color: $point;
     }
 
+    .rowIconButton {
+        color: $lightGray !important;
+    }
 
     .MuiSvgIcon-root{
         color: $point;

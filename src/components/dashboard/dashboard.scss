@@ -27,7 +27,7 @@ $lightText: #9298b1;
 .dashboard-page {
     width: 100%;
     position: relative;
-    height: 100%;
+    height: auto;
 }
 
 .board-container {
@@ -42,6 +42,24 @@ $lightText: #9298b1;
     background: transparent !important;
     min-height: 90% !important;
     margin-top: 5vh;
+    height: auto !important;
+    margin-top: 2vh;
+}
+
+.dashboard-option {
+    width: 15%;
+    float: right;
+
+    & .select__option--options.form-control {
+        border: 2px solid #ffc14d;
+        background: transparent;
+        color: #6b6e7c;
+
+        &:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    }
 }
 
 .resource-list {

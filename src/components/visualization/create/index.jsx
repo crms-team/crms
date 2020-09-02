@@ -44,7 +44,7 @@ const TYPEID = {
 
 export async function getDynamicOption (key_id,key_vendor,type) {
     let tmp_type=TYPEID[key_vendor][type]["url"]
-    let url=`http://localhost:4000/api/cloud/data/${tmp_type}?key_id=${key_id}`;
+    let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${tmp_type}?key_id=${key_id}&type=data`;
     let items=[];
     const response = await fetch(url).then(res=>res.json())
     if(type=="subnet"){
@@ -1481,7 +1481,7 @@ class CreateModal extends React.Component {
     }
 
     async getAmiData(key_id){
-        let url=`http://localhost:4000/api/cloud/data/ami?key_id=${key_id}`
+        let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ami?key_id=${key_id}`
         let items=[];
         const response = await fetch(url).then(res=>res.json())
         for (let i = 0; i < response.data.length; i++) {

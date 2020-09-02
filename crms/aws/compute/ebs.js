@@ -62,6 +62,12 @@ async function detachVolume(key, args=undefined) {
     }
 }
 
+async function describeAvailabilityZones(key, args=undefined) {
+    AWS.config.update(key)
+    let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
+    return (await ec2.describeAvailabilityZones(args).promise())['AvailabilityZones']
+}
+
 module.exports = {
     default: {
         get: describeVolumes,
@@ -71,6 +77,7 @@ module.exports = {
     },
     etc: {
         attach: attachVolume,
-        detach: detachVolume
+        detach: detachVolume,
+        zones: describeAvailabilityZones
     }
 }
