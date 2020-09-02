@@ -23,7 +23,8 @@ async function modifySubnetAttribute(key, args=undefined) {
     try {
         await ec2.modifySubnetAttribute(args).promise()
         return true
-    } catch {
+    } catch(e) {
+        console.log(e)
         console.log("Subnet PUT Error (modifySubnetAttribute Error)")
         return false
     }

@@ -14,7 +14,8 @@ export class CloudResourceDataFormat {
             name: this.name,
             link: this.link,
             type: this.type,
-            data: this.data
+            data: this.data,
+            children: []
         }
     }
 

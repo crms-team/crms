@@ -79,7 +79,6 @@ class Visual extends Component {
         this.state = {
             dataset: undefined,
             keyList: undefined,
-            time: undefined,
             isFirst: true,
             showHide: false,
             instanceData: undefined,
@@ -108,7 +107,6 @@ class Visual extends Component {
             let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key}` + (type ? `&type=${type}` : '')
             let response = await fetch(ep)
             let data = await response.json()
-            this.setState({ time: data.time })
             result.push(CreateVisualDataFormat(key, this.state.keyList[key].vendor, data.data))
         }
         return result;
@@ -142,14 +140,10 @@ class Visual extends Component {
                 for (let tmp of cloud) {
                     tmp.children = [];
                     for (let tmp_vpc of vpc) {
-                        tmp_vpc.children = [];
                         if (tmp.id == tmp_vpc.link[0]) {
                             for (let tmp_subs of subnets) {
-                                tmp_subs.children = [];
                                 if (tmp_vpc.id == tmp_subs.link[0]) {
                                     for (let tmp_sub of subnet) {
-                                        tmp_sub.children = [];
-
                                         if (tmp_subs.id == tmp_sub.link[0]) {
                                             for (let tmp_ec2 of ec2) {
                                                 for (let i = 0; i < tmp_ec2.link.length; i++) {
@@ -157,16 +151,13 @@ class Visual extends Component {
                                                         for (let tmp_ebs of ebs) {
                                                             for (let j = 0; j < tmp_ebs.link.length; j++) {
                                                                 if (tmp_ebs.link[j] == tmp_ec2.id) {
-                                                                    tmp_ec2.children = [];
                                                                     tmp_ec2.children.push(
                                                                         tmp_ebs
                                                                     );
                                                                 }
                                                             }
                                                         }
-                                                        tmp_sub.children.push(
-                                                            tmp_ec2
-                                                        );
+                                                        tmp_sub.children.push(tmp_ec2);
                                                     }
                                                 }
                                             }
@@ -178,7 +169,6 @@ class Visual extends Component {
                                 }
                             }
                             for (let tmp_sgs of sgs) {
-                                tmp_sgs.children = [];
                                 if (tmp_vpc.id == tmp_sgs.link[0]) {
                                     for (let tmp_sg of sg) {
                                         if (tmp_sgs.id == tmp_sg.link[0]) {
@@ -196,7 +186,6 @@ class Visual extends Component {
                             }
                         }
                         for (let tmp_rds_group of rds_group) {
-                            tmp_rds_group.children = []
                             if (tmp_vpc.id == tmp_rds_group.link[0]) {
                                 for (let tmp_rds of rds) {
                                     for (let i = 0; i < tmp_rds.link.length; i++) {
@@ -210,7 +199,6 @@ class Visual extends Component {
                         }
                     }
                     for (let tmp_s3_group of s3_group) {
-                        tmp_s3_group.children = []
                         if (tmp.id == tmp_s3_group.link[0]) {
                             for (let tmp_s3 of s3) {
                                 for (let i = 0; i < tmp_s3.link.length; i++) {
@@ -226,7 +214,6 @@ class Visual extends Component {
                 }
             }
 
-            console.log(visualdata)
 
             let aroot = {
                 id: "CRMSRootId",
@@ -619,7 +606,6 @@ class Visual extends Component {
                     <g></g>
                 </svg>
                 <div className="time">
-                    <h className="timetext">{this.state.time}</h>
                     <button
                         className="refresh"
                         onClick={async () => {
