@@ -1,45 +1,51 @@
 import React, { Component } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import "./changePasswordModal.scss";
+import "./changePasswdModal.scss";
 
 function ChangePasswordModal(props) {
-    let original = React.createRef()
-    let new_passwd = React.createRef()
-    let new_check = React.createRef()
+    let original = React.createRef();
+    let new_passwd = React.createRef();
+    let new_check = React.createRef();
 
     async function handleChangePW() {
-        if(original.current.value == new_passwd.current.value) {
+        if (original.current.value == new_passwd.current.value) {
             alert("변경하려는 비밀번호가 기존 비밀번호와 같습니다.");
             return;
         }
 
-        if(new_passwd.current.value != new_check.current.value) {
+        if (new_passwd.current.value != new_check.current.value) {
             alert("변경하려는 비밀번호가 다릅니다.");
             return;
         }
 
-        let response = await( await fetch(`${process.env.REACT_APP_SERVER_URL}/api/passwd?passwd=${btoa(original.current.value)}`)).json()
+        let response = await (
+            await fetch(
+                `${process.env.REACT_APP_SERVER_URL}/api/passwd?passwd=${btoa(
+                    original.current.value
+                )}`
+            )
+        ).json();
 
-        if(!response.result) {
+        if (!response.result) {
             alert("현재 비밀번호와 다릅니다.");
             return;
-        } 
+        }
 
         let data = {
             passwd: btoa(original.current.value),
-            new_passwd: btoa(new_passwd.current.value)
-        }
+            new_passwd: btoa(new_passwd.current.value),
+        };
 
         await fetch(`${process.env.REACT_APP_SERVER_URL}/api/passwd`, {
-            method: 'PUT',
+            method: "PUT",
             body: JSON.stringify(data),
-            headers:{
-                'Content-Type': 'application/json'
-            }
-        })
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
 
         alert("변경완료");
-        props.onHide()
+        props.onHide();
     }
 
     return (
@@ -77,8 +83,8 @@ function ChangePasswordModal(props) {
                 </div>
             </Modal.Body>
             <Modal.Footer className="modal__footer-container password-change__footer">
-                <Button 
-                    className="modal__footer--button" 
+                <Button
+                    className="modal__footer--button"
                     variant="warning"
                     onClick={handleChangePW}
                 >

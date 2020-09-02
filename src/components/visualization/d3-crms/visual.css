@@ -17,10 +17,8 @@
 
 .time {
     position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 240px;
-    height: 100px;
+    right: 40px;
+    bottom: 20px;
 }
 .refresh {
     background: #ffc14d;

@@ -134,12 +134,17 @@ class Sidebar extends Component {
                             </Link>
 
                             {/*     MENU - BILLING      */}
-                            <a>
-                                <li>
-                                    <FiDatabase className="material-icons" />
-                                    <p className="menulist">Billing</p>
-                                </li>
-                            </a>
+
+                            {
+                                /*
+                                    <a>
+                                        <li>
+                                            <FiDatabase className="material-icons" />
+                                            <p className="menulist">Billing</p>
+                                        </li>
+                                    </a>
+                                */
+                            }
 
                             {/*     MENU - SETTING   */}
                             <Link to="/setting">

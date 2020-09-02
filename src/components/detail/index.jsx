@@ -10,8 +10,8 @@ import EditCellClassNameTable from "./edit-table";
 
 const tabName = ["Information", "Modify"];
 
-const thStyle = { width: "46%", "text-align": "right", paddingRight: "4%" };
-const tdStyle = { width: "46%", "text-align": "left", paddingRight: "4%" };
+const thStyle = { width: "46%", textAlign: "right", paddingRight: "4%" };
+const tdStyle = { width: "46%", textAlign: "left", paddingRight: "4%" };
 
 class ListTable extends Component {
     constructor(props) {
@@ -25,31 +25,31 @@ class ListTable extends Component {
         if (data.length > 0) {
             key = Object.keys(data[0]);
             return (
-                <table style={{
-                    width: "100%",
-                    wordWrap: "break-word",
-                    tableLayout: "fixed",
-                }}>
-                    <tr>
-                        {key.map((v) => {
-                            return <th>{v}</th>;
-                        })}
-                    </tr>
+                <div className="left--table-container">
+                    <table className="detail__right--table">
+                        <tr>
+                            {key.map((v) => {
+                                return <th>{v}</th>;
+                            })}
+                        </tr>
 
-                    {data.map((v) => {
-                        return (
-                            <tr>
-                                {key.map((kv) => {
-                                    let type = typeof (v[kv])
-                                    if (type == "object") {
-                                        return <td>{JSON.stringify(v[kv])}</td>
-                                    }
-                                    return <td>{v[kv]}</td>;
-                                })}
-                            </tr>
-                        );
-                    })}
-                </table>
+                        {data.map((v) => {
+                            return (
+                                <tr>
+                                    {key.map((kv) => {
+                                        let type = typeof v[kv];
+                                        if (type == "object") {
+                                            return (
+                                                <td>{JSON.stringify(v[kv])}</td>
+                                            );
+                                        }
+                                        return <td>{v[kv]}</td>;
+                                    })}
+                                </tr>
+                            );
+                        })}
+                    </table>
+                </div>
             );
         } else {
             return <div>There is no data to display</div>;
@@ -72,19 +72,12 @@ class ObjectView extends Component {
         let type = "length" in data;
 
         return (
-            <div
-                style={{
-                    width: "39%",
-                    height: "98%",
-                    padding: "1%",
-                    position: 'fixed',
-                    right: 0,
-                    marginRight: '4%'
-                }}
-            >
-                {key}
-                <hr />
-                {type && <ListTable data={data} />}
+            <div className="right--table-container">
+                <div>
+                    <span className="right--table-title">{key}</span>
+                    <hr />
+                    {type && <ListTable data={data} />}
+                </div>
             </div>
         );
     }
@@ -97,7 +90,7 @@ class ContentSummary extends Component {
             data: [],
             rootData: [],
 
-            resource: '',
+            resource: "",
             keyList: [],
 
             objectKey: "",
@@ -109,10 +102,10 @@ class ContentSummary extends Component {
 
     async componentDidMount() {
         let response = await (await fetch(this.props.endpoint)).json();
-        let resource = this.props.resource
-        let data = response.data
+        let resource = this.props.resource;
+        let data = response.data;
 
-        if (resource == 'ec2') data = data['Instances'][0]
+        if (resource == "ec2") data = data["Instances"][0];
 
         this.setState({
             data: data,
@@ -125,23 +118,23 @@ class ContentSummary extends Component {
         let data = this.state.rootData
 
         for (let i = 1; i < keyList.length; i++) {
-            data = data[keyList[i]]
+            data = data[keyList[i]];
         }
 
-        return data
+        return data;
     }
 
     clickEvent(key, data, type) {
-        if (type == 'list') {
+        if (type == "list") {
             this.setState({
                 objectKey: key,
                 objectData: data,
             });
         } else {
-            let keyList = this.state.keyList
-            keyList.push(key)
+            let keyList = this.state.keyList;
+            keyList.push(key);
             this.setState({
-                objectKey: '',
+                objectKey: "",
                 objectData: [],
                 keyList: keyList,
                 data: this.getViewData(keyList)
@@ -151,12 +144,12 @@ class ContentSummary extends Component {
     }
 
     linkClickEvent(idx) {
-        let keyList = this.state.keyList
-        keyList = keyList.slice(0, idx)
+        let keyList = this.state.keyList;
+        keyList = keyList.slice(0, idx);
         this.setState({
             keyList: keyList,
-            data: this.getViewData(keyList)
-        })
+            data: this.getViewData(keyList),
+        });
     }
 
     render() {
@@ -164,29 +157,34 @@ class ContentSummary extends Component {
             state: 'Creating....'
         };
         let keys = Object.keys(data);
-        let keyList = this.state.keyList
+        let keyList = this.state.keyList;
 
         return (
             <>
-                <div style={{ width: "100%", height: "5%" }}>
-                    {
-                        keyList.map((v, idx) => {
-                            return <span onClick={() => this.linkClickEvent(idx + 1)}> / <span style={{ color: '#ffc14d' }}>{v}</span></span>
-                        })
-                    }
+                <div>
+                    {keyList.map((v, idx) => {
+                        return (
+                            <span onClick={() => this.linkClickEvent(idx + 1)}>
+                                {" "}
+                                /{" "}
+                                <span
+                                    className="top-title"
+                                    style={{
+                                        color: "#ffc14d",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    {v}
+                                </span>
+                            </span>
+                        );
+                    })}
                 </div>
-                <div style={{ width: "100%", float: "left", marginBottom: "20px" }}>
-                    {
-                        keys.length != 0 &&
-                        <table
-                            style={{
-                                width: "48%",
-                                wordWrap: "break-word",
-                                tableLayout: "fixed",
-                                float: 'left',
-                                margin: '1%'
-                            }}
-                        >
+                <hr className="hr" />
+                <div className="contents-container">
+                    {keys.length != 0 && (
+                        <div className="detail__left--table">
+                            <table>
                             {keys.map((val, idx) => {
                                 let type = typeof data[val];
 
@@ -199,7 +197,8 @@ class ContentSummary extends Component {
                                             <td style={tdStyle}>
                                                 <div
                                                     style={{
-                                                        color: '#ffc14d'
+                                                        color: "#ffc14d",
+                                                        cursor: "pointer",
                                                     }}
                                                     onClick={() => {
                                                         this.clickEvent(
@@ -208,9 +207,10 @@ class ContentSummary extends Component {
                                                             Testtype
                                                         );
                                                     }}
+                                                    className="view-object"
                                                 >
                                                     view Object
-                                            </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     );
@@ -219,14 +219,17 @@ class ContentSummary extends Component {
                                         <tr>
                                             <th style={thStyle}>{val}</th>{" "}
                                             <td style={tdStyle}>
-                                                {data[val] != null ? data[val].toString() : "null"}
+                                                {data[val] != null
+                                                    ? data[val].toString()
+                                                    : "null"}
                                             </td>
                                         </tr>
                                     );
                                 }
                             })}
                         </table>
-                    }
+                        </div>
+                    )}
                     {keys.length == 0 && <div>There is no data to display</div>}
                     <ObjectView
                         objectKey={this.state.objectKey}
