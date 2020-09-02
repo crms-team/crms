@@ -1,5 +1,6 @@
 const key_module = require('../../system').key
 const fs = require('fs')
+const rimraf = require("rimraf");
 const PATH = require('path')
 const crms = require('../../../crms')
 
@@ -87,8 +88,9 @@ module.exports = server => {
             }
 
             delete data[key_id]
+            rimraf(PATH.normalize(`${server.config.path}/data/${key_id}`), ()=>{})
 
-            if (!setKeyData(server.config.path, data)) {
+            if (!key_module.setKeyData(server.config.path, data)) {
                 res.send({result: false, msg: 'Set Data Error'})
                 return
             }

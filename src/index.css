@@ -12,3 +12,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.react-confirm-alert-overlay {
+  z-index: 1000 !important;
+  background-color: rgba(128, 128, 128, 0.9) !important;
+}
+
+.react-confirm-alert-body > h1 {
+  font-size: 2rem
+}
