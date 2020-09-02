@@ -6,6 +6,7 @@ import {
 } from "react-bootstrap";
 import "./detail.scss";
 import {summaryType} from "../../manager"
+import EditCellClassNameTable from "./edit-table";
 
 const tabName = ["Information", "Modify"];
 
