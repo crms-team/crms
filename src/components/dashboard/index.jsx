@@ -6,27 +6,35 @@ import NumberWidget from "./number-widget";
 import { Line as LineChart } from "react-chartjs-2";
 import { Form } from "react-bootstrap";
 
-function chartData() {
-    return {
-        labels: ["January", "February", "March", "April", "May", "June"],
-        datasets: [
-            {
-                label: "사용 요금",
-                fillColor: "rgba(220,220,220,0.2)",
-                strokeColor: "#fff",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: [45, 90, 83, 32, 50, 70],
-            },
-        ],
-    };
+const statusColors = {
+    create: {
+        strokeColor: '#5d643f',
+        pointStrokeColor: '#5d643f',
+        pointHighlightFill: '#5d643f',
+        fillColor: "rgba(49,51,41,0.2)",
+        pointColor: "rgba(49,51,41,1)",
+        pointHighlightStroke: "rgba(49,51,41,1)",
+    },
+    modify: {
+        strokeColor: '#43537c',
+        pointStrokeColor: '#43537c',
+        pointHighlightFill: '#43537c',
+        fillColor: "rgba(67,83,124,0.2)",
+        pointColor: "rgba(67,83,124,1)",
+        pointHighlightStroke: "rgba(67,83,124,1)",
+    },
+    remove: {
+        strokeColor: '#743c4d',
+        pointStrokeColor: '#743c4d',
+        pointHighlightFill: '#743c4d',
+        fillColor: "rgba(44,37,40,0.2)",
+        pointColor: "rgba(44,37,404,1)",
+        pointHighlightStroke: "rgba(44,37,40,1)",
+    }
 }
-
 const options = {
     scaleShowGridLines: true,
-    scaleGridLineColor: "rgba(0,0,0,.05)",
+    scaleGridLineColor: "rgba(0,0,0, 0.5)",
     scaleGridLineWidth: 1,
     scaleShowHorizontalLines: true,
     scaleShowVerticalLines: true,
@@ -56,15 +64,93 @@ class Dashboard extends React.Component {
         super(props);
 
         this.state = {
-            data: chartData(),
             statusData: undefined,
+            keyValue: "",
+            dataset: [],
+            graphDataset: {
+                labels: [],
+                datasets: []
+            }
         };
+
+        this.changeDashboardData = this.changeDashboardData.bind(this)
+    }
+
+    getHistorySummary(detail) {
+        let result =  {create: 0, remove: 0, modify: 0}
+
+        for (let session in detail) {
+            for (let resource in detail[session]) {
+                for (let status in detail[session][resource]) {
+                    result[status] += detail[session][resource][status].length
+                }
+            }
+        }
+
+        return result
+    }
+
+    async changeDashboardData(e) {
+        let key_id = e == undefined ? "" : e.target.value
+        let queryString = key_id != "" ? `key_id=${key_id}` : '' 
+
+        let statusData = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/dashboard?${queryString}`).then((res) => res.json());
+        let historys = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/history?count=10&${queryString}`).then(res=>res.json())
+ 
+        let dataset = []
+        let graphData = {}
+
+        let i = 1;
+
+        for (let history of historys.history) {
+            dataset.push({
+                index: i++,
+                keyId: history.keyId,
+                time: history.time,
+                title: history.title,
+            });
+
+            let timeLabel = history.time.split('.').slice(1, 3).join('.') + 'h'
+            let summary = this.getHistorySummary(history.detail)
+
+            if (graphData[timeLabel] == undefined){
+                graphData[timeLabel] = {create: 0, remove: 0, modify: 0}
+            }   
+
+            for (let status in graphData[timeLabel]) {
+                graphData[timeLabel][status] += summary[status]
+            }
+        }
+
+        let graphDataset = {
+            labels: Object.keys(graphData).sort(),
+            datasets: []
+        }
+        
+        for (let status in statusColors) {
+            let dataList = []
+
+            for (let time of graphDataset.labels) {
+                dataList.push(graphData[time][status])
+            }
+
+            graphDataset.datasets.push({
+                label: status,
+                data: dataList,
+                ...statusColors[status]
+            })
+        }
+
+        this.setState({
+            statusData: statusData.data,
+            keyValue: key_id,
+            dataset: dataset,
+            graphDataset: graphDataset
+        });
     }
 
     async componentDidMount() {
-        let response = await (
-            await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key/list`)
-        ).json();
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key/list`).then(res=>res.json())
         let key_id = Object.keys(response.keys);
         for (let i = 0; i < key_id.length; i++) {
             key_id[i] = {
@@ -73,13 +159,7 @@ class Dashboard extends React.Component {
             };
         }
         localStorage.setItem("key", JSON.stringify(key_id));
-        let statusData = await fetch(
-            `${process.env.REACT_APP_SERVER_URL}/api/dashboard`
-        ).then((res) => res.json());
-
-        this.setState({
-            statusData: statusData["data"],
-        });
+        await this.changeDashboardData()
     }
 
     getResourceStatusData(resource, type=undefined) {
@@ -105,12 +185,11 @@ class Dashboard extends React.Component {
                 <div className="board-container">
                     <div>
                         <Form className="select__option dashboard-option">
-                            {/* <label>셀렉트박스 제목</label> */}
-                            <select className="select__option--options form-control">
-                                <option value="" disabled selected>
-                                    선택하세요
-                                </option>
-                                <option>옵션</option>
+                            <select className="select__option--options form-control" onChange={this.changeDashboardData} value={this.state.keyValue} >
+                                <option value="" selected>All</option>
+                                { localStorage.getItem('key') && JSON.parse(localStorage.getItem('key')).map(v=>{
+                                    return <option value={v.key}>{v.key}</option>
+                                }) }
                             </select>
                         </Form>
                     </div>
@@ -129,7 +208,7 @@ class Dashboard extends React.Component {
                                         value: this.getResourceStatusData(
                                             "server"
                                         ),
-                                        label: "compute",
+                                        label: "Compute",
                                     }}
                                 />
                                 <NumberWidget
@@ -143,7 +222,7 @@ class Dashboard extends React.Component {
                                         value: this.getResourceStatusData(
                                             "volume"
                                         ),
-                                        label: "Volume",
+                                        label: "Compute",
                                     }}
                                 />
                                 <NumberWidget
@@ -155,7 +234,7 @@ class Dashboard extends React.Component {
                                     )}
                                     progress={{
                                         value: this.getResourceStatusData("ip"),
-                                        label: "IP",
+                                        label: "Compute",
                                     }}
                                 />
                                 <NumberWidget
@@ -169,7 +248,7 @@ class Dashboard extends React.Component {
                                         value: this.getResourceStatusData(
                                             "keypair"
                                         ),
-                                        label: "keyPair",
+                                        label: "Compute",
                                     }}
                                 />
                             </div>
@@ -187,7 +266,7 @@ class Dashboard extends React.Component {
                                         value: this.getResourceStatusData(
                                             "database"
                                         ),
-                                        label: "database",
+                                        label: "Database",
                                     }}
                                 />
                             </div>
@@ -205,7 +284,7 @@ class Dashboard extends React.Component {
                                         value: this.getResourceStatusData(
                                             "vpc"
                                         ),
-                                        label: "VPC",
+                                        label: "Network",
                                     }}
                                 />
                                 <NumberWidget
@@ -219,7 +298,7 @@ class Dashboard extends React.Component {
                                         value: this.getResourceStatusData(
                                             "subnet"
                                         ),
-                                        label: "Subnet",
+                                        label: "Network",
                                     }}
                                 />
                                 <NumberWidget
@@ -228,7 +307,7 @@ class Dashboard extends React.Component {
                                     number = {this.getResourceStatusData('securitygroup', true)}
                                     progress = {{
                                         value : this.getResourceStatusData('securitygroup'),
-                                        label : 'Security Group'
+                                        label : 'Network'
                                     }}
                                 />
                             </div>
@@ -237,11 +316,11 @@ class Dashboard extends React.Component {
                             <div>
                                 <NumberWidget
                                     className="storage bucket"
-                                    title = "Storage"
+                                    title = "Bucket"
                                     number = {this.getResourceStatusData('storage', true)}
                                     progress = {{
                                         value : this.getResourceStatusData('storage'),
-                                        label : 'Bucket'
+                                        label : 'Storage'
                                     }}
                                 />
                             </div>
@@ -249,10 +328,10 @@ class Dashboard extends React.Component {
                     </div>
                     <div className="chart-container">
                         <div className="left-chart">
-                            <h3>최근 6개월 사용 금액</h3>
+                            <h3>History Graph</h3>
                             <div style={styles.graphContainer}>
                                 <LineChart
-                                    data={this.state.data}
+                                    data={this.state.graphDataset}
                                     options={options}
                                     width="500"
                                     height="300"
@@ -261,7 +340,7 @@ class Dashboard extends React.Component {
                         </div>
                         <div className="right-chart">
                             <h3>History Summary</h3>
-                            <DashboardTable />
+                            <DashboardTable dataset={this.state.dataset} />
                         </div>
                     </div>
                 </div>

@@ -23,8 +23,11 @@ const resourceIdKeys = {
 function getLastDataFileName(path, keyId){
     let dataDict = PATH.normalize(`${path}/data/${keyId}/log`)
     let list = fs.readdirSync(dataDict).sort()
-
-    return list[list.length - 1]
+    try {
+        return list[list.length - 1]
+    } catch {
+        return undefined
+    }
 }
 
 function createDataDict(path) {

@@ -111,11 +111,23 @@ module.exports = server => {
                 securitygroup: [0, 0],
                 storage : [0, 0],
             }
-            let keys = server.keys.getKeyData(server.config.path)
+            let keys = []
+            
+            if (req.query.key_id) {
+                let keyId = req.query.key_id
+                keys[keyId] = server.keys.getKeyData(server.config.path)[keyId]
+            } else {
+                keys = server.keys.getKeyData(server.config.path)
+            }
 
             for (let keyId in keys) {
                 let vendor = keys[keyId].vendor
                 let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
+
+                if (dataFile == undefined) {
+                    break
+                }
+
                 let data = JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
 
                 let statusData = getStatusData(vendor, data)
