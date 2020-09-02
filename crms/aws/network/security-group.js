@@ -24,6 +24,7 @@ async function updateSecurityGroupRule(key, args=undefined) {
     let type = args.type
     let isAdd = args.method
     let data = args.data
+
     try {
         if (type == 'egress') {
             if (isAdd) await ec2.authorizeSecurityGroupEgress(data).promise()
@@ -35,7 +36,7 @@ async function updateSecurityGroupRule(key, args=undefined) {
             return false
         }
         return true
-    } catch {
+    } catch (e) {
         console.log("SecurityGroup PUT Error (updateSecurityGroupRuleDescriptions Error)")
         return false
     }

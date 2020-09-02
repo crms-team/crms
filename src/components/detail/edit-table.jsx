@@ -87,7 +87,7 @@ export default class EditCellClassNameTable extends React.Component {
                     dataField="protocol"
                     editable={{
                         type: "select",
-                        options: { values: ["tcp", "udp", "icmp"] },
+                        options: { values: ["tcp", "udp", "icmp", "-1"] },
                     }}
                 >
                     Protocol

@@ -255,6 +255,8 @@ class ContentUpdate extends Component {
         let data = response.data
         let ec2list;
         let ec2item = [];
+        let etcData1 = []
+        let etcData2 = []
 
         if (resource == 'ec2') data = data['Instances'][0]
         else if (resource == "ebs") {
@@ -272,12 +274,58 @@ class ContentUpdate extends Component {
         else if(resource == "rds"){
             await this.getEngineVersion(response.data.Engine)
         }
+        else if (resource == 'securitygroup') {
+            for (let rule of data.IpPermissions) {
+                for (let range of rule.IpRanges) {
+                    if (rule.IpProtocol == "-1") {
+                        etcData1.push({
+                            protocol: rule.IpProtocol,
+                            port: `1-65535`,
+                            cidr: range.CidrIp,
+                            description: range.Description ? range.Description : ''
+                        })
+    
+                    } else {
+                        etcData1.push({
+                            protocol: rule.IpProtocol,
+                            port: `${rule.FromPort}-${rule.ToPort}`,
+                            cidr: range.CidrIp,
+                            description: range.Description ? range.Description : ''
+                        })    
+                    }
+                }
+            }   
+
+            for (let rule of data.IpPermissionsEgress) {
+                for (let range of rule.IpRanges) {
+                    if (rule.IpProtocol == "-1") {
+                        etcData2.push({
+                            protocol: rule.IpProtocol,
+                            port: `1-65535`,
+                            cidr: range.CidrIp,
+                            description: range.Description ? range.Description : ''
+                        })
+    
+                    } else {
+                        etcData2.push({
+                            protocol: rule.IpProtocol,
+                            port: `${rule.FromPort}-${rule.ToPort}`,
+                            cidr: range.CidrIp,
+                            description: range.Description ? range.Description : ''
+                        })    
+                    }
+                }
+            }   
+
+        }
 
         this.setState({
             data: data,
             resource: resource,
             ec2list: ec2list,
-            ec2item: ec2item
+            ec2item: ec2item,
+            etcData1: etcData1,
+            etcData2: etcData2
         });
     }
 
@@ -761,12 +809,112 @@ class ContentUpdate extends Component {
                     <Button
                         variant="warning"
                         onClick={async () => {
-                            tmp_data.SubnetId = this.state.data.SubnetId;
+                            function getRuleSet(ruleData) {
+                                let rules = [];
+                                for (let rule of ruleData) {
+                                    let port = null
+                                    try {
+                                        port = rule.port.trim().split('-')
+                                        port.push(port[0])
+                                    } catch (e) {
+                                        port = [-1, -1]
+                                    }
+
+                                    port.sort()
+
+                                    rules.push({
+                                        ToPort: parseInt(port[1]),
+                                        FromPort: parseInt(port[0]),
+                                        IpProtocol: rule.protocol.trim(),
+                                        IpRanges: [{
+                                            CidrIp: rule.cidr.trim(),
+                                            Description: rule.description.trim()
+                                        }]
+                                    })
+                                }
+
+                                return rules
+                            }
+
+
+                            let preIngressRule = []
+                            let preEgressRule = []
+
+                            for (let rule of this.state.data.IpPermissions) {
+                                preIngressRule.push({
+                                    FromPort: rule.FromPort,
+                                    IpProtocol: rule.IpProtocol,
+                                    IpRanges: rule.IpRanges,
+                                    ToPort: rule.ToPort,
+                                })
+                            }
+
+                            for (let rule of this.state.data.IpPermissionsEgress) {
+                                preEgressRule.push({
+                                    FromPort: rule.FromPort,
+                                    IpProtocol: rule.IpProtocol,
+                                    IpRanges: rule.IpRanges,
+                                    ToPort: rule.ToPort,
+                                })
+                            }
+                            
+                            await summaryType[this.state.resource][
+                                "manage"
+                            ].update(this.props.modkey, {
+                                type: 'ingress',
+                                method: false,
+                                args: {
+                                    GroupId: this.state.data.GroupId,
+                                    IpPermissions: preIngressRule,
+                                }
+                            })
+
+                            await summaryType[this.state.resource][
+                                "manage"
+                            ].update(this.props.modkey, {
+                                type: 'egress',
+                                method: false,
+                                args: {
+                                    GroupId: this.state.data.GroupId,
+                                    IpPermissions: preEgressRule,
+                                }
+                            })
+
+                            let addIngressSet = {
+                                type: 'ingress',
+                                method: true,
+                                args: {
+                                    GroupId: this.state.data.GroupId,
+                                    IpPermissions: getRuleSet(this.state.etcData1)    
+                                }
+                            }
+
+                            let addEgressSet = {
+                                type: 'egress',
+                                method: true,
+                                args: {
+                                    GroupId: this.state.data.GroupId,
+                                    IpPermissions: getRuleSet(this.state.etcData2)    
+                                }
+                            }
+                            console.log(addIngressSet)
+
+                            console.log(addEgressSet)
+
+                            
+                                                        console.log(
+                                await summaryType[this.state.resource][
+                                    "manage"
+                                ].update(this.props.modkey, addEgressSet)
+                            )
+
                             console.log(
                                 await summaryType[this.state.resource][
                                     "manage"
-                                ].update(this.props.modkey, tmp_data)
-                            );
+                                ].update(this.props.modkey, addIngressSet)
+                            )
+                            
+                            
                         }}
                     >
                         Modify
