@@ -1,18 +1,10 @@
 import React, { Component } from "react";
 import Sidebar from "../sidebar";
-import { withRouter } from "react-router-dom";
 import {
     Button,
-    Modal,
-    ListGroup,
-    Tab,
-    Row,
-    Col,
     Form,
-    Pagination,
 } from "react-bootstrap";
 import "./detail.scss";
-import { FaSync } from 'react-icons/fa';
 import {summaryType} from "../../manager"
 
 const tabName = ["Information", "Modify"];
@@ -167,7 +159,9 @@ class ContentSummary extends Component {
     }
 
     render() {
-        let data = this.state.data;
+        let data = this.state.data != undefined ? this.state.data : {
+            state: 'Creating....'
+        };
         let keys = Object.keys(data);
         let keyList = this.state.keyList
 
@@ -638,7 +632,7 @@ class Detail extends Component {
             clickNum: 0,
             activeContent: 0,
             resource: resource,
-            endpoint: `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}&type=data`,
+            endpoint: `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${resource}?key_id=${key_id}&resource_id=${resource_id}`,
         };
         
     }

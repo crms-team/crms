@@ -416,6 +416,8 @@ const EnhancedTableToolbar = (props) => {
                   let id = data[idx].id
                   let key_id = data[idx].key_id
                   let rst = await idType["aws"][type].manage.start(key_id,id)
+                  alert(rst.result ? "Success" : "Failed")
+                  window.location.reload()
                 }
               }}
             >
@@ -430,6 +432,8 @@ const EnhancedTableToolbar = (props) => {
                     let id = data[idx].id
                     let key_id = data[idx].key_id
                     let rst = await idType["aws"][type].manage.stop(key_id,id)
+                    alert(rst.result ? "Success" : "Failed")
+                    window.location.reload()
                   }
                 }}
                 aria-label="off"
@@ -459,6 +463,8 @@ const EnhancedTableToolbar = (props) => {
                   }
                     let key_id = data[idx].key_id
                   let rst = await idType["aws"][type].manage.delete(key_id,id)
+                  alert(rst.result ? "Success" : "Failed")
+                  window.location.reload()
                 }
               }}
             >
