@@ -31,7 +31,7 @@ export const resourceState={
         let scase = {
             available: 0,
             creating: 5,
-            delting: 4,
+            deleting: 4,
             rebooting: 0,
             starting: 0,
             stopped: 1,

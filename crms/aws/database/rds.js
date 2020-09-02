@@ -25,7 +25,8 @@ async function modifyDBInstance(key, args=undefined) {
 
     try {
         return (await rds.modifyDBInstance(args).promise())
-    } catch {
+    } catch (e){
+        console.log(e)
         console.log("RDS PUT Error (modifyDBInstance Error)")
         return false
     }    
