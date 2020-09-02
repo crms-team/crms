@@ -1,5 +1,15 @@
 const swaggerJSDoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express');
+require('dotenv').config()
+
+let host = ''
+
+try {
+  host = process.env.REACT_APP_SERVER_URL.split('//')[1]
+} catch {
+  hist = 'localhost:4000'
+}
+
 const swaggerSpec = swaggerJSDoc({
   swaggerDefinition: {
     "swagger" : "2.0",
@@ -16,7 +26,7 @@ const swaggerSpec = swaggerJSDoc({
         "url" : "https://github.com/crms-team/crms/blob/develop/LICENSE"
       }
     },
-    "host" : "localhost:4000",
+    "host" : host,
     "basePath" : "/",
     "tags" : [ {
       "name" : "Passwd",

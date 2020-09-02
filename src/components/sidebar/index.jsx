@@ -26,7 +26,7 @@ class Sidebar extends Component {
         return (
             <div className="Sidebar-container">
                 <div className="Sidebar">
-                    <div>
+                    <div style={{overflowX: 'hidden'}}>
                         <p className="Sidebar-title">MENU</p>
                         <hr />
                         <ul className="menu">
