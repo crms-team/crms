@@ -1,19 +1,12 @@
 import React, { Component } from "react";
 import Sidebar from "../sidebar";
-import { withRouter } from "react-router-dom";
 import {
     Button,
-    Modal,
-    ListGroup,
-    Tab,
-    Row,
-    Col,
     Form,
-    Pagination,
 } from "react-bootstrap";
 import "./detail.scss";
-import { FaSync } from 'react-icons/fa';
-import { summaryType } from "../../manager"
+import {summaryType} from "../../manager"
+import EditCellClassNameTable from "./edit-table";
 
 const tabName = ["Information", "Modify"];
 
@@ -167,7 +160,9 @@ class ContentSummary extends Component {
     }
 
     render() {
-        let data = this.state.data;
+        let data = this.state.data != undefined ? this.state.data : {
+            state: 'Creating....'
+        };
         let keys = Object.keys(data);
         let keyList = this.state.keyList
 
@@ -246,8 +241,12 @@ class ContentSummary extends Component {
 class ContentUpdate extends Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            etcData1: [],
+            etcData2: []
+        }
         this.modifyInstance = this.modifyInstance.bind(this);
+        this.handler = this.handler.bind(this)
     }
 
     async componentDidMount() {
@@ -310,11 +309,17 @@ class ContentUpdate extends Component {
         this.setState({
             tmp_version:items
         })
+    }
 
+    handler (key, value) {
+        let d = this.state
+        console.log(key, value, 3)
+        d[key] = value
+        this.setState(d)
+        console.log(this.state)
     }
 
     modifyInstance(resource, data) {
-        console.log(this.state.data)
         let tmp_data = {};
         let tmp_attach = {};
         function func(key, val) {
@@ -563,7 +568,6 @@ class ContentUpdate extends Component {
                         </Form.Group>
                     </Form>
                     <Button variant="warning" onClick={() => {
-                        console.log(this.state.data)
                         tmp_data.VpcId = this.state.data.VpcId
                         summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
                     }}>
@@ -746,13 +750,29 @@ class ContentUpdate extends Component {
         else if (resource == "securitygroup") {
             return (
                 <>
-                    <Button variant="warning" onClick={async () => {
-                        console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
-                    }}>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Ingress Role</Form.Label>
+                    </Form.Group>
+                    <EditCellClassNameTable rowData={this.state.etcData1} keyId="etcData1" handler={this.handler} /> 
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Egress Role</Form.Label>
+                    </Form.Group>
+                    <EditCellClassNameTable rowData={this.state.etcData2} keyId="etcData2" handler={this.handler} /> 
+                    <Button
+                        variant="warning"
+                        onClick={async () => {
+                            tmp_data.SubnetId = this.state.data.SubnetId;
+                            console.log(
+                                await summaryType[this.state.resource][
+                                    "manage"
+                                ].update(this.props.modkey, tmp_data)
+                            );
+                        }}
+                    >
                         Modify
-                </Button>
+                    </Button>
                 </>
-            )
+            );
         }
         else if (resource == "rds") {
             tmp_data.DBInstanceIdentifier=this.state.data.DBInstanceIdentifier

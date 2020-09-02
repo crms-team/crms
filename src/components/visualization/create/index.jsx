@@ -13,7 +13,6 @@ import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaSync } from 'react-icons/fa';
 import { managerType, awsManager, summaryType } from '../../../manager'
-import { version } from "react-dom";
 
 const EC2Data={
     Ami:[],
@@ -100,20 +99,11 @@ class SelVendor extends React.Component {
         };
     }
 
-    getDynamicKey() {
-        let items = [];
-        var keys = this.state.key;
-        for (let i = 0; i < keys.length; i++) {
-            items.push(<option value={keys[i].vendor}>{keys[i].key}</option>);
-        }
-        return items;
-    }
-
     render() {
         return (
             <>
                 <label for="recipient-name" class="col-form-label">
-                    Select Vendor{" "}
+                    Select Key ID{" "}
                 </label>
                 <select
                     className="form-control"
@@ -122,9 +112,11 @@ class SelVendor extends React.Component {
                 >
                     <option value="" disabled selected>
                         {" "}
-                        Vendor{" "}
+                        Key Id{" "}
                     </option>
-                    {this.getDynamicKey()}
+                    { this.state.key.map(v=>{
+                        return <option value={v.vendor}>{v.key}</option>
+                    })}
                 </select>
             </>
         );
@@ -212,7 +204,7 @@ class EC2 extends React.Component {
     
     async getAvailabilityZone(type,key_name){
         let item=[];
-        let response = await fetch('http://localhost:4000/api/cloud/data/ec2/etc/types', {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ec2/etc/types`, {
              method: 'post',
              headers:{
                  'Content-Type': 'application/json'
@@ -305,7 +297,6 @@ class EC2 extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                let items=[];
                                 this.getAvailabilityZone(e.target.value,this.state.key_name)
                                 this.func("InstanceType", val);
                             }}
@@ -543,7 +534,7 @@ class EBS extends React.Component {
             }
         }
         let items = [];
-        let response = await fetch('http://localhost:4000/api/cloud/data/ebs/etc/zones', {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ebs/etc/zones`, {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'
@@ -913,7 +904,7 @@ class Subnet extends React.Component {
             }
         }
         let items = [];
-        let response = await fetch('http://localhost:4000/api/cloud/data/ebs/etc/zones', {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ebs/etc/zones`, {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'
@@ -1113,7 +1104,7 @@ class RDS extends React.Component {
 
     async getEngineVersion(engine){
         let items=[]
-        let response= await fetch('http://localhost:4000/api/cloud/data/rds/etc/versions', {
+        let response= await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/rds/etc/versions`, {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'
@@ -1138,7 +1129,7 @@ class RDS extends React.Component {
     }
 
     render() {
-        let subnet_list=  this.state.subnet_items
+        let subnet_list = this.state.subnet_items
         let func = this.func;
         return (
             <>

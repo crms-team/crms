@@ -1,16 +1,79 @@
-import { button } from "react-bootstrap"
-import React, { Component } from 'react'
 
-export const resourceSvg = {
-    ec2: "/images/compute.svg",
-    securitygroup: '/images/security_group.svg',
-    subnet: '/images/ec2-container-registry.svg',
-    vpc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AWS_Simple_Icons_Virtual_Private_Cloud.svg/640px-AWS_Simple_Icons_Virtual_Private_Cloud.svg.png',
-    aws: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1200px-AWS_Simple_Icons_AWS_Cloud.svg.png',
-    ebs: '/images/ebs.svg',
-    rds: '/images/trans-line/rds.svg',
-    s3: '/images/storage.svg',
-    internetgateway: '/images/internet-gateway.svg'
+const CIRCLE_SIZE_L1 = 50
+const CIRCLE_SIZE_L2 = 65
+const CIRCLE_SIZE_L3 = 80
+const CIRCLE_SIZE_L4 = 95
+const CIRCLE_SIZE_L5 = 120
+const CIRCLE_SIZE_L6 = 135
+const CIRCLE_SIZE_L7 = 150
+
+
+
+export const VisualStructure = {
+    vpc: {
+        subnet_groups: {
+            subnet: {
+                ec2: {
+                    ebs: {},
+                },
+            },
+        },
+        security_groups: {
+            security_group: {},
+        },
+        ig: {},
+        rds_groups: {
+            rds: {},
+        },
+    },
+    s3_groups: {
+        s3: {},
+    },
+};
+
+export const IMAGE_TYPE={
+    ebs:{
+        image:"/images/ebs.svg", circle_size: CIRCLE_SIZE_L1
+    },
+    ec2:{
+        image:"/images/compute.svg", circle_size:CIRCLE_SIZE_L2
+    },
+    rds:{
+        image:"/images/rds group.svg", circle_size:CIRCLE_SIZE_L2
+    },
+    s3:{
+        image:"/images/storage.svg", circle_size:CIRCLE_SIZE_L2
+    },
+    subnet:{
+        image:"/images/ec2-container-registry.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    internetgateway: {
+        image:"/images/internet-gateway.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    securitygroup:{
+        image:"/images/security_group.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    s3_group:{
+        image:"/images/s3 group.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    rds_group:{
+        image:"/images/rds group.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    securitygroups:{
+        image:"/images/securityGroup group.svg", circle_size: CIRCLE_SIZE_L4
+    },
+    subnets:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },
+    vpc:{
+        image:"/images/VPC.svg", circle_size: CIRCLE_SIZE_L5
+    },
+    aws: {
+        image:"/images/cloud.svg", circle_size: CIRCLE_SIZE_L6
+    },
+    CRMS: {
+        image:"/images/CRMS.svg", circle_size: CIRCLE_SIZE_L7
+    }
 }
 
 export const resourceState={

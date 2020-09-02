@@ -18,7 +18,8 @@ div .modal-content{
     padding: 10px;
     border: 4px solid #353332e1;
     box-shadow: 5px 10px 15px rgba(21, 21, 24, 0.9);
-    width: 550px;
+    width: 80% !important;
+    min-width: 550px;
     margin: 0 auto;
 }
 
