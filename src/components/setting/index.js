@@ -42,13 +42,13 @@ function Setting({ children }) {
             )}
 
             <div className="previous-btn-container">
-                <a href="#" className="previous-btn">
+                <div className="previous-btn" onClick={()=>window.history.back()}>
                     <IconContext.Provider value={{ className: "previous" }}>
                         <div>
                             <GrFormPrevious />
                         </div>
                     </IconContext.Provider>
-                </a>
+                </div>
             </div>
 
             {/* setting page */}
