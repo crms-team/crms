@@ -1061,14 +1061,16 @@ class EIP extends React.Component {
                         <Form.Control
                             as="select"
                             onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Domain", val);
+                                if(e.target.value=="vpc"){
+                                    let val = e.target.value;
+                                    this.func("Domain", val);
+                                }
                             }}
                         >
                             <option value="" disabled selected>
                                 Domain
                             </option>
-                            <option>standard</option>
+                            <option >standard</option>
                             <option>vpc</option>
                         </Form.Control>
                     </Form.Group>

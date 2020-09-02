@@ -1,0 +1,8 @@
+
+.modal-header > span {
+    width: 100%
+}
+
+.ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.705) !important;
+}
