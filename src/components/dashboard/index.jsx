@@ -8,47 +8,33 @@ import { Form } from "react-bootstrap";
 
 const statusColors = {
     create: {
-        strokeColor: '#5d643f',
-        pointStrokeColor: '#5d643f',
-        pointHighlightFill: '#5d643f',
+        backgroundColor: "#5d643f",
+        borderColor: "#5d643f",
+        pointHighlightFill: "#5d643f",
         fillColor: "rgba(49,51,41,0.2)",
         pointColor: "rgba(49,51,41,1)",
         pointHighlightStroke: "rgba(49,51,41,1)",
     },
     modify: {
-        strokeColor: '#43537c',
-        pointStrokeColor: '#43537c',
-        pointHighlightFill: '#43537c',
+        backgroundColor: "#43537c",
+        borderColor: "#43537c",
+        pointHighlightFill: "#43537c",
         fillColor: "rgba(67,83,124,0.2)",
         pointColor: "rgba(67,83,124,1)",
         pointHighlightStroke: "rgba(67,83,124,1)",
     },
     remove: {
-        strokeColor: '#743c4d',
-        pointStrokeColor: '#743c4d',
-        pointHighlightFill: '#743c4d',
+        backgroundColor: "#743c4d",
+        borderColor: "#743c4d",
+        pointHighlightFill: "#743c4d",
         fillColor: "rgba(44,37,40,0.2)",
         pointColor: "rgba(44,37,404,1)",
         pointHighlightStroke: "rgba(44,37,40,1)",
-    }
-}
+    },
+};
 const options = {
-    scaleShowGridLines: true,
-    scaleGridLineColor: "rgba(0,0,0, 0.5)",
-    scaleGridLineWidth: 1,
-    scaleShowHorizontalLines: true,
-    scaleShowVerticalLines: true,
-    bezierCurve: true,
-    bezierCurveTension: 0.4,
-    pointDot: true,
-    pointDotRadius: 4,
-    pointDotStrokeWidth: 1,
-    pointHitDetectionRadius: 20,
-    datasetStroke: true,
-    datasetStrokeWidth: 100,
-    datasetFill: true,
-    legendTemplate:
-        '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].strokeColor%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
+    backgroundColor: "#743c4d",
+    borderColor: "743c4d",
 };
 
 const styles = {
@@ -69,36 +55,44 @@ class Dashboard extends React.Component {
             dataset: [],
             graphDataset: {
                 labels: [],
-                datasets: []
-            }
+                datasets: [
+                    {
+                        backgroundColor: ["#5d643f"],
+                    },
+                ],
+            },
         };
 
-        this.changeDashboardData = this.changeDashboardData.bind(this)
+        this.changeDashboardData = this.changeDashboardData.bind(this);
     }
 
     getHistorySummary(detail) {
-        let result =  {create: 0, remove: 0, modify: 0}
+        let result = { create: 0, remove: 0, modify: 0 };
 
         for (let session in detail) {
             for (let resource in detail[session]) {
                 for (let status in detail[session][resource]) {
-                    result[status] += detail[session][resource][status].length
+                    result[status] += detail[session][resource][status].length;
                 }
             }
         }
 
-        return result
+        return result;
     }
 
     async changeDashboardData(e) {
-        let key_id = e == undefined ? "" : e.target.value
-        let queryString = key_id != "" ? `key_id=${key_id}` : '' 
+        let key_id = e == undefined ? "" : e.target.value;
+        let queryString = key_id != "" ? `key_id=${key_id}` : "";
 
-        let statusData = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/dashboard?${queryString}`).then((res) => res.json());
-        let historys = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/history?count=10&${queryString}`).then(res=>res.json())
- 
-        let dataset = []
-        let graphData = {}
+        let statusData = await fetch(
+            `${process.env.REACT_APP_SERVER_URL}/api/dashboard?${queryString}`
+        ).then((res) => res.json());
+        let historys = await fetch(
+            `${process.env.REACT_APP_SERVER_URL}/api/cloud/history?count=10&${queryString}`
+        ).then((res) => res.json());
+
+        let dataset = [];
+        let graphData = {};
 
         let i = 1;
 
@@ -110,47 +104,49 @@ class Dashboard extends React.Component {
                 title: history.title,
             });
 
-            let timeLabel = history.time.split('.').slice(1, 3).join('.') + 'h'
-            let summary = this.getHistorySummary(history.detail)
+            let timeLabel = history.time.split(".").slice(1, 3).join(".") + "h";
+            let summary = this.getHistorySummary(history.detail);
 
-            if (graphData[timeLabel] == undefined){
-                graphData[timeLabel] = {create: 0, remove: 0, modify: 0}
-            }   
+            if (graphData[timeLabel] == undefined) {
+                graphData[timeLabel] = { create: 0, remove: 0, modify: 0 };
+            }
 
             for (let status in graphData[timeLabel]) {
-                graphData[timeLabel][status] += summary[status]
+                graphData[timeLabel][status] += summary[status];
             }
         }
 
         let graphDataset = {
             labels: Object.keys(graphData).sort(),
-            datasets: []
-        }
-        
+            datasets: [],
+        };
+
         for (let status in statusColors) {
-            let dataList = []
+            let dataList = [];
 
             for (let time of graphDataset.labels) {
-                dataList.push(graphData[time][status])
+                dataList.push(graphData[time][status]);
             }
 
             graphDataset.datasets.push({
                 label: status,
                 data: dataList,
-                ...statusColors[status]
-            })
+                ...statusColors[status],
+            });
         }
 
         this.setState({
             statusData: statusData.data,
             keyValue: key_id,
             dataset: dataset,
-            graphDataset: graphDataset
+            graphDataset: graphDataset,
         });
     }
 
     async componentDidMount() {
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key/list`).then(res=>res.json())
+        let response = await fetch(
+            `${process.env.REACT_APP_SERVER_URL}/api/cloud/key/list`
+        ).then((res) => res.json());
         let key_id = Object.keys(response.keys);
         for (let i = 0; i < key_id.length; i++) {
             key_id[i] = {
@@ -159,10 +155,10 @@ class Dashboard extends React.Component {
             };
         }
         localStorage.setItem("key", JSON.stringify(key_id));
-        await this.changeDashboardData()
+        await this.changeDashboardData();
     }
 
-    getResourceStatusData(resource, type=undefined) {
+    getResourceStatusData(resource, type = undefined) {
         if (type) {
             return this.state.statusData
                 ? this.state.statusData[resource][0] +
@@ -185,11 +181,24 @@ class Dashboard extends React.Component {
                 <div className="board-container">
                     <div>
                         <Form className="select__option dashboard-option">
-                            <select className="select__option--options form-control" onChange={this.changeDashboardData} value={this.state.keyValue} >
-                                <option value="" selected>All</option>
-                                { localStorage.getItem('key') && JSON.parse(localStorage.getItem('key')).map(v=>{
-                                    return <option value={v.key}>{v.key}</option>
-                                }) }
+                            <select
+                                className="select__option--options form-control"
+                                onChange={this.changeDashboardData}
+                                value={this.state.keyValue}
+                            >
+                                <option value="" selected>
+                                    All
+                                </option>
+                                {localStorage.getItem("key") &&
+                                    JSON.parse(localStorage.getItem("key")).map(
+                                        (v) => {
+                                            return (
+                                                <option value={v.key}>
+                                                    {v.key}
+                                                </option>
+                                            );
+                                        }
+                                    )}
                             </select>
                         </Form>
                     </div>
@@ -303,11 +312,16 @@ class Dashboard extends React.Component {
                                 />
                                 <NumberWidget
                                     className="network security-group"
-                                    title = "Security Group"
-                                    number = {this.getResourceStatusData('securitygroup', true)}
-                                    progress = {{
-                                        value : this.getResourceStatusData('securitygroup'),
-                                        label : 'Network'
+                                    title="Security Group"
+                                    number={this.getResourceStatusData(
+                                        "securitygroup",
+                                        true
+                                    )}
+                                    progress={{
+                                        value: this.getResourceStatusData(
+                                            "securitygroup"
+                                        ),
+                                        label: "Network",
                                     }}
                                 />
                             </div>
@@ -316,11 +330,16 @@ class Dashboard extends React.Component {
                             <div>
                                 <NumberWidget
                                     className="storage bucket"
-                                    title = "Bucket"
-                                    number = {this.getResourceStatusData('storage', true)}
-                                    progress = {{
-                                        value : this.getResourceStatusData('storage'),
-                                        label : 'Storage'
+                                    title="Bucket"
+                                    number={this.getResourceStatusData(
+                                        "storage",
+                                        true
+                                    )}
+                                    progress={{
+                                        value: this.getResourceStatusData(
+                                            "storage"
+                                        ),
+                                        label: "Storage",
                                     }}
                                 />
                             </div>
