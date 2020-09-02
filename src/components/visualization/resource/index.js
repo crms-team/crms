@@ -12,7 +12,8 @@ export function CreateVisualDataFormat(keyId, vendor, data) {
         id: keyId,
         name: keyId,
         type: vendor,
-        link: []
+        link: [],
+        children: []
     })
 
     for (let session in data) {

@@ -1,76 +1,14 @@
 import React, { Component } from "react";
-import {
-    Button,
-    Modal,
-    ListGroup,
-    Tab,
-    Row,
-    Col,
-    Form,
-    Pagination,
-} from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import * as d3 from "d3";
 import "./visual.css";
-import { DataFormat, CreateVisualDataFormat } from "../resource";
+import { CreateVisualDataFormat } from "../resource";
 import CreateModal from '../create'
 import MInfo from "../summary/button";
 import MButton from "../summary";
-import { resourceSvg, resourceState } from "../resource-params";
+import { VisualStructure, IMAGE_TYPE, resourceState } from "../resource-params";
 import { IconContext } from "react-icons";
 import { GrFormRefresh } from "react-icons/gr";
-
-const CIRCLE_SIZE_L1 = 50
-const CIRCLE_SIZE_L2 = 65
-const CIRCLE_SIZE_L3 = 80
-const CIRCLE_SIZE_L4 = 95
-const CIRCLE_SIZE_L5 = 120
-const CIRCLE_SIZE_L6 = 135
-const CIRCLE_SIZE_L7 = 150
-
-const IMAGE_TYPE={
-    ebs:{
-        image:"/images/ebs.svg", circle_size: CIRCLE_SIZE_L1
-    },
-    ec2:{
-        image:"/images/compute.svg", circle_size:CIRCLE_SIZE_L2
-    },
-    rds:{
-        image:"/images/rds group.svg", circle_size:CIRCLE_SIZE_L2
-    },
-    s3:{
-        image:"/images/storage.svg", circle_size:CIRCLE_SIZE_L2
-    },
-    subnet:{
-        image:"/images/ec2-container-registry.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    internetgateway: {
-        image:"/images/internet-gateway.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    securitygroup:{
-        image:"/images/security_group.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    s3_group:{
-        image:"/images/s3 group.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    rds_group:{
-        image:"/images/rds group.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    securitygroups:{
-        image:"/images/securityGroup group.svg", circle_size: CIRCLE_SIZE_L4
-    },
-    subnets:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },
-    vpc:{
-        image:"/images/VPC.svg", circle_size: CIRCLE_SIZE_L5
-    },
-    aws: {
-        image:"/images/cloud.svg", circle_size: CIRCLE_SIZE_L6
-    },
-    CRMS: {
-        image:"/images/CRMS.svg", circle_size: CIRCLE_SIZE_L7
-    }
-}
 
 class Visual extends Component {
     constructor(props) {
@@ -121,110 +59,56 @@ class Visual extends Component {
             let width = parseInt(window.getComputedStyle(document.querySelector("#root")).width),
                 height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
 
-            let visualdata = [];
+            let visualDataset = [];
+
             for (let dataset of this.state.dataset) {
-                let cloud = dataset.filter(item => item.type.toLowerCase() == "aws")
-                let vpc = dataset.filter(item => item.type.toLowerCase() == "vpc")
-                let sgs = dataset.filter(item => item.type.toLowerCase() == "securitygroups")
-                let sg = dataset.filter(item => item.type.toLowerCase() == "securitygroup")
-                let subnets = dataset.filter(item => item.type.toLowerCase() == "subnets")
-                let subnet = dataset.filter(item => item.type.toLowerCase() == "subnet")
-                let ec2 = dataset.filter(item => item.type.toLowerCase() == "ec2")
-                let ebs = dataset.filter(item => item.type.toLowerCase() == "ebs")
-                let ig = dataset.filter(item => item.type.toLowerCase() == "internetgateway")
-                let s3_group = dataset.filter(item => item.type.toLowerCase() == "s3_group")
-                let s3 = dataset.filter(item => item.type.toLowerCase() == "s3")
-                let rds_group = dataset.filter(item => item.type.toLowerCase() == "rds_group")
-                let rds = dataset.filter(item => item.type.toLowerCase() == "rds")
 
-                for (let tmp of cloud) {
-                    tmp.children = [];
-                    for (let tmp_vpc of vpc) {
-                        if (tmp.id == tmp_vpc.link[0]) {
-                            for (let tmp_subs of subnets) {
-                                if (tmp_vpc.id == tmp_subs.link[0]) {
-                                    for (let tmp_sub of subnet) {
-                                        if (tmp_subs.id == tmp_sub.link[0]) {
-                                            for (let tmp_ec2 of ec2) {
-                                                for (let i = 0; i < tmp_ec2.link.length; i++) {
-                                                    if (tmp_ec2.link[i] == tmp_sub.id) {
-                                                        for (let tmp_ebs of ebs) {
-                                                            for (let j = 0; j < tmp_ebs.link.length; j++) {
-                                                                if (tmp_ebs.link[j] == tmp_ec2.id) {
-                                                                    tmp_ec2.children.push(
-                                                                        tmp_ebs
-                                                                    );
-                                                                }
-                                                            }
-                                                        }
-                                                        tmp_sub.children.push(tmp_ec2);
-                                                    }
-                                                }
-                                            }
-                                            tmp_subs.children.push(tmp_sub);
-                                        }
-                                    }
-
-                                    tmp_vpc.children.push(tmp_subs);
-                                }
-                            }
-                            for (let tmp_sgs of sgs) {
-                                if (tmp_vpc.id == tmp_sgs.link[0]) {
-                                    for (let tmp_sg of sg) {
-                                        if (tmp_sgs.id == tmp_sg.link[0]) {
-                                            tmp_sgs.children.push(tmp_sg);
-                                        }
-                                    }
-                                    tmp_vpc.children.push(tmp_sgs);
-                                }
-                            }
-                            tmp.children.push(tmp_vpc);
-                        }
-                        for (let tmp_ig of ig) {
-                            if (tmp_vpc.id == tmp_ig.link[0]) {
-                                tmp_vpc.children.push(tmp_ig)
-                            }
-                        }
-                        for (let tmp_rds_group of rds_group) {
-                            if (tmp_vpc.id == tmp_rds_group.link[0]) {
-                                for (let tmp_rds of rds) {
-                                    for (let i = 0; i < tmp_rds.link.length; i++) {
-                                        if (tmp_rds.link[i] == tmp_rds_group.id) {
-                                            tmp_rds_group.children.push(tmp_rds)
-                                        }
-                                    }
-                                }
-                                tmp_vpc.children.push(tmp_rds_group);
-                            }
-                        }
-                    }
-                    for (let tmp_s3_group of s3_group) {
-                        if (tmp.id == tmp_s3_group.link[0]) {
-                            for (let tmp_s3 of s3) {
-                                for (let i = 0; i < tmp_s3.link.length; i++) {
-                                    if (tmp_s3.link[i] == tmp_s3_group.id) {
-                                        tmp_s3_group.children.push(tmp_s3)
-                                    }
-                                }
-                            }
-                            tmp.children.push(tmp_s3_group);
-                        }
-                    }
-                    visualdata = visualdata.concat(tmp);
+                let datasets = {
+                    cloud: dataset.filter(item => item.type.toLowerCase() == "aws"),
+                    vpc: dataset.filter(item => item.type.toLowerCase() == "vpc"),
+                    security_groups: dataset.filter(item => item.type.toLowerCase() == "securitygroups"),
+                    security_group: dataset.filter(item => item.type.toLowerCase() == "securitygroup"),
+                    subnet_groups: dataset.filter(item => item.type.toLowerCase() == "subnets"),
+                    subnet: dataset.filter(item => item.type.toLowerCase() == "subnet"),
+                    ec2: dataset.filter(item => item.type.toLowerCase() == "ec2"),
+                    ebs: dataset.filter(item => item.type.toLowerCase() == "ebs"),
+                    ig: dataset.filter(item => item.type.toLowerCase() == "internetgateway"),
+                    s3_groups: dataset.filter(item => item.type.toLowerCase() == "s3_group"),
+                    s3: dataset.filter(item => item.type.toLowerCase() == "s3"),
+                    rds_groups: dataset.filter(item => item.type.toLowerCase() == "rds_group"),
+                    rds: dataset.filter(item => item.type.toLowerCase() == "rds")
                 }
+
+                function make_dataset(resource, parent, vs, check_link){
+                    for (let element of resource) {
+                        if (check_link) {
+                            for (let link of element.link) {
+                                if (parent.id == link) {
+                                    for (let child of Object.keys(vs)) {
+                                        make_dataset(datasets[child], element, vs[child], true)
+                                    }
+                                    parent.children.push(element)  
+                                }
+                            } 
+                        } else {
+                            for (let child of Object.keys(vs)) {
+                                make_dataset(datasets[child], element, vs[child], true)
+                            }
+                            parent.push(element)   
+                        }                 
+                    }
+
+                }
+                make_dataset(datasets.cloud, visualDataset, VisualStructure, false)
             }
 
-
-            let aroot = {
+            let root = d3.hierarchy({
                 id: "CRMSRootId",
                 name: "CRMS",
                 type: "CRMS",
                 link: [],
-                children: visualdata,
-            };
-
-            let root = d3.hierarchy(aroot);
-            let i = 0;
+                children: visualDataset,
+            })
             let nodeSvg, linkSvg, simulation;
 
             let svg = d3.select(".Visual")
@@ -316,6 +200,23 @@ class Visual extends Component {
                         let thisNode = d.id
                         let thislink = d
                         let tmp=0;
+
+                        function compareId(list, target){
+                            for (let child of list) {
+                                if (child.data.id == target.data.id) {
+                                    return true
+                                }
+                            }
+                            return false
+                        }
+
+                        function compareList(source, target) {
+                            return compareId(source.children, target) || 
+                            compareId(target.children, source) || 
+                            compareId(source.data.link, target) || 
+                            compareId(target.link, source) ? 1 : 0.2
+                        }
+
                         d3.selectAll(".link").attr("opacity", function (d) {
                             return d.source.id == thisNode ||
                                 d.target.id == thisNode
@@ -328,46 +229,11 @@ class Visual extends Component {
                             }
                             else{
                                 try{
-                                    for(let i=0;i<thislink.children.length;i++){
-                                        if(thislink.children[i].data.id==d.data.id){
-                                            return 1;
-                                        }
-                                    }
-                                    for(let i=0;i<d.children.length;i++){
-                                        if(d.children[i].data.id==thislink.data.id){
-                                            return 1;
-                                        }
-                                    }
-                                    for(let i=0;i<thislink.data.link.length;i++){
-                                        if(thislink.data.link[i]==d.data.id){
-                                            return 1;
-                                        }
-                                    }
-                                    for(let i=0;i<d.data.link.length;i++){
-                                        if(d.data.link[i]==thislink.data.id){
-                                            return 1;
-                                        }
-                                    }
-                                    return 0.2
+                                    return compareList(thislink, d)
                                 }
                                 catch{
                                     try{
-                                        for(let i=0;i<d.children.length;i++){
-                                            if(d.children[i].data.id==thislink.data.id){
-                                                return 1;
-                                            }
-                                        }
-                                        for(let i=0;i<thislink.data.link.length;i++){
-                                            if(thislink.data.link[i]==d.data.id){
-                                                return 1;
-                                            }
-                                        }
-                                        for(let i=0;i<d.data.link.length;i++){
-                                            if(d.data.link[i]==thislink.data.id){
-                                                return 1;
-                                            }
-                                        }
-                                        
+                                        return compareList(d, thislink)
                                     }
                                     catch{
                                         try{
@@ -526,8 +392,6 @@ class Visual extends Component {
                 });
             }
 
-            const clickFunc = stateFunc.bind(this);
-
             function click(d, clickFunc, preState) {
                 try{
                     clickFunc({
@@ -560,7 +424,6 @@ class Visual extends Component {
                 function recurse(node) {
                     if (node.children) node.children.forEach(recurse);
                     if (!node.id) node.id = node.data.name;
-                    else ++i;
                     nodes.push(node);
                 }
                 recurse(root);
