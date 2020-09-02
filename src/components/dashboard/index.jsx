@@ -156,6 +156,7 @@ class Dashboard extends React.Component {
             key_id[i] = {
                 key: key_id[i],
                 vendor: response.keys[key_id[i]].vendor,
+                region: response.keys[key_id[i]].keys.region
             };
         }
         localStorage.setItem("key", JSON.stringify(key_id));

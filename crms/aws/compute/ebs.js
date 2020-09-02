@@ -10,7 +10,7 @@ async function modifyVolume(key, args=undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     try {
-        return (await ec2.modifyVolume(agrs).promise())['VolumeModification']
+        return (await ec2.modifyVolume(args).promise())['VolumeModification']
     } catch {
         console.log("EBS PUT Error (modifyVolume Error)")
         return false
@@ -33,7 +33,7 @@ async function deleteVolume(key, args=undefined) {
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     try { 
         return (await ec2.deleteVolume(args).promise())
-    } catch {
+    } catch  {
         console.log("EBS DELETE Error (deleteVolume Error)")
         return false
     }
@@ -44,7 +44,8 @@ async function attachVolume(key, args=undefined) {
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     try { 
         return (await ec2.attachVolume(args).promise())
-    } catch {
+    } catch(e) {
+        console.log(e)
         console.log("EBS Attach Error (attachVolume Error)")
         return false
     }

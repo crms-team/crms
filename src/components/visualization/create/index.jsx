@@ -13,6 +13,7 @@ import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaSync } from 'react-icons/fa';
 import { managerType, awsManager, summaryType } from '../../../manager'
+import { version } from "react-dom";
 
 const EC2Data={
     Ami:[],
@@ -211,7 +212,7 @@ class EC2 extends React.Component {
     
     async getAvailabilityZone(type,key_name){
         let item=[];
-        let response = await fetch('localhost:4000/api/cloud/data/ec2/etc/types', {
+        let response = await fetch('http://localhost:4000/api/cloud/data/ec2/etc/types', {
              method: 'post',
              headers:{
                  'Content-Type': 'application/json'
@@ -525,7 +526,48 @@ class EBS extends React.Component {
     constructor(props) {
         super(props);
         this.func = this.props.func.bind(this);
+        this.state = {
+            key: JSON.parse(localStorage.getItem("key")),
+            AZ:[]
+        }
+
+        this.getDynamicAZ("test")
     }
+
+    async getDynamicAZ(key_name) {
+        let key_region="";
+        let key=this.state.key
+        for(let i=0;i<key.length;i++){
+            if(key[i].key==key_name){
+                key_region=key[i].region
+                break;
+            }
+        }
+        let items = [];
+        let response = await fetch('http://localhost:4000/api/cloud/data/ebs/etc/zones', {
+            method: 'post',
+            headers:{
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify({
+                key_id: key_name,
+                args: {
+                Filters: [
+                    {
+                        Name: 'region-name',
+                        Values: [key_region]
+                    }
+                ]
+            }
+        })}).then(res=>res.json())
+        for(let i=0;i<response.data.length;i++){
+            items.push(<option value={response.data[i].ZoneName}>{response.data[i].ZoneName}</option>)
+        }
+        this.setState({
+            AZ : items
+        })
+    }
+
 
     render() {
         let func = this.func;
@@ -535,30 +577,19 @@ class EBS extends React.Component {
                     id="list-group-tabs-example"
                     defaultActiveKey="#tag"
                 >
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>AvailabilityZone</Form.Label>
-                        <Form.Control
-                            placeholder="Enter AvailabilityZone"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("AvailabilityZone", val);
-                            }}
-                        />
-                    </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
+                        <Form.Label>AvailabilityZone</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("DryRun", val);
+                                this.func("AvailabilityZone", val);
                             }}
                         >
                             <option value="" disabled selected>
-                                DryRun
+                                AvailabilityZone
                             </option>
-                            <option>true</option>
-                            <option>false</option>
+                            {this.state.AZ}
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
@@ -567,7 +598,7 @@ class EBS extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("Encrypted", val);
+                                this.func("Encrypted", ("true"===val))
                             }}
                         >
                             <option value="" disabled selected>
@@ -578,12 +609,12 @@ class EBS extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Iops</Form.Label>
+                        <Form.Label>Size</Form.Label>
                         <Form.Control
-                            placeholder="Enter Iops"
+                            placeholder="Enter Size"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("Iops", val);
+                                this.func("Size", val);
                             }}
                         />
                     </Form.Group>
@@ -603,7 +634,7 @@ class EBS extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("MultiAttachEnabled", val);
+                                this.func("MultiAttachEnabled",("true"===val));
                             }}
                         >
                             <option value="" disabled selected>
@@ -620,16 +651,6 @@ class EBS extends React.Component {
                             onChange={(e) => {
                                 let val = e.target.value;
                                 this.func("OutpostArn", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Size</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Size"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Size", val);
                             }}
                         />
                     </Form.Group>
@@ -816,27 +837,11 @@ class VPC extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("AmazonProvidedIpv6CidrBlock", val);
+                                this.func("AmazonProvidedIpv6CidrBlock", ("true"==val));
                             }}
                         >
                             <option value="" disabled selected>
                                 AmazonProvidedIpv6CidrBlock
-                            </option>
-                            <option>true</option>
-                            <option>false</option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("DryRun", val);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                DryRun
                             </option>
                             <option>true</option>
                             <option>false</option>
@@ -860,48 +865,20 @@ class VPC extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Ipv6CidrBlock</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Ipv6CidrBlock"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Ipv6CidrBlock", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Ipv6CidrBlockNetworkBorderGroup</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Ipv6CidrBlockNetworkBorderGroup"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Ipv6CidrBlockNetworkBorderGroup", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Ipv6Pool</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Ipv6Pool"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Ipv6Pool", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
                             placeholder="Enter name"
                             onChange={(e) => {
-                                let tmp = [
+                                let tmp=  [{
+                                    ResourceType: "vpc",
+                                    Tags :[
                                     {
                                         Key: "Name",
                                         Value: "",
                                     },
-                                ];
-                                tmp[0].Value = e.target.value;
-                                this.func("Tags", tmp);
+                                ]}]
+                                tmp[0].Tags[0].Value = e.target.value;
+                                this.func("TagSpecifications", tmp);
                             }}
                         />
                     </Form.Group>
@@ -915,6 +892,62 @@ class Subnet extends React.Component {
     constructor(props) {
         super(props);
         this.func = this.props.func.bind(this);
+        this.state={
+            key_name:this.props.key_name,
+            key: JSON.parse(localStorage.getItem("key")),
+            key_vendor:this.props.key_vendor,
+            vpcList:[],
+            AZ:[]
+        }
+
+        this.getDynamicAZ(this.props.key_name)
+        this.getVpcList()
+    }
+
+    async getDynamicAZ(key_name) {
+        let key_region="";
+        let key=this.state.key
+        for(let i=0;i<key.length;i++){
+            if(key[i].key==key_name){
+                key_region=key[i].region
+                break;
+            }
+        }
+        let items = [];
+        let response = await fetch('http://localhost:4000/api/cloud/data/ebs/etc/zones', {
+            method: 'post',
+            headers:{
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify({
+                key_id: key_name,
+                args: {
+                Filters: [
+                    {
+                        Name: 'region-name',
+                        Values: [key_region]
+                    }
+                ]
+            }
+        })}).then(res=>res.json())
+        console.log(response)
+        for(let i=0;i<response.data.length;i++){
+            items.push(<option value={response.data[i].ZoneName}>{response.data[i].ZoneName}</option>)
+        }
+        this.setState({
+            AZ : items
+        })
+    }
+
+    async getVpcList (){
+        let items=[]
+        let response = await getDynamicOption(this.state.key_name,this.state.key_vendor,"vpc")
+        for(let i=0;i<response.length;i++){
+            items.push(<option value={response[i]}>{response[i]}</option>)
+        }
+        this.setState({
+            vpcList:items
+        })
     }
 
     render() {
@@ -956,48 +989,31 @@ class Subnet extends React.Component {
                             </Button>
                         </Col>
                     </Form.Row>
-                        <Form.Control as="select">
+                        <Form.Control as="select" onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("VpcId", val);
+                            }}>
                             <option value="" disabled selected>
                                 VpcId
                             </option>
                             {
+                                this.state.vpcList
                             }
                         </Form.Control>
                     </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>AvailabilityZone</Form.Label>
-                        <Form.Control
-                            placeholder="Enter AvailabilityZone"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("AvailabilityZone", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>AvailabilityZoneId</Form.Label>
-                        <Form.Control
-                            placeholder="Enter AvailabilityZoneId"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("AvailabilityZoneId", val);
-                            }}
-                        />
-                    </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DryRun</Form.Label>
+                        <Form.Label>AvailabilityZone</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("DryRun", val);
+                                this.func("AvailabilityZone", val);
                             }}
                         >
                             <option value="" disabled selected>
-                                DryRun
+                                AvailabilityZone
                             </option>
-                            <option>true</option>
-                            <option>false</option>
+                            {this.state.AZ}
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
@@ -1011,28 +1027,21 @@ class Subnet extends React.Component {
                         />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>OutpostArn</Form.Label>
-                        <Form.Control
-                            placeholder="Enter OutpostArn"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("OutpostArn", val);
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
                             placeholder="Enter name"
                             onChange={(e) => {
-                                let tmp = [
+                                let tmp =[
                                     {
-                                        Key: "Name",
-                                        Value: "",
-                                    },
+                                        ResourceType : "subnet",
+                                        Tags:[{
+                                            Key: "Name",
+                                            Value: "",
+                                        }]
+                                    }
                                 ];
-                                tmp[0].Value = e.target.value;
-                                this.func("Tags", tmp);
+                                tmp[0].Tags[0].Value = e.target.value;
+                                this.func("TagSpecifications", tmp);
                             }}
                         />
                     </Form.Group>
@@ -1082,6 +1091,37 @@ class RDS extends React.Component {
     constructor(props) {
         super(props);
         this.func = this.props.func.bind(this);
+        this.state={
+            key: this.props.key_name,
+            tmp_version:[]
+        }
+    }
+
+    async getEngineVersion(engine){
+        let items=[]
+        let response= await fetch('http://localhost:4000/api/cloud/data/rds/etc/versions', {
+            method: 'post',
+            headers:{
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify({
+                key_id: this.state.key,
+                args: {
+                    Engine: engine
+                }
+           }
+        )}).then(res=>res.json())
+        
+        console.log(response)
+
+        for(let i=0;i<response.data.length;i++){
+            items.push(<option value={response.data[i].EngineVersion}>{response.data[i].EngineVersion}</option>)
+        }
+
+        this.setState({
+            tmp_version:items
+        })
+
     }
 
     render() {
@@ -1098,6 +1138,7 @@ class RDS extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
+                                this.getEngineVersion(val);
                                 this.func("Engine", val);
                             }}
                         >
@@ -1124,11 +1165,7 @@ class RDS extends React.Component {
                             <option value="" disabled selected>
                                 EngineVersion
                             </option>
-                            <option></option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                                {this.state.tmp_version}
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
@@ -1173,11 +1210,7 @@ class RDS extends React.Component {
                             <option value="" disabled selected>
                                 DBInstanceClass
                             </option>
-                            <option></option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            <option>db.t2.small</option>
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
@@ -1185,7 +1218,7 @@ class RDS extends React.Component {
                         <Form.Control
                             placeholder="Enter AllocatedStorage"
                             onChange={(e) => {
-                                let val = e.target.value;
+                                let val = parseInt(e.target.value);
                                 this.func("AllocatedStorage", val);
                             }}
                         />
@@ -1196,7 +1229,7 @@ class RDS extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("StorageEncrypted", val);
+                                this.func("StorageEncrypted", ("true"==val));
                             }}
                         >
                             <option value="" disabled selected>
@@ -1218,27 +1251,17 @@ class RDS extends React.Component {
                             <option value="" disabled selected>
                                 StorageType
                             </option>
-                            <option>범용 (SSD)</option>
-                            <option>프로비저닝된 IOPS (SSD)</option>
-                            <option>마그네틱</option>
+                            <option>standard</option>
+                            <option>gp2</option>
+                            <option>io1</option>
                         </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Iops</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Iops"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("Iops", val);
-                            }}
-                        />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>MaxAllocatedStorage</Form.Label>
                         <Form.Control
                             placeholder="Enter MaxAllocatedStorage"
                             onChange={(e) => {
-                                let val = e.target.value;
+                                let val = parseInt(e.target.value);
                                 this.func("MaxAllocatedStorage", val);
                             }}
                         />
@@ -1249,7 +1272,7 @@ class RDS extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("MultiAZ", val);
+                                this.func("MultiAZ", ("true"==val));
                             }}
                         >
                             <option value="" disabled selected>
@@ -1257,86 +1280,6 @@ class RDS extends React.Component {
                             </option>
                             <option>True</option>
                             <option>False</option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Row className="align-items-center">
-                            <Col xs="auto" className="my-1">
-                            <Form.Label className="mr-sm-2">
-                                Security Group
-                            </Form.Label>
-                            </Col>
-                            <Col xs="auto" style={{float:"right!important"}}>
-                                <Button size="sm" style={
-                                    {backgroundColor:"#494949",
-                                    color:"#ffc14d",
-                                    border:"none",
-                                    marginBottom:".5rem"
-                                    }}
-                                    onClick={()=>this.tmp_get()}
-                                >
-                                    <FaSync  style={{
-                                    marginBottom:".2rem"
-                                    }}/>
-                                </Button>
-                            </Col>
-                        </Form.Row>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let tmp = [];
-                                tmp.push(e.target.value);
-                                this.func("DBSecurityGroups", tmp);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                SecurityGroups
-                            </option>
-                            <option>test_sg</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Row className="align-items-center">
-                            <Col xs="auto" className="my-1">
-                            <Form.Label className="mr-sm-2">
-                                VPC Security Group
-                            </Form.Label>
-                            </Col>
-                            <Col xs="auto" style={{float:"right!important"}}>
-                                <Button size="sm" style={
-                                    {backgroundColor:"#494949",
-                                    color:"#ffc14d",
-                                    border:"none",
-                                    marginBottom:".5rem"
-                                    }}
-                                    onClick={()=>this.tmp_get()}
-                                >
-                                    <FaSync  style={{
-                                    marginBottom:".2rem"
-                                    }}/>
-                                </Button>
-                            </Col>
-                        </Form.Row>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let tmp = [];
-                                tmp.push(e.target.value);
-                                this.func("VpcSecurityGroupIds", tmp);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                VpcSecurityGroupIds
-                            </option>
-                            <option>test_sg</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
@@ -1349,52 +1292,12 @@ class RDS extends React.Component {
                             }}
                         />
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DBParameterGroupName</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let tmp = [];
-                                tmp.push(e.target.value);
-                                this.func("DBParameterGroupName", tmp);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                DBParameterGroupName
-                            </option>
-                            <option>test_sg</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>OptionGroupName</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let tmp = [];
-                                tmp.push(e.target.value);
-                                this.func("OptionGroupName", tmp);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                OptionGroupName
-                            </option>
-                            <option>test_sg</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </Form.Control>
-                    </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>BackupRetentionPeriod</Form.Label>
                         <Form.Control
                             placeholder="Enter BackupRetentionPeriod"
                             onChange={(e) => {
-                                let val = e.target.value;
+                                let val = parseInt(e.target.value);
                                 this.func("BackupRetentionPeriod", val);
                             }}
                         />
@@ -1405,7 +1308,7 @@ class RDS extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("CopyTagsToSnapshot", val);
+                                this.func("CopyTagsToSnapshot", ("true"==val));
                             }}
                         >
                             <option value="" disabled selected>
@@ -1420,7 +1323,7 @@ class RDS extends React.Component {
                         <Form.Control
                             placeholder="Enter Port"
                             onChange={(e) => {
-                                let val = e.target.value;
+                                let val = parseInt(e.target.value);
                                 this.func("Port", val);
                             }}
                         />
@@ -1431,7 +1334,7 @@ class RDS extends React.Component {
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("AutoMinorVersionUpgrade", val);
+                                this.func("AutoMinorVersionUpgrade", ("true"==val));
                             }}
                         >
                             <option value="" disabled selected>
@@ -1442,51 +1345,12 @@ class RDS extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Row className="align-items-center">
-                            <Col xs="auto" className="my-1">
-                            <Form.Label className="mr-sm-2">
-                                Subnet
-                            </Form.Label>
-                            </Col>
-                            <Col xs="auto" style={{float:"right!important"}}>
-                                <Button size="sm" style={
-                                    {backgroundColor:"#494949",
-                                    color:"#ffc14d",
-                                    border:"none",
-                                    marginBottom:".5rem"
-                                    }}
-                                    onClick={()=>this.tmp_get()}
-                                >
-                                    <FaSync  style={{
-                                    marginBottom:".2rem"
-                                    }}/>
-                                </Button>
-                            </Col>
-                        </Form.Row>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let tmp = e.target.value;
-                                this.func("DBSubnetGroupName", tmp);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                DBSubnetGroupName
-                            </option>
-                            <option>basic</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>DeletionProtection</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.func("DeletionProtection", val);
+                                this.func("DeletionProtection", ("true"==val));
                             }}
                         >
                             <option value="" disabled selected>
@@ -1511,6 +1375,70 @@ class RDS extends React.Component {
                                 this.func("Tags", tmp);
                             }}
                         />
+                    </Form.Group>
+                </Tab.Container>
+            </>
+        );
+    }
+}
+
+class S3 extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.props.func.bind(this);
+    }
+
+    render() {
+        let func = this.func;
+        return (
+            <>
+                <Tab.Container
+                    id="list-group-tabs-example"
+                    defaultActiveKey="#tag"
+                >
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Bucket</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Bucket"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("Bucket", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>ACL</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("ACL", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                ACL
+                            </option>
+                            <option>private</option>
+                            <option>public-read </option>
+                            <option>public-read-write</option>
+                            <option>authenticated-read</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>ObjectLockEnabledForBucket</Form.Label>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("ObjectLockEnabledForBucket", ("true"==val));
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                ObjectLockEnabledForBucket
+                            </option>
+                            <option>true</option>
+                            <option>false</option>
+                        </Form.Control>
                     </Form.Group>
                 </Tab.Container>
             </>
@@ -1562,7 +1490,6 @@ class CreateModal extends React.Component {
         EC2Data.Ami=items;
     }
 
-
     select_vendor(e) {
         var index = e.nativeEvent.target.selectedIndex;
         this.getAmiData(e.nativeEvent.target[index].text)
@@ -1596,7 +1523,7 @@ class CreateModal extends React.Component {
             });
         } else if (this.state.type == "rds") {
             this.setState({
-                component: <RDS func={this.func.bind(this)} />,
+                component: <RDS func={this.func.bind(this)} key_name={this.state.key_name} />,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
@@ -1604,15 +1531,16 @@ class CreateModal extends React.Component {
         }
         else if (this.state.type == "eip") {
             this.setState({
-                component: <EIP func={this.func.bind(this)} />,
+                component: <EIP func={this.func.bind(this)} key_name={this.state.key_name}/>,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
             });
         }
         else if (this.state.type == "ebs") {
+            
             this.setState({
-                component: <EBS func={this.func.bind(this)} />,
+                component: <EBS func={this.func.bind(this)} key_name={this.state.key_name} />,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
@@ -1636,7 +1564,7 @@ class CreateModal extends React.Component {
         }
         else if (this.state.type == "subnet") {
             this.setState({
-                component: <Subnet func={this.func.bind(this)} />,
+                component: <Subnet func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name}/>,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),
@@ -1645,6 +1573,14 @@ class CreateModal extends React.Component {
         else if (this.state.type == "vpc") {
             this.setState({
                 component: <VPC func={this.func.bind(this)} />,
+                but_type: (
+                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
+                ),
+            });
+        }
+        else if (this.state.type == "s3" ) {
+            this.setState({
+                component: <S3 func={this.func.bind(this)} />,
                 but_type: (
                     <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
                 ),

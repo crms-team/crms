@@ -72,7 +72,9 @@ export class RDSManager extends Manager {
             body: JSON.stringify({
                 key_id: keyId,
                 args: {
-                    DBInstanceIdentifier:  id 
+                    DBInstanceIdentifier:  id,
+                    SkipFinalSnapshot: true,
+                    DeleteAutomatedBackups:  true
                 }
             })
         }).then(res=>res.json())

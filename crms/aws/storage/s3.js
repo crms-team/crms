@@ -56,7 +56,8 @@ async function createBucket(key, args=undefined) {
     try {
         await s3.createBucket(args).promise()
         return true
-    } catch {
+    } catch(e) {
+        console.log(e)
         console.log("S3 POST Error (createBucket Errir)")
         return false
     }

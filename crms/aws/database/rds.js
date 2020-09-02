@@ -12,7 +12,8 @@ async function createDBInstance(key, args=undefined) {
 
     try {
         return (await rds.createDBInstance(args).promise())['DBInstance']
-    } catch {
+    } catch(e) {
+        console.log(e)
         console.log("RDS POST Error (createDBInstance Error)")
         return false
     }    
@@ -36,7 +37,8 @@ async function deleteDBInstance(key, args=undefined) {
 
     try {
         return (await rds.deleteDBInstance(args).promise())
-    } catch {
+    } catch(e) {
+        console.log(e)
         console.log("RDS DELETE Error (deleteDBInstance Error)")
         return false
     }    
