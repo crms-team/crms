@@ -10,7 +10,7 @@ class InstanceInfo extends React.Component{
                 return typeof(this.props.data.data[dt]) != "object" 
             }).map(v=>{
                 let d = this.props.data.data[v]
-                return <tr> <th>{v}</th><td>{d.toString()}</td> </tr>
+                return <tr> <th>{v}</th><td>{d != undefined? d.toString() : ''}</td> </tr>
             })
         }
         catch(e){

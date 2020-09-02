@@ -4,8 +4,8 @@ import * as d3 from "d3";
 import "./visual.css";
 import { CreateVisualDataFormat } from "../resource";
 import CreateModal from '../create'
-import MInfo from "../summary/button";
-import MButton from "../summary";
+import MButton from "../summary/button";
+import MInfo from "../summary";
 import { VisualStructure, IMAGE_TYPE, resourceState } from "../resource-params";
 import { IconContext } from "react-icons";
 import { GrFormRefresh } from "react-icons/gr";
@@ -435,7 +435,7 @@ class Visual extends Component {
 
     async componentDidMount() {
         this.setState({ keyList: await this.getKeyData() });
-        this.setState({ dataset: await this.getVisualData() });
+        this.setState({ dataset: await this.getVisualData(true) });
 
         if (this.state.isFirst) {
             this.drawChart();

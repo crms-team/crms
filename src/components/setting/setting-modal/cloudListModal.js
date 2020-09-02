@@ -40,9 +40,9 @@ function CloudListModal(props) {
         let tmp = []
         for (let key of key_id) {
             tmp.push({
-                index: 1,
                 keyId: key.key,
-                vendor: key.vendor,    
+                vendor: key.vendor,  
+                x:"x"  
             })
         }
         setKeyDataset(tmp)
@@ -69,15 +69,19 @@ function CloudListModal(props) {
                         <TableHeaderColumn
                             isKey
                             dataField="index"
-                            dataAlign="center"
+                            hidden
+                            autoValue
                         >
                             Index
                         </TableHeaderColumn>
-                        <TableHeaderColumn dataField="keyId" dataAlign="center">
+                        <TableHeaderColumn dataField="keyId" dataAlign="center" tdStyle={{width:"33%"}} >
                             Key
                         </TableHeaderColumn>
-                        <TableHeaderColumn dataField="vendor" dataAlign="center">
+                        <TableHeaderColumn dataField="vendor" dataAlign="center" tdStyle={{width:"33%"}} >
                             Vendor
+                        </TableHeaderColumn>
+                        <TableHeaderColumn dataField="x" dataAlign="center" tdStyle={{width:"33%", color: 'red', pointer: 'cursor'}}>
+                            Delete
                         </TableHeaderColumn>
                     </BootstrapTable>
                 </div>
