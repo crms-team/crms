@@ -88,7 +88,7 @@ class Dashboard extends React.Component {
             `${process.env.REACT_APP_SERVER_URL}/api/dashboard?${queryString}`
         ).then((res) => res.json());
         let historys = await fetch(
-            `${process.env.REACT_APP_SERVER_URL}/api/cloud/history?count=10&${queryString}`
+            `${process.env.REACT_APP_SERVER_URL}/api/cloud/history?count=15&${queryString}`
         ).then((res) => res.json());
 
         let dataset = [];
@@ -104,7 +104,7 @@ class Dashboard extends React.Component {
                 title: history.title,
             });
 
-            let timeLabel = history.time.split(".").slice(1, 3).join(".") + "h";
+            let timeLabel = history.time.split(".").slice(1, 4).join(".") + "m";
             let summary = this.getHistorySummary(history.detail);
 
             if (graphData[timeLabel] == undefined) {
