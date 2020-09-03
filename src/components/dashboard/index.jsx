@@ -88,7 +88,7 @@ class Dashboard extends React.Component {
             `${process.env.REACT_APP_SERVER_URL}/api/dashboard?${queryString}`
         ).then((res) => res.json());
         let historys = await fetch(
-            `${process.env.REACT_APP_SERVER_URL}/api/cloud/history?count=15&${queryString}`
+            `${process.env.REACT_APP_SERVER_URL}/api/cloud/history?count=10&${queryString}`
         ).then((res) => res.json());
 
         let dataset = [];
