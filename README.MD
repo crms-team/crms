@@ -78,7 +78,7 @@ The file structure of our system consists of three things that Back-end on serve
 ---
 If you want contribute CRMS, Clink the Link!
 
-[Contribute](https://github.com/crms-team/crms/blob/master/CONTRIBUTING)
+[Contribute](https://github.com/crms-team/crms/blob/master/CONTRIBUTING.md)
 
 ## License
 ---
