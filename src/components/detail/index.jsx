@@ -110,7 +110,7 @@ class ContentSummary extends Component {
         let resource = this.props.resource;
         let data = response.data;
 
-        if (resource == "ec2") data = data["Instances"][0];
+        if (resource == "server") data = data["Instances"][0];
 
         this.setState({
             data: data,
@@ -266,20 +266,20 @@ class ContentUpdate extends Component {
         let etcData1 = []
         let etcData2 = []
 
-        if (resource == 'ec2') data = data['Instances'][0]
-        else if (resource == "ebs") {
+        if (resource == 'server') data = data['Instances'][0]
+        else if (resource == "volume") {
             ec2list = await this.getEC2List()
             for (let i = 0; i < ec2list.Instances.length; i++) {
                 ec2item.push(<option>{ec2list.Instances[i].InstanceId}</option>)
             }
         }
-        else if (resource == "eip") {
+        else if (resource == "ip") {
             ec2list = await this.getEC2List()
             for (let i = 0; i < ec2list.Instances.length; i++) {
                 ec2item.push(<option>{ec2list.Instances[i].InstanceId}</option>)
             }
         }
-        else if(resource == "rds"){
+        else if(resource == "database"){
             await this.getEngineVersion(response.data.Engine)
         }
         else if (resource == 'securitygroup') {
@@ -338,14 +338,14 @@ class ContentUpdate extends Component {
     }
 
     async getEC2List() {
-        let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ec2?key_id=${this.props.modkey}`
+        let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/server?key_id=${this.props.modkey}`
         let tmp_ec2 = await fetch(url).then(res => res.json());
         return tmp_ec2.data[0]
     }
 
     async getEngineVersion(engine){
         let items=[]
-        let response= await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/rds/etc/versions`, {
+        let response= await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/database/etc/versions`, {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'
@@ -382,7 +382,7 @@ class ContentUpdate extends Component {
             tmp_data[key] = val
         }
 
-        if (resource == "ec2") {
+        if (resource == "server") {
             return (
                 <>
                     <Form>
@@ -492,7 +492,7 @@ class ContentUpdate extends Component {
                 </>
             )
         }
-        else if (resource == "ebs") {
+        else if (resource == "volume") {
             return (
                 <>
                     <Form>
@@ -713,7 +713,7 @@ class ContentUpdate extends Component {
                 </>
             )
         }
-        else if (resource == "eip") {
+        else if (resource == "ip") {
             if (this.state.data.AssociationId == undefined) {
                 return (
                     <>
@@ -929,7 +929,7 @@ class ContentUpdate extends Component {
                 </>
             );
         }
-        else if (resource == "rds") {
+        else if (resource == "database") {
             tmp_data.DBInstanceIdentifier=this.state.data.DBInstanceIdentifier
             return (
                 <>
@@ -1132,7 +1132,7 @@ class Detail extends Component {
         let resource = this.state.resource
         let data = response.data
 
-        if (resource == 'ec2') data = data['Instances'][0]
+        if (resource == 'server') data = data['Instances'][0]
 
         this.setState({
             data: data,

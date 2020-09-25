@@ -1,4 +1,4 @@
 
 module.exports = {
-    rds: require('./rds')
+    database: require('./rds')
 }

@@ -5,14 +5,14 @@ const vendors = {
 }
 
 const resourceIdKeys = {
-    ec2: resource => resource['Instances'][0]['InstanceId'],
-    ebs: resource => resource['VolumeId'],
-    eip: resource => resource['AllocationId'],
+    server: resource => resource['Instances'][0]['InstanceId'],
+    volume: resource => resource['VolumeId'],
+    ip: resource => resource['AllocationId'],
     keypair: resource => resource['KeyPairId'],
     
-    rds: resource => resource['DBInstanceIdentifier'],
+    database: resource => resource['DBInstanceIdentifier'],
 
-    s3: resource => resource['Name'],
+    bucket: resource => resource['Name'],
 
     vpc: resource => resource['VpcId'],
     subnet: resource => resource['SubnetId'],
@@ -50,6 +50,7 @@ function compareResources(type, preData, nowData) {
 
     let preIdSet = new Set()
     let nowIdSet = new Set()
+
     let idFunc = resourceIdKeys[type]
 
     for (let resource of preData) {

@@ -333,12 +333,12 @@ class Dashboard extends React.Component {
                                     className="storage bucket"
                                     title="Bucket"
                                     number={this.getResourceStatusData(
-                                        "storage",
+                                        "bucket",
                                         true
                                     )}
                                     progress={{
                                         value: this.getResourceStatusData(
-                                            "storage"
+                                            "bucket"
                                         ),
                                         label: "Storage",
                                     }}

@@ -1,8 +1,8 @@
 module.exports = {
-    ec2: require('./ec2'),
-    ebs: require('./ebs'),
-    eip: require('./eip'),
+    server: require('./ec2'),
+    volume: require('./ebs'),
+    ip: require('./eip'),
     keypair: require('./key-pair'),
-    ami: require('./ami')
+    image: require('./ami')
 }
 

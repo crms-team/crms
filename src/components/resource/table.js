@@ -22,7 +22,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import PauseIcon from '@material-ui/icons/Pause';
 import './table.scss';
 import {useParams} from 'react-router-dom'
-import { managerType, awsManager, idType } from "../../manager";
+import { idType } from "../../manager";
 
 function createData(keys, data) {
   let result = {}
@@ -138,7 +138,7 @@ const COLUMES = {
 
 const MATCHINGS = {
   aws: {
-    ec2: (key_id, resource) => {
+    server: (key_id, resource) => {
       let attr = resource.Instances[0]
       let name = ""
 
@@ -158,7 +158,7 @@ const MATCHINGS = {
         type: attr.InstanceType,
       }
     },
-    ebs: (key_id, resource) => {
+    volume: (key_id, resource) => {
       let attr = resource
       let name = ""
 
@@ -178,7 +178,7 @@ const MATCHINGS = {
         type: attr.VolumeType,
       }
     },
-    eip: (key_id, resource) => {
+    ip: (key_id, resource) => {
       let attr = resource
       let name = ""
 
@@ -209,7 +209,7 @@ const MATCHINGS = {
         fingerprint: attr.KeyFingerprint,
       }
     },
-    rds: (key_id, resource) => {
+    database: (key_id, resource) => {
       let attr = resource
 
       return {
@@ -293,7 +293,7 @@ const MATCHINGS = {
         group_name: attr.GroupName,
       }
     },
-    s3: (key_id, resource) => {
+    bucket: (key_id, resource) => {
       let attr = resource
       
       return {
@@ -545,11 +545,10 @@ export default function EnhancedTable() {
 
 
       for(let key of keys){
-        let resource_type = managerType[key.vendor][type]
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${resource_type}?key_id=${key.key}`).then(res=>res.json())
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${type}?key_id=${key.key}`).then(res=>res.json())
         if (response.data){
           for (let resource of response.data) {
-            result.push(createData(columes_list, MATCHINGS[key.vendor][resource_type](key.key, resource)))
+            result.push(createData(columes_list, MATCHINGS[key.vendor][type](key.key, resource)))
           }  
         }
       }
@@ -601,7 +600,7 @@ export default function EnhancedTable() {
           tmp_type=key.vendor
         }
       }
-      window.location.href=`/detail/${row.key_id}/${managerType[tmp_type][type]}/${row.id?row.id: row.identifier ? row.identifier : row.name}`
+      window.location.href=`/detail/${row.key_id}/${type}/${row.id?row.id: row.identifier ? row.identifier : row.name}`
     }
   }
 
