@@ -29,7 +29,9 @@
         "react-icons": "^3.11.0",
         "react-router-dom": "^5.2.0",
         "react-scripts": "^3.4.3",
-        "reactstrap": "^8.5.1"
+        "reactstrap": "^8.5.1",
+        "swagger-jsdoc": "^4.0.0",
+        "swagger-ui-express": "^4.1.4"
     },
     "scripts": {
         "start": "react-scripts start",

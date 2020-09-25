@@ -12,26 +12,25 @@ class Card extends Component {
             <div className="card">
                 <h1 className="card__title">Getting Started</h1>
                 <p className="card__description">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a
-                    type specimen book. It has survived not only five centuries,
-                    but also the leap into electronic typesetting, remaining
-                    essentially unchanged.
-                </p>
-                <p className="card__description--title">
-                    &nbsp;Please copy the password from either location and
-                    paste it below.&nbsp;
+                    CRMS is a tool for management cloud resource as a user interface.
                 </p>
                 <p className="card__description">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a
-                    type specimen book. It has survived not only five centuries,
-                    but also the leap into electronic typesetting, remaining
-                    essentially unchanged.
+                    CRMS can confirm information of cloud resource and manage cloud resource.
+                </p>
+                <p className="card__description">
+                    We concentrated at four feature when we develop our system. 
+                </p>
+                <p className="card__description">
+                    Default Password: <code>1234</code>                 
+                </p>
+                <p className="card__description">   
+                    Checking ./crms/data/crms.config passwd                
+                </p>
+                <p className="card__description">   
+                    If continue button click but no reponse checking <code>.env</code> file.
+                </p>
+                <p className="card__description">
+                require .env content <code>REACT_APP_SERVER_URL=http://localhost:4000</code>
                 </p>
             </div>
         );

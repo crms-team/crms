@@ -4,8 +4,8 @@ import * as d3 from "d3";
 import "./visual.css";
 import { CreateVisualDataFormat } from "../resource";
 import CreateModal from '../create'
-import MInfo from "../summary/button";
-import MButton from "../summary";
+import MButton from "../summary/button";
+import MInfo from "../summary";
 import { VisualStructure, IMAGE_TYPE, resourceState } from "../resource-params";
 import { IconContext } from "react-icons";
 import { GrFormRefresh } from "react-icons/gr";
@@ -60,7 +60,7 @@ class Visual extends Component {
                 height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
 
             let visualDataset = [];
-
+            console.log(this.state.dataset)
             for (let dataset of this.state.dataset) {
 
                 let datasets = {

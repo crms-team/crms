@@ -11,7 +11,7 @@ async function createDBInstance(key, args=undefined) {
     let rds = new AWS.RDS({ apiVersion: '2014-10-31' })
 
     try {
-        return (await rds.createDBInstance(args).promise())['DBInstance']
+        return (await rds.createDBInstance(args).promise())['DBInstance'].DBInstanceIdentifier
     } catch(e) {
         console.log(e)
         console.log("RDS POST Error (createDBInstance Error)")
@@ -77,6 +77,17 @@ async function stopDBInstance(key, args=undefined) {
     }    
 }
 
+async function describeOrderableDBInstanceOptions(key, args=undefined) {
+    AWS.config.update(key)
+    let rds = new AWS.RDS({ apiVersion: '2014-10-31' })
+    return (await rds.describeOrderableDBInstanceOptions(args).promise())['OrderableDBInstanceOptions']
+}
+
+async function describeDBSubnetGroups(key, args=undefined) {
+    AWS.config.update(key)
+    let rds = new AWS.RDS({ apiVersion: '2014-10-31' })
+    return (await rds.describeDBSubnetGroups(args).promise())['DBSubnetGroups']
+}
 
 
 module.exports = {
@@ -89,7 +100,9 @@ module.exports = {
     etc: {
         start: startDBInstance,
         stop: stopDBInstance,
-        versions: describeDBEngineVersions
+        versions: describeDBEngineVersions,
+        classes: describeOrderableDBInstanceOptions,
+        subnets: describeDBSubnetGroups
     }
 }
 

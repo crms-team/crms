@@ -43,7 +43,7 @@ const TYPEID = {
 
 export async function getDynamicOption (key_id,key_vendor,type) {
     let tmp_type=TYPEID[key_vendor][type]["url"]
-    let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${tmp_type}?key_id=${key_id}&type=data`;
+    let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${tmp_type}?key_id=${key_id}`;
     let items=[];
     const response = await fetch(url).then(res=>res.json())
     if(type=="subnet"){
@@ -160,7 +160,8 @@ class EC2 extends React.Component {
             tmp_subnet:[]
         }
         this.func = this.props.func.bind(this);
-        
+        this.func('MinCount', 1)
+        this.func('MaxCount', 1)
         this.init()
     }
 
@@ -273,7 +274,7 @@ class EC2 extends React.Component {
                         />
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>AMI</Form.Label>
+                        <Form.Label>AMI *</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -292,7 +293,7 @@ class EC2 extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>Type</Form.Label>
+                        <Form.Label>Type *</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -338,7 +339,7 @@ class EC2 extends React.Component {
                                     {
                                         DeviceName: "/dev/sdh",
                                         Ebs: {
-                                            VolumeSize: 0,
+                                            VolumeSize: 8,
                                         },
                                     },
                                 ];
@@ -568,7 +569,7 @@ class EBS extends React.Component {
                     defaultActiveKey="#tag"
                 >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>AvailabilityZone</Form.Label>
+                        <Form.Label>AvailabilityZone *</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -700,7 +701,7 @@ class KeyPair extends React.Component {
                     defaultActiveKey="#tag"
                 >
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>KeyName</Form.Label>
+                        <Form.Label>KeyName *</Form.Label>
                         <Form.Control
                             placeholder="Enter KeyName"
                             onChange={(e) => {
@@ -751,7 +752,7 @@ class SecurityGroup extends React.Component {
                     defaultActiveKey="#tag"
                 >
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Description</Form.Label>
+                        <Form.Label>Description *</Form.Label>
                         <Form.Control
                             placeholder="Enter Description"
                             onChange={(e) => {
@@ -761,7 +762,7 @@ class SecurityGroup extends React.Component {
                         />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>GroupName</Form.Label>
+                        <Form.Label>GroupName *</Form.Label>
                         <Form.Control
                             placeholder="Enter GroupName"
                             onChange={(e) => {
@@ -812,7 +813,7 @@ class VPC extends React.Component {
                     defaultActiveKey="#tag"
                 >
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>CidrBlock</Form.Label>
+                        <Form.Label>CidrBlock *</Form.Label>
                         <Form.Control
                             placeholder="Enter CidrBlock"
                             onChange={(e) => {
@@ -948,7 +949,7 @@ class Subnet extends React.Component {
                     defaultActiveKey="#tag"
                 >
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>CidrBlock</Form.Label>
+                        <Form.Label>CidrBlock *</Form.Label>
                         <Form.Control
                             placeholder="Enter CidrBlock"
                             onChange={(e) => {
@@ -961,7 +962,7 @@ class Subnet extends React.Component {
                     <Form.Row className="align-items-center">
                         <Col xs="auto" className="my-1">
                         <Form.Label className="mr-sm-2">
-                            VpcId
+                            VpcId *
                         </Form.Label>
                         </Col>
                         <Col xs="auto" style={{float:"right!important"}}>
@@ -1084,22 +1085,32 @@ class RDS extends React.Component {
         this.func = this.props.func.bind(this);
         this.state={
             key: this.props.key_name,
-            tmp_version:[]
+            tmp_version: [],
+            subnet_items: [],
+            tmp_class: [],
+        }
+        this.func('AllocatedStorage', 20)
+        this.getSubnetList()
+    }
+
+    async getSubnetList () {
+        let items=[]
+        let response= await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/rds/etc/subnets`, {
+            method: 'post',
+            headers:{
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify({
+                key_id: this.state.key,
+           }
+        )}).then(res=>res.json())
+        
+        
+        for (let subnet of response.data) {
+            items.push(subnet.DBSubnetGroupName)
         }
 
-        this.init()
-    }
-
-    async init(){
-        let subnetList = await this.getSubnetList()
-        this.setState({
-            subnet_items: subnetList,
-        })
-    }
-
-
-    async getSubnetList (){
-        return await getDynamicOption(this.state.key,this.props.key_vendor,"subnet")
+        this.setState({subnet_items: items})
     }
 
     async getEngineVersion(engine){
@@ -1117,15 +1128,55 @@ class RDS extends React.Component {
            }
         )}).then(res=>res.json())
         
-
-        for(let i=0;i<response.data.length;i++){
-            items.push(<option value={response.data[i].EngineVersion}>{response.data[i].EngineVersion}</option>)
+        let engineSet = new Set()
+        
+        for (let version of response.data) {
+            engineSet.add(version.EngineVersion)
         }
 
-        this.setState({
-            tmp_version:items
-        })
+        for (let version of Array.from(engineSet)) {
+            items.push(<option value={version}>{version}</option>)
+        }
 
+        return items
+    }
+
+    async getDBinstanceclass(engine){
+        let items=[]
+        let response= await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/rds/etc/classes`, {
+            method: 'post',
+            headers:{
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify({
+                key_id: this.state.key,
+                args: {
+                    Engine: engine
+                }
+           }
+        )}).then(res=>res.json())
+        
+        let classSet = new Set()
+        let availability_zone = {}
+
+        for (let cls of response.data) {
+            classSet.add(cls.DBInstanceClass)
+            availability_zone[cls.DBInstanceClass] = cls.AvailabilityZones
+        }
+
+        for (let cls of Array.from(classSet)) {
+            items.push(<option value={cls}>{cls}</option>)
+        }
+        return [items, availability_zone ]
+    }
+
+    async setDataSet(val){
+        let rst = await this.getDBinstanceclass(val)
+        this.setState({
+            tmp_version: await this.getEngineVersion(val),
+            tmp_class: rst[0],
+            availability_zone: rst[1]
+        })
     }
 
     render() {
@@ -1138,24 +1189,24 @@ class RDS extends React.Component {
                     defaultActiveKey="#tag"
                 >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>Engine</Form.Label>
+                        <Form.Label>Engine *</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
                                 let val = e.target.value;
-                                this.getEngineVersion(val);
                                 this.func("Engine", val);
+                                this.setDataSet(val)
                             }}
                         >
                             <option value="" disabled selected>
                                 Engine
                             </option>
-                            <option>Amazon Aurora</option>
-                            <option>MySQL</option>
-                            <option>MariaDB</option>
-                            <option>PostgreSQL</option>
-                            <option>Oracle</option>
-                            <option>Microsoft SQL Server</option>
+                            <option value="aurora">Amazon Aurora</option>
+                            <option value="mysql">MySQL</option>
+                            <option vlaue="mariadb">MariaDB</option>
+                            <option value="postgres">PostgreSQL</option>
+                            <option value="oracle-ee">Oracle</option>
+                            <option value="sqlserver-ee">Microsoft SQL Server</option>
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
@@ -1174,7 +1225,7 @@ class RDS extends React.Component {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>DBInstanceIdentifier</Form.Label>
+                        <Form.Label>DBInstanceIdentifier *</Form.Label>
                         <Form.Control
                             placeholder="Enter DBInstanceIdentifier"
                             onChange={(e) => {
@@ -1184,7 +1235,7 @@ class RDS extends React.Component {
                         />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>MasterUsername</Form.Label>
+                        <Form.Label>MasterUsername *</Form.Label>
                         <Form.Control
                             placeholder="Enter MasterUsername"
                             onChange={(e) => {
@@ -1194,8 +1245,9 @@ class RDS extends React.Component {
                         />
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>MasterUserPassword</Form.Label>
+                        <Form.Label>MasterUserPassword * (length &gt;= 8)</Form.Label>
                         <Form.Control
+                            type="password"
                             placeholder="Enter MasterUserPassword"
                             onChange={(e) => {
                                 let val = e.target.value;
@@ -1204,7 +1256,7 @@ class RDS extends React.Component {
                         />
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>DBInstanceClass</Form.Label>
+                        <Form.Label>DBInstanceClass *</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={(e) => {
@@ -1215,7 +1267,7 @@ class RDS extends React.Component {
                             <option value="" disabled selected>
                                 DBInstanceClass
                             </option>
-                            <option>db.t2.small</option>
+                            {this.state.tmp_class}
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
@@ -1242,7 +1294,7 @@ class RDS extends React.Component {
                             </option>
                             {
                                 subnet_list.map(v=>{
-                                    return <option value={v.SubnetId}>{v.SubnetId}</option>
+                                    return <option value={v}>{v}</option>
                                 })
                             }
                         </Form.Control>
@@ -1421,7 +1473,7 @@ class S3 extends React.Component {
                     defaultActiveKey="#tag"
                 >
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Bucket</Form.Label>
+                        <Form.Label>Bucket *</Form.Label>
                         <Form.Control
                             placeholder="Enter Bucket"
                             onChange={(e) => {
@@ -1616,6 +1668,8 @@ class CreateModal extends React.Component {
         let key_id = this.state.key_name
         let args=this.state.data
         let rst = await summaryType[this.state.type]["manage"].create(key_id,args)
+        alert(rst.data ? 'success' : 'failed')
+        window.location.reload()
     }
 
     clickSubmitbut() {

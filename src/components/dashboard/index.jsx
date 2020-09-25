@@ -104,7 +104,7 @@ class Dashboard extends React.Component {
                 title: history.title,
             });
 
-            let timeLabel = history.time.split(".").slice(1, 3).join(".") + "h";
+            let timeLabel = history.time.split(".").slice(1, 4).join(".") + "m";
             let summary = this.getHistorySummary(history.detail);
 
             if (graphData[timeLabel] == undefined) {

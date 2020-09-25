@@ -66,7 +66,7 @@ export class EBSManager extends Manager{
             body: JSON.stringify({
                 key_id: keyId,
                 args: {
-                    VolumeId: [ id ]
+                    VolumeId: id
                 }
             })
         }).then(res=>res.json())

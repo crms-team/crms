@@ -13,6 +13,11 @@ const tabName = ["Information", "Modify"];
 const thStyle = { width: "46%", textAlign: "right", paddingRight: "4%" };
 const tdStyle = { width: "46%", textAlign: "left", paddingRight: "4%" };
 
+function modifyd(rst) {
+    alert(rst.data ? "success" : "failed")
+    window.location.reload()
+}
+
 class ListTable extends Component {
     constructor(props) {
         super(props);
@@ -478,9 +483,9 @@ class ContentUpdate extends Component {
                             </Form.Control>
                         </Form.Group>
                     </Form>
-                    <Button variant="warning" onClick={() => {
+                    <Button variant="warning" onClick={async () => {
                         tmp_data.InstanceId = this.state.data.InstanceId
-                        summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                        modifyd(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                     }}>
                         Modify
                 </Button>
@@ -560,17 +565,18 @@ class ContentUpdate extends Component {
                             </Form.Control>
                         </Form.Group>
                     </Form>
-                    <Button variant="warning" onClick={() => {
+                    <Button variant="warning" onClick={async () => {
                         tmp_data.VolumeId = this.state.data.VolumeId
-                        summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
-                        if (tmp_attach != {}) {
+                        await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                        if (JSON.stringify(tmp_attach) != "{}") {
                             if (Object.keys(tmp_attach).length > 1) {
-                                summaryType[this.state.resource]["manage"].attach(this.props.modkey, tmp_attach)
+                                await summaryType[this.state.resource]["manage"].attach(this.props.modkey, tmp_attach)
                             }
                             else {
-                                summaryType[this.state.resource]["manage"].detach(this.props.modkey, tmp_attach)
+                                await summaryType[this.state.resource]["manage"].detach(this.props.modkey, tmp_attach)
                             }
                         }
+                        window.location.reload()
                     }}>
                         Modify
                 </Button>
@@ -618,9 +624,9 @@ class ContentUpdate extends Component {
                             </Form.Control>
                         </Form.Group>
                     </Form>
-                    <Button variant="warning" onClick={() => {
+                    <Button variant="warning" onClick={async () => {
                         tmp_data.VpcId = this.state.data.VpcId
-                        summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                        modifyd(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                     }}>
                         Modify
                 </Button>
@@ -699,7 +705,8 @@ class ContentUpdate extends Component {
                     </Form>
                     <Button variant="warning" onClick={async () => {
                         tmp_data.SubnetId = this.state.data.SubnetId
-                        console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
+                        let rst = await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                        modifyd(rst)
                     }}>
                         Modify
                 </Button>
@@ -749,7 +756,7 @@ class ContentUpdate extends Component {
                             </Form.Group>
                         </Form>
                         <Button variant="warning" onClick={async () => {
-                            await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                            modifyd(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                         }}>
                             Modify
                         </Button>
@@ -790,7 +797,7 @@ class ContentUpdate extends Component {
                             </Form.Group>
                         </Form>
                         <Button variant="warning" onClick={async () => {
-                            await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                            modifyd(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                         }}>
                             Modify
                         </Button>
@@ -900,9 +907,6 @@ class ContentUpdate extends Component {
                                     IpPermissions: getRuleSet(this.state.etcData2)    
                                 }
                             }
-                            console.log(addIngressSet)
-
-                            console.log(addEgressSet)
 
                             
                                                         console.log(
@@ -916,7 +920,7 @@ class ContentUpdate extends Component {
                                     "manage"
                                 ].update(this.props.modkey, addIngressSet)
                             )
-                            
+                            window.location.reload()
                             
                         }}
                     >
@@ -1084,7 +1088,6 @@ class ContentUpdate extends Component {
                     </Form>
 
                     <Button variant="warning" onClick={async () => {
-                        console.log(tmp_data)
                         console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                     }}>
                         Modify
