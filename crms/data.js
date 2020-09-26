@@ -1,24 +1,9 @@
 const fs = require('fs')
 const PATH =  require('path')
 const vendors = {
-    aws: require('./aws')
+    aws: require('./aws'),
+    azure: require('./azure')
 }
-
-const resourceIdKeys = {
-    server: resource => resource['Instances'][0]['InstanceId'],
-    volume: resource => resource['VolumeId'],
-    ip: resource => resource['AllocationId'],
-    keypair: resource => resource['KeyPairId'],
-    
-    database: resource => resource['DBInstanceIdentifier'],
-
-    bucket: resource => resource['Name'],
-
-    vpc: resource => resource['VpcId'],
-    subnet: resource => resource['SubnetId'],
-    securitygroup: resource => resource['GroupId'],
-    internetgateway: resource => resource['InternetGatewayId']
-} 
 
 function getLastDataFileName(path, keyId){
     let dataDict = PATH.normalize(`${path}/data/${keyId}/log`)
@@ -38,7 +23,7 @@ function createDataDict(path) {
     }
 }
 
-function compareResources(type, preData, nowData) {
+function compareResources(vendor, type, preData, nowData) {
     let result = {
         create: [],
         remove: [],
@@ -51,7 +36,7 @@ function compareResources(type, preData, nowData) {
     let preIdSet = new Set()
     let nowIdSet = new Set()
 
-    let idFunc = resourceIdKeys[type]
+    let idFunc = crms[vendor].getResourceId[type]
 
     for (let resource of preData) {
         let id = idFunc(resource)
@@ -86,7 +71,7 @@ function compareResources(type, preData, nowData) {
     }
 }
 
-function history(path, keyId, data, time) {
+function history(path, keyId, vendor, data, time) {
     let historyData = []
     let prevData = null
     let detail = {}
@@ -108,7 +93,7 @@ function history(path, keyId, data, time) {
         for (let resourceType in data[session]) {
             let nowResources = data[session][resourceType]
             let preResources = prevData != null ? prevData[session][resourceType.toLocaleLowerCase()]: []
-            let cpResource = compareResources(resourceType, preResources, nowResources)
+            let cpResource = compareResources(vendor, resourceType, preResources, nowResources)
 
             if (cpResource != undefined) {
                 detail[session][resourceType] = cpResource
@@ -152,7 +137,7 @@ async function saveData(path, keyId, keyVendor, keyData){
         let time = getTime()
         let fileName =  `${time}.json`
         
-        history(path, keyId, data, time)
+        history(path, keyId, vendor, data, time)
         fs.writeFileSync(PATH.normalize(`${dataPath}/${fileName}`), JSON.stringify(data))
         console.log(`${getTime()} Success Scanning ${keyId}`) 
     } catch (e) {
@@ -164,6 +149,5 @@ async function saveData(path, keyId, keyVendor, keyData){
 module.exports = {
     saveData: saveData,
     getLastDataFileName: getLastDataFileName,
-    resourceIdKeys: resourceIdKeys
 }
 

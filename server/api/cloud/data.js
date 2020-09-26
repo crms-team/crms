@@ -107,7 +107,7 @@ module.exports = server => {
             if (resourceId) {
                 let check = true
                 for (let element of data) {
-                    if (crms.data.resourceIdKeys[resource](element) == resourceId) {
+                    if (crms[vendor].getResourceId[resource](element) == resourceId) {
                         data = element
                         check = false
                         break
