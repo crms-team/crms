@@ -20,6 +20,13 @@
     right: 40px;
     bottom: 20px;
 }
+
+.selectKey {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+
 .refresh {
     background: #ffc14d;
     color: #27262b;

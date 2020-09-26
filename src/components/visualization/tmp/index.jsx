@@ -9,15 +9,19 @@ import MInfo from "../summary";
 import { VisualStructure, IMAGE_TYPE, resourceState } from "../resource-params";
 import { IconContext } from "react-icons";
 import { GrFormRefresh } from "react-icons/gr";
+import {Form} from "react-bootstrap"
 
-function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
-    if(dataSet!=undefined){
+let nodeSvg, linkSvg, simulation, svg;
+
+function drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide){
+    if (dataSet != undefined) {
         let width = parseInt(window.getComputedStyle(document.querySelector("#root")).width),
             height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
-        
-        let visualDataset = [];    
+
+        let visualDataset = [];
 
         for (let dataset of dataSet) {
+
             let datasets = {
                 cloud: dataset.filter(item => item.type.toLowerCase() == "aws"),
                 vpc: dataset.filter(item => item.type.toLowerCase() == "vpc"),
@@ -33,6 +37,7 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
                 rds_groups: dataset.filter(item => item.type.toLowerCase() == "rds_group"),
                 rds: dataset.filter(item => item.type.toLowerCase() == "rds")
             }
+
             function make_dataset(resource, parent, vs, check_link){
                 for (let element of resource) {
                     if (check_link) {
@@ -51,6 +56,7 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
                         parent.push(element)   
                     }                 
                 }
+
             }
             make_dataset(datasets.cloud, visualDataset, VisualStructure, false)
         }
@@ -62,18 +68,19 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
             link: [],
             children: visualDataset,
         })
-        console.log(root)
 
-        let nodeSvg, linkSvg, simulation;
-        
-        let svg = d3.select(".Visual")
-            .call(d3.zoom().scaleExtent([1 / 100, 8]).on("zoom", zoomed))
+        svg = d3.select(".Visual")
+            .call(d3.zoom().scaleExtent([1 / 100, 8]).on("zoom", ()=>{
+                svg.attr("transform", d3.event.transform);
+
+            }))
             .style("background-color", "#27262b")
             .on("dblclick.zoom", null)
             .on("contextmenu", function (d, i) {
                 d3.event.preventDefault();
             })
             .select("g")
+
         svg.append("svg:defs").selectAll("marker")
             .data(["end"])      // Different link/path types can be defined here
             .enter().append("svg:marker")    // This section adds in the arrows
@@ -85,10 +92,8 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
             .attr("markerHeight", 10)
             .attr("orient", "auto")
             .append("svg:path")
-            .attr("d", "M0,-5L10,0L0,5")
-        function zoomed() {
-            svg.attr("transform", d3.event.transform)
-        }
+            .attr("d", "M0,-5L10,0L0,5");
+
         simulation = d3
             .forceSimulation()
             .alpha(0.5)
@@ -99,12 +104,8 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
                 "center",
                 d3.forceCenter(width / 2 + 100, height / 2 + 100)
             )
-            .on("tick", ticked());
-
-        update(root,linkSvg,nodeSvg,simulation,svg)
-        
-        function ticked() {
-            linkSvg
+            .on("tick", ()=>{
+                linkSvg
                 .attr("x1", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
                     let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.cos(angle)*1.25;
@@ -126,16 +127,18 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
                     return d.target.y - length;
                 });
 
-            nodeSvg.attr("transform", function (d) {
-                return "translate(" + d.x + ", " + d.y + ")";
+                nodeSvg.attr("transform", function (d) {
+                    return "translate(" + d.x + ", " + d.y + ")";
+                });
             });
-        }    
-        
+
+        update(handleInstanceDataset,handleModalShowHide,showHide,root);
+
     }
 }
 
-function update(root,linkSvg,nodeSvg,simulation,svg) {
-
+function update(handleInstanceDataset,handleModalShowHide,showHide,root) {
+            
     let nodes = flatten(root);
     let links = root.links();
 
@@ -276,9 +279,17 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
 
         })
         .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended))
+            .on("start", (d)=>{
+                if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                simulation.fix(d);
+            })
+            .on("drag", (d)=>{
+                simulation.fix(d, d3.event.x, d3.event.y);
+            })
+            .on("end", (d)=>{
+                if (!d3.event.active) simulation.alphaTarget(0);
+                simulation.unfix(d);
+            }))
 
     nodeEnter.append("circle")
         .attr("stroke", function (d) {
@@ -318,6 +329,14 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
         .attr("y", function(d){
             return -(IMAGE_TYPE[d.data.type].circle_size*(1.5))/2
         })
+        .on("click", (d) => { 
+            try{
+                handleInstanceDataset(d.data);
+                handleModalShowHide(!showHide)
+            }catch(e){
+                return;
+            }
+         });
 
     nodeEnter
         .append("text")
@@ -342,22 +361,7 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
     simulation.force("link").links(links);
 }
 
-function dragstarted(d,simulation) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-    simulation.fix(d);
-}
-
-function dragged(d, simulation) {
-    simulation.fix(d, d3.event.x, d3.event.y);
-}
-
-function dragended(d, simulation) {
-    if (!d3.event.active) simulation.alphaTarget(0);
-    simulation.unfix(d);
-}
-
 function flatten(root) {
-    // hierarchical data to flat data for force layout
     let nodes = [];
 
     function recurse(node) {
@@ -369,8 +373,8 @@ function flatten(root) {
     return nodes;
 }
 
-function specifyNode(type){
-
+function specifyNode(cloud){
+    
 }
 
 
@@ -379,35 +383,31 @@ function Visual(){
     const [showHide,setShowhide]=React.useState(false);
     const [instanceData,setInstanceData]=React.useState(undefined);
     const [keyList,setKeyList]=React.useState(undefined);
-    const [isFirst,setIsFirst]=React.useState(true);
     const [dataSet,setDataset]=React.useState(undefined);
     const [showDataSet,setShowDataset]=React.useState(undefined);
 
-    async function getVisualData(type = undefined) {
+    async function getVisualData(keys, type = undefined) {
         let result = []
-        for (let key in keyList) {
-            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${keyList[key].key}` + (type ? `&type=${type}` : '')
+        for (let key of keys) {
+            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key.key}` + (type ? `&type=${type}` : '')
             let response = await fetch(ep).then((res)=>res.json())
-            result.push(CreateVisualDataFormat(keyList[key].key, keyList[key].vendor, response.data))
+            result.push(CreateVisualDataFormat(key.key, key.vendor, response.data))
         }
         setDataset(result);
     }
 
     async function temp(params) {
-        await getVisualData("data")
+        let keys = JSON.parse(localStorage.getItem("key"))
+        await getVisualData(keys, "data")
+        setKeyList(keys)
     }
 
     useEffect(()=>{
-        setIsFirst(!isFirst)
+        temp()
     },[])
 
     useEffect(()=> {
-        setKeyList(JSON.parse(localStorage.getItem("key")))
-        temp()
-    },[isFirst])
-
-    useEffect(()=> {
-        drawChart(dataSet,handleModalShowHide,handleInstanceDataset)
+        drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide)
     },[dataSet])
 
     const handleInstanceDataset = (d) =>{
@@ -442,6 +442,27 @@ function Visual(){
             <svg className="Visual">
                 <g></g>
             </svg>
+            <div className="selectKey">
+                <Form>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Control as="select">
+                        <option>All Cloud</option>
+                        {localStorage.getItem("key") &&
+                                    JSON.parse(localStorage.getItem("key")).map(
+                                        (v) => {
+                                            return (
+                                                <option value={v.key}>
+                                                    {v.key}
+                                                </option>
+                                            );
+                                        }
+                        )}
+                        <option>In Use</option>
+                        <option>No Use</option>
+                        </Form.Control>
+                    </Form.Group>
+                </Form>
+            </div>
             <div className="time">
                 <button
                     className="refresh"
