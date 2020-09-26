@@ -10,8 +10,13 @@ import EditCellClassNameTable from "./edit-table";
 
 const tabName = ["Information", "Modify"];
 
-const thStyle = { width: "46%", "text-align": "right", paddingRight: "4%" };
-const tdStyle = { width: "46%", "text-align": "left", paddingRight: "4%" };
+const thStyle = { width: "46%", textAlign: "right", paddingRight: "4%" };
+const tdStyle = { width: "46%", textAlign: "left", paddingRight: "4%" };
+
+function modifyd(rst) {
+    alert(rst.data ? "success" : "failed")
+    window.location.reload()
+}
 
 class ListTable extends Component {
     constructor(props) {
@@ -25,31 +30,31 @@ class ListTable extends Component {
         if (data.length > 0) {
             key = Object.keys(data[0]);
             return (
-                <table style={{
-                    width: "100%",
-                    wordWrap: "break-word",
-                    tableLayout: "fixed",
-                }}>
-                    <tr>
-                        {key.map((v) => {
-                            return <th>{v}</th>;
-                        })}
-                    </tr>
+                <div className="left--table-container">
+                    <table className="detail__right--table">
+                        <tr>
+                            {key.map((v) => {
+                                return <th>{v}</th>;
+                            })}
+                        </tr>
 
-                    {data.map((v) => {
-                        return (
-                            <tr>
-                                {key.map((kv) => {
-                                    let type = typeof (v[kv])
-                                    if (type == "object") {
-                                        return <td>{JSON.stringify(v[kv])}</td>
-                                    }
-                                    return <td>{v[kv]}</td>;
-                                })}
-                            </tr>
-                        );
-                    })}
-                </table>
+                        {data.map((v) => {
+                            return (
+                                <tr>
+                                    {key.map((kv) => {
+                                        let type = typeof v[kv];
+                                        if (type == "object") {
+                                            return (
+                                                <td>{JSON.stringify(v[kv])}</td>
+                                            );
+                                        }
+                                        return <td>{v[kv]}</td>;
+                                    })}
+                                </tr>
+                            );
+                        })}
+                    </table>
+                </div>
             );
         } else {
             return <div>There is no data to display</div>;
@@ -72,19 +77,12 @@ class ObjectView extends Component {
         let type = "length" in data;
 
         return (
-            <div
-                style={{
-                    width: "39%",
-                    height: "98%",
-                    padding: "1%",
-                    position: 'fixed',
-                    right: 0,
-                    marginRight: '4%'
-                }}
-            >
-                {key}
-                <hr />
-                {type && <ListTable data={data} />}
+            <div className="right--table-container">
+                <div>
+                    <span className="right--table-title">{key}</span>
+                    <hr />
+                    {type && <ListTable data={data} />}
+                </div>
             </div>
         );
     }
@@ -97,7 +95,7 @@ class ContentSummary extends Component {
             data: [],
             rootData: [],
 
-            resource: '',
+            resource: "",
             keyList: [],
 
             objectKey: "",
@@ -109,10 +107,10 @@ class ContentSummary extends Component {
 
     async componentDidMount() {
         let response = await (await fetch(this.props.endpoint)).json();
-        let resource = this.props.resource
-        let data = response.data
+        let resource = this.props.resource;
+        let data = response.data;
 
-        if (resource == 'ec2') data = data['Instances'][0]
+        if (resource == "server") data = data["Instances"][0];
 
         this.setState({
             data: data,
@@ -125,23 +123,23 @@ class ContentSummary extends Component {
         let data = this.state.rootData
 
         for (let i = 1; i < keyList.length; i++) {
-            data = data[keyList[i]]
+            data = data[keyList[i]];
         }
 
-        return data
+        return data;
     }
 
     clickEvent(key, data, type) {
-        if (type == 'list') {
+        if (type == "list") {
             this.setState({
                 objectKey: key,
                 objectData: data,
             });
         } else {
-            let keyList = this.state.keyList
-            keyList.push(key)
+            let keyList = this.state.keyList;
+            keyList.push(key);
             this.setState({
-                objectKey: '',
+                objectKey: "",
                 objectData: [],
                 keyList: keyList,
                 data: this.getViewData(keyList)
@@ -151,12 +149,12 @@ class ContentSummary extends Component {
     }
 
     linkClickEvent(idx) {
-        let keyList = this.state.keyList
-        keyList = keyList.slice(0, idx)
+        let keyList = this.state.keyList;
+        keyList = keyList.slice(0, idx);
         this.setState({
             keyList: keyList,
-            data: this.getViewData(keyList)
-        })
+            data: this.getViewData(keyList),
+        });
     }
 
     render() {
@@ -164,29 +162,34 @@ class ContentSummary extends Component {
             state: 'Creating....'
         };
         let keys = Object.keys(data);
-        let keyList = this.state.keyList
+        let keyList = this.state.keyList;
 
         return (
             <>
-                <div style={{ width: "100%", height: "5%" }}>
-                    {
-                        keyList.map((v, idx) => {
-                            return <span onClick={() => this.linkClickEvent(idx + 1)}> / <span style={{ color: '#ffc14d' }}>{v}</span></span>
-                        })
-                    }
+                <div>
+                    {keyList.map((v, idx) => {
+                        return (
+                            <span onClick={() => this.linkClickEvent(idx + 1)}>
+                                {" "}
+                                /{" "}
+                                <span
+                                    className="top-title"
+                                    style={{
+                                        color: "#ffc14d",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    {v}
+                                </span>
+                            </span>
+                        );
+                    })}
                 </div>
-                <div style={{ width: "100%", float: "left", marginBottom: "20px" }}>
-                    {
-                        keys.length != 0 &&
-                        <table
-                            style={{
-                                width: "48%",
-                                wordWrap: "break-word",
-                                tableLayout: "fixed",
-                                float: 'left',
-                                margin: '1%'
-                            }}
-                        >
+                <hr className="hr" />
+                <div className="contents-container">
+                    {keys.length != 0 && (
+                        <div className="detail__left--table">
+                            <table>
                             {keys.map((val, idx) => {
                                 let type = typeof data[val];
 
@@ -199,7 +202,8 @@ class ContentSummary extends Component {
                                             <td style={tdStyle}>
                                                 <div
                                                     style={{
-                                                        color: '#ffc14d'
+                                                        color: "#ffc14d",
+                                                        cursor: "pointer",
                                                     }}
                                                     onClick={() => {
                                                         this.clickEvent(
@@ -208,9 +212,10 @@ class ContentSummary extends Component {
                                                             Testtype
                                                         );
                                                     }}
+                                                    className="view-object"
                                                 >
                                                     view Object
-                                            </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     );
@@ -219,14 +224,17 @@ class ContentSummary extends Component {
                                         <tr>
                                             <th style={thStyle}>{val}</th>{" "}
                                             <td style={tdStyle}>
-                                                {data[val] != null ? data[val].toString() : "null"}
+                                                {data[val] != null
+                                                    ? data[val].toString()
+                                                    : "null"}
                                             </td>
                                         </tr>
                                     );
                                 }
                             })}
                         </table>
-                    }
+                        </div>
+                    )}
                     {keys.length == 0 && <div>There is no data to display</div>}
                     <ObjectView
                         objectKey={this.state.objectKey}
@@ -258,20 +266,20 @@ class ContentUpdate extends Component {
         let etcData1 = []
         let etcData2 = []
 
-        if (resource == 'ec2') data = data['Instances'][0]
-        else if (resource == "ebs") {
+        if (resource == 'server') data = data['Instances'][0]
+        else if (resource == "volume") {
             ec2list = await this.getEC2List()
             for (let i = 0; i < ec2list.Instances.length; i++) {
                 ec2item.push(<option>{ec2list.Instances[i].InstanceId}</option>)
             }
         }
-        else if (resource == "eip") {
+        else if (resource == "ip") {
             ec2list = await this.getEC2List()
             for (let i = 0; i < ec2list.Instances.length; i++) {
                 ec2item.push(<option>{ec2list.Instances[i].InstanceId}</option>)
             }
         }
-        else if(resource == "rds"){
+        else if(resource == "database"){
             await this.getEngineVersion(response.data.Engine)
         }
         else if (resource == 'securitygroup') {
@@ -330,14 +338,14 @@ class ContentUpdate extends Component {
     }
 
     async getEC2List() {
-        let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ec2?key_id=${this.props.modkey}`
+        let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/server?key_id=${this.props.modkey}`
         let tmp_ec2 = await fetch(url).then(res => res.json());
         return tmp_ec2.data[0]
     }
 
     async getEngineVersion(engine){
         let items=[]
-        let response= await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/rds/etc/versions`, {
+        let response= await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/database/etc/versions`, {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'
@@ -374,7 +382,7 @@ class ContentUpdate extends Component {
             tmp_data[key] = val
         }
 
-        if (resource == "ec2") {
+        if (resource == "server") {
             return (
                 <>
                     <Form>
@@ -475,16 +483,16 @@ class ContentUpdate extends Component {
                             </Form.Control>
                         </Form.Group>
                     </Form>
-                    <Button variant="warning" onClick={() => {
+                    <Button variant="warning" onClick={async () => {
                         tmp_data.InstanceId = this.state.data.InstanceId
-                        summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                        modifyd(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                     }}>
                         Modify
                 </Button>
                 </>
             )
         }
-        else if (resource == "ebs") {
+        else if (resource == "volume") {
             return (
                 <>
                     <Form>
@@ -557,17 +565,18 @@ class ContentUpdate extends Component {
                             </Form.Control>
                         </Form.Group>
                     </Form>
-                    <Button variant="warning" onClick={() => {
+                    <Button variant="warning" onClick={async () => {
                         tmp_data.VolumeId = this.state.data.VolumeId
-                        summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
-                        if (tmp_attach != {}) {
+                        await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                        if (JSON.stringify(tmp_attach) != "{}") {
                             if (Object.keys(tmp_attach).length > 1) {
-                                summaryType[this.state.resource]["manage"].attach(this.props.modkey, tmp_attach)
+                                await summaryType[this.state.resource]["manage"].attach(this.props.modkey, tmp_attach)
                             }
                             else {
-                                summaryType[this.state.resource]["manage"].detach(this.props.modkey, tmp_attach)
+                                await summaryType[this.state.resource]["manage"].detach(this.props.modkey, tmp_attach)
                             }
                         }
+                        window.location.reload()
                     }}>
                         Modify
                 </Button>
@@ -615,9 +624,9 @@ class ContentUpdate extends Component {
                             </Form.Control>
                         </Form.Group>
                     </Form>
-                    <Button variant="warning" onClick={() => {
+                    <Button variant="warning" onClick={async () => {
                         tmp_data.VpcId = this.state.data.VpcId
-                        summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                        modifyd(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                     }}>
                         Modify
                 </Button>
@@ -696,14 +705,15 @@ class ContentUpdate extends Component {
                     </Form>
                     <Button variant="warning" onClick={async () => {
                         tmp_data.SubnetId = this.state.data.SubnetId
-                        console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
+                        let rst = await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                        modifyd(rst)
                     }}>
                         Modify
                 </Button>
                 </>
             )
         }
-        else if (resource == "eip") {
+        else if (resource == "ip") {
             if (this.state.data.AssociationId == undefined) {
                 return (
                     <>
@@ -746,7 +756,7 @@ class ContentUpdate extends Component {
                             </Form.Group>
                         </Form>
                         <Button variant="warning" onClick={async () => {
-                            await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                            modifyd(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                         }}>
                             Modify
                         </Button>
@@ -787,7 +797,7 @@ class ContentUpdate extends Component {
                             </Form.Group>
                         </Form>
                         <Button variant="warning" onClick={async () => {
-                            await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                            modifyd(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                         }}>
                             Modify
                         </Button>
@@ -897,9 +907,6 @@ class ContentUpdate extends Component {
                                     IpPermissions: getRuleSet(this.state.etcData2)    
                                 }
                             }
-                            console.log(addIngressSet)
-
-                            console.log(addEgressSet)
 
                             
                                                         console.log(
@@ -913,7 +920,7 @@ class ContentUpdate extends Component {
                                     "manage"
                                 ].update(this.props.modkey, addIngressSet)
                             )
-                            
+                            window.location.reload()
                             
                         }}
                     >
@@ -922,7 +929,7 @@ class ContentUpdate extends Component {
                 </>
             );
         }
-        else if (resource == "rds") {
+        else if (resource == "database") {
             tmp_data.DBInstanceIdentifier=this.state.data.DBInstanceIdentifier
             return (
                 <>
@@ -1081,7 +1088,6 @@ class ContentUpdate extends Component {
                     </Form>
 
                     <Button variant="warning" onClick={async () => {
-                        console.log(tmp_data)
                         console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
                     }}>
                         Modify
@@ -1126,7 +1132,7 @@ class Detail extends Component {
         let resource = this.state.resource
         let data = response.data
 
-        if (resource == 'ec2') data = data['Instances'][0]
+        if (resource == 'server') data = data['Instances'][0]
 
         this.setState({
             data: data,

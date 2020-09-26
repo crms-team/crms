@@ -3,7 +3,6 @@ const system = require('./system')
 const path = require('path')
 const fs = require('fs')
 
-
 const PATH = __dirname.split(path.sep).slice(0, -1).join(path.sep)
 
 if (!system.config.existConfig(PATH)){

@@ -60,7 +60,7 @@ class Visual extends Component {
                 height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
 
             let visualDataset = [];
-
+            console.log(this.state.dataset)
             for (let dataset of this.state.dataset) {
 
                 let datasets = {

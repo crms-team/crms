@@ -11,7 +11,7 @@ function getStatusData(vendor, data){
         statusJson = {
             server: resource => {
                 let status = [0, 0]
-                for (let ec2 of resource.compute.ec2) {
+                for (let ec2 of resource.compute.server) {
                     ec2 = ec2.Instances[0]
 
                     if (ec2.State.Name == "running") {
@@ -23,7 +23,7 @@ function getStatusData(vendor, data){
             },
             volume: resource => {
                 let status = [0, 0]
-                for (let ec2 of resource.compute.ebs) {
+                for (let ec2 of resource.compute.volume) {
 
                     if (ec2.State == "in-use") {
                         status[0] += 1
@@ -38,7 +38,7 @@ function getStatusData(vendor, data){
             },
             ip: resource =>{ 
                 let status = [0, 0]
-                for (let ip of resource.compute.eip) {
+                for (let ip of resource.compute.ip) {
                     if (ip.AllocationId) {
                         status[0] += 1
                     }
@@ -48,7 +48,7 @@ function getStatusData(vendor, data){
             },
             database: resource =>{ 
                 let status = [0, 0]
-                for (let db of resource.database.rds) {
+                for (let db of resource.database.database) {
                     if (db.DBInstanceStatus == "available") {
                         status[0] += 1
                     }
@@ -81,8 +81,8 @@ function getStatusData(vendor, data){
                 return status
             },
 
-            storage: resource => {
-                let status = [resource.storage.s3.length, resource.storage.s3.length]
+            bucket: resource => {
+                let status = [resource.storage.bucket.length, resource.storage.bucket.length]
                 return status
             
             }
@@ -109,7 +109,7 @@ module.exports = server => {
                 vpc : [0, 0],
                 subnet : [0, 0],
                 securitygroup: [0, 0],
-                storage : [0, 0],
+                bucket : [0, 0],
             }
             let keys = []
             

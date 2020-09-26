@@ -5,22 +5,22 @@ const storage = require('./storage')
 
 async function getAWSDatabaseData(key) {
     return {
-        rds: await database.rds.default.get(key)
+        database: await database.rds.default.get(key)
     }
 }
 
 async function getAWSStorageData(key) {
     return {
-        s3: await storage.s3.default.get(key)
+        bucket: await storage.s3.default.get(key)
     }
 }
 
 async function getAWSComputeData(key) {
     return {
-        ec2: await compute.ec2.default.get(key),
-        ebs: await compute.ebs.default.get(key),
+        server: await compute.ec2.default.get(key),
+        volume: await compute.ebs.default.get(key),
         keypair: await compute.keypair.default.get(key),
-        eip: await compute.eip.default.get(key)
+        ip: await compute.eip.default.get(key)
     }
 }
 

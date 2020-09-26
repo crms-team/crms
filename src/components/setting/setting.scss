@@ -80,8 +80,7 @@
     }
 }
 
-.icon,
-.previous {
+.icon {
     font-size: 80px;
     padding-bottom: 10px;
 }
@@ -96,17 +95,6 @@
     }
 }
 
-.previous polyline {
-    stroke: #45444b;
-}
-
-.previous-btn-container:hover {
-    transition: 0.2s linear;
-    polyline {
-        stroke: #e4b55f;
-        transition: 0.2s linear;
-    }
-}
 // MODAL
 
 .modal-container {

@@ -75,6 +75,9 @@ function AddCloudKeyModal(props) {
             }  
         }).then(res=>res.json())
         alert(response.result);
+        if (response.result) {
+            window.location.reload()
+        }
     }
 
     return (
