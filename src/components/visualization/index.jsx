@@ -1,6 +1,6 @@
 import React from 'react'
 import Sidebar from '../sidebar'
-import Visual from './tmp'
+import Visual from './d3-crms'
 
 class Visualization extends React.Component {
     render () {

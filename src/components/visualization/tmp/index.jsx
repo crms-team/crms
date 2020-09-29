@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from "react";
+import React,{useState, useEffect, useRef} from "react";
 import {Modal} from "react-bootstrap";
 import * as d3 from "d3";
 import "./index.css";
@@ -9,17 +9,17 @@ import MInfo from "../summary";
 import { VisualStructure, IMAGE_TYPE, resourceState } from "../resource-params";
 import { IconContext } from "react-icons";
 import { GrFormRefresh } from "react-icons/gr";
-import {Form} from "react-bootstrap"
+import {Dropdown,Tabs,Tab,Form,Button} from "react-bootstrap"
 
-let nodeSvg, linkSvg, simulation, svg;
+let nodeSvg, linkSvg, simulation, svg, root;
 
 function drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide){
+    let width = parseInt(window.getComputedStyle(document.querySelector("#root")).width),
+        height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
+    
+
     if (dataSet != undefined) {
-        let width = parseInt(window.getComputedStyle(document.querySelector("#root")).width),
-            height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
-
         let visualDataset = [];
-
         for (let dataset of dataSet) {
 
             let datasets = {
@@ -61,15 +61,31 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide){
             make_dataset(datasets.cloud, visualDataset, VisualStructure, false)
         }
 
-        let root = d3.hierarchy({
+        console.log(visualDataset)
+
+        if(visualDataset.length==1){
+            root=d3.hierarchy(visualDataset[0])
+        }
+        else{
+            root = d3.hierarchy({
+                id: "CRMSRootId",
+                name: "CRMS",
+                type: "CRMS",
+                link: [],
+                children: visualDataset,
+            })
+        }
+    }
+    else{
+        root = d3.hierarchy({
             id: "CRMSRootId",
             name: "CRMS",
             type: "CRMS",
             link: [],
-            children: visualDataset,
+            children: [],
         })
-
-        svg = d3.select(".Visual")
+    }
+    svg = d3.select(".Visual")
             .call(d3.zoom().scaleExtent([1 / 100, 8]).on("zoom", ()=>{
                 svg.attr("transform", d3.event.transform);
 
@@ -133,15 +149,13 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide){
             });
 
         update(handleInstanceDataset,handleModalShowHide,showHide,root);
-
-    }
 }
 
 function update(handleInstanceDataset,handleModalShowHide,showHide,root) {
             
     let nodes = flatten(root);
     let links = root.links();
-
+    
     for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].data.link.length > 0) {
             for (let j = 0; j < nodes[i].data.link.length; j++) {
@@ -373,13 +387,34 @@ function flatten(root) {
     return nodes;
 }
 
-function specifyNode(cloud){
-    
+function specifyNode(visualSet,dataSet,handleModalShowHide,handleInstanceDataset,showHide){
+    let specifyData=[]
+
+    for(let cloud in visualSet.cloudlist){
+        for(let key of dataSet){
+            if(visualSet.cloudlist[cloud]){
+                if(key[0].id==cloud){
+                    specifyData.push(key)
+                }
+            }
+        }
+    }
+
+    if(specifyData.length==0){
+        specifyData=undefined
+    }
+
+    console.log(specifyData)
+
+    drawChart(specifyData,handleModalShowHide,handleInstanceDataset,showHide)
 }
 
 
 function Visual(){
 
+    const visualRef = useRef();
+
+    const [visualSetting,setVisualSetting]=React.useState(undefined);
     const [showHide,setShowhide]=React.useState(false);
     const [instanceData,setInstanceData]=React.useState(undefined);
     const [keyList,setKeyList]=React.useState(undefined);
@@ -388,11 +423,30 @@ function Visual(){
 
     async function getVisualData(keys, type = undefined) {
         let result = []
+        let cloudList={}
         for (let key of keys) {
             let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key.key}` + (type ? `&type=${type}` : '')
             let response = await fetch(ep).then((res)=>res.json())
+            cloudList[key.key]=true
             result.push(CreateVisualDataFormat(key.key, key.vendor, response.data))
         }
+        setVisualSetting({
+            cloudlist:cloudList,
+            status:{
+                inuse:true,
+                nouse:false
+            },
+            type:{
+                server:true,
+                volume:true,
+                vpc:true,
+                subnet:true,
+                sg:true,
+                ig:true,
+                storage:true,
+                db:true
+            }
+        })
         setDataset(result);
     }
 
@@ -407,6 +461,7 @@ function Visual(){
     },[])
 
     useEffect(()=> {
+        visualRef.current=visualSetting
         drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide)
     },[dataSet])
 
@@ -416,6 +471,18 @@ function Visual(){
 
     const handleModalShowHide = () =>{
         setShowhide(!showHide);
+    }
+
+    const handleCloudList = (key) =>{
+        visualRef.current.cloudlist[key]=!visualRef.current.cloudlist[key]
+    }
+
+    const handleStatus = (key) =>{
+        visualRef.current.status[key]=!visualRef.current.status[key]
+    }
+
+    const handleType = (key) =>{
+        visualRef.current.type[key]=!visualRef.current.type[key]
     }
 
     return(
@@ -443,25 +510,44 @@ function Visual(){
                 <g></g>
             </svg>
             <div className="selectKey">
-                <Form>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Control as="select">
-                        <option>All Cloud</option>
-                        {localStorage.getItem("key") &&
-                                    JSON.parse(localStorage.getItem("key")).map(
-                                        (v) => {
-                                            return (
-                                                <option value={v.key}>
-                                                    {v.key}
-                                                </option>
-                                            );
-                                        }
-                        )}
-                        <option>In Use</option>
-                        <option>No Use</option>
-                        </Form.Control>
-                    </Form.Group>
-                </Form>
+            <Dropdown>
+                <Dropdown.Toggle variant="warning" id="dropdown-basic">
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                    <Tabs defaultActiveKey="cloudlist" id="controlled-tab-example">
+                        <Tab eventKey="cloudlist" title="Cloud List">
+                            {localStorage.getItem("key") &&
+                                JSON.parse(localStorage.getItem("key")).map(
+                                    (v) => {
+                                        return (
+                                            <Form.Check key={v.key} type="checkbox" label={v.key} defaultChecked onChange={()=>{handleCloudList(v.key)}}/>
+                                        );
+                                    }
+                            )}
+                        </Tab>
+                        <Tab eventKey="status" title="Status">
+                            <Form.Check type="checkbox" key="inuse" label="In use" defaultChecked onChange={()=>{handleStatus("inuse")}}/>
+                            <Form.Check type="checkbox" key="nouse" label="No use" onChange={()=>{handleStatus("nouse")}}/>
+                        </Tab>
+                        <Tab eventKey="type" title="Type">
+                            <Form.Check type="checkbox" key="server" label="Server" defaultChecked onChange={()=>{handleType("server")}}/>
+                            <Form.Check type="checkbox" key="volume" label="Volume" defaultChecked onChange={()=>{handleType("volume")}}/>
+                            <Form.Check type="checkbox" key="vpc" label="VPC" defaultChecked onChange={()=>{handleType("vpc")}}/>
+                            <Form.Check type="checkbox" key="subnet" label="Subnet" defaultChecked onChange={()=>{handleType("subnet")}}/>
+                            <Form.Check type="checkbox" key="ig" label="InternetgateWay" defaultChecked onChange={()=>{handleType("ig")}}/>
+                            <Form.Check type="checkbox" key="sg" label="SecurityGroup" defaultChecked onChange={()=>{handleType("sg")}}/>
+                            <Form.Check type="checkbox" key="storage" label="Storage" defaultChecked onChange={()=>{handleType("storage")}}/>
+                            <Form.Check type="checkbox" key="db" label="Database" defaultChecked onChange={()=>{handleType("db")}}/>
+                        </Tab>
+                    </Tabs>
+                    <Button variant="primary" onClick={()=>{
+                        specifyNode(visualRef.current,dataSet,handleModalShowHide,handleInstanceDataset,showHide)
+                        setVisualSetting(visualRef.current)
+                    }}>
+                        Setting
+                    </Button>
+                </Dropdown.Menu>
+            </Dropdown>
             </div>
             <div className="time">
                 <button
