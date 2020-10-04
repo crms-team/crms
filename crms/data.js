@@ -36,7 +36,7 @@ function compareResources(vendor, type, preData, nowData) {
     let preIdSet = new Set()
     let nowIdSet = new Set()
 
-    let idFunc = crms[vendor].getResourceId[type]
+    let idFunc = vendors[vendor].getResourceId[type]
 
     for (let resource of preData) {
         let id = idFunc(resource)
@@ -137,7 +137,7 @@ async function saveData(path, keyId, keyVendor, keyData){
         let time = getTime()
         let fileName =  `${time}.json`
         
-        history(path, keyId, vendor, data, time)
+        history(path, keyId, keyVendor, data, time)
         fs.writeFileSync(PATH.normalize(`${dataPath}/${fileName}`), JSON.stringify(data))
         console.log(`${getTime()} Success Scanning ${keyId}`) 
     } catch (e) {

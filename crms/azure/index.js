@@ -3,23 +3,23 @@ module.exports = {
     session: {
         compute: require('./compute'),
         network: require('./network'),
-        database: require('./database'),
-        storage: require('./storage')
+        // database: require('./database'),
+        // storage: require('./storage')
     }, 
     data: require('./data'),
     getResourceId: {
-        server: resource => resource['Instances'][0]['InstanceId'],
-        volume: resource => resource['VolumeId'],
-        ip: resource => resource['AllocationId'],
-        keypair: resource => resource['KeyPairId'],
+        server: resource => resource['id'],
+        volume: resource => resource['id'],
+        ip: resource => resource['id'],
+        keypair: resource => resource['id'],
     
-        database: resource => resource['DBInstanceIdentifier'],
+        database: resource => resource['id'],
 
-        bucket: resource => resource['Name'],
+        bucket: resource => resource['id'],
 
-        subnet: resource => resource['SubnetId'],
-        securitygroup: resource => resource['GroupId'],
-        internetgateway: resource => resource['InternetGatewayId'],
-        vpc: resource => resource['VpcId'],
+        subnet: resource => resource['id'],
+        securitygroup: resource => resource['id'],
+        internetgateway: resource => resource['id'],
+        vpc: resource => resource['id'],
     } 
 }
