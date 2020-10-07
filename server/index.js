@@ -31,7 +31,7 @@ const PORT = server.config.server_port
 server.keys = require('./system').key
 
 // logging
-//system.log.logger(server.config.path)
+system.log.logger(server.config.path)
 
 server.use(cors())
 server.use(bodyParser.json())

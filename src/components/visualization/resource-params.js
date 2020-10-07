@@ -13,8 +13,8 @@ export const VisualStructure = {
     vpc: {
         subnet_groups: {
             subnet: {
-                ec2: {
-                    ebs: {},
+                server: {
+                    volume: {},
                 },
             },
         },
@@ -22,8 +22,8 @@ export const VisualStructure = {
             security_group: {},
         },
         ig: {},
-        rds_groups: {
-            rds: {},
+        database_groups: {
+            database: {},
         },
     },
     s3_groups: {
@@ -32,13 +32,13 @@ export const VisualStructure = {
 };
 
 export const IMAGE_TYPE={
-    ebs:{
+    volume:{
         image:"/images/ebs.svg", circle_size: CIRCLE_SIZE_L1
     },
-    ec2:{
+    server:{
         image:"/images/compute.svg", circle_size:CIRCLE_SIZE_L2
     },
-    rds:{
+    database:{
         image:"/images/rds group.svg", circle_size:CIRCLE_SIZE_L2
     },
     s3:{
@@ -56,7 +56,7 @@ export const IMAGE_TYPE={
     s3_group:{
         image:"/images/s3 group.svg", circle_size: CIRCLE_SIZE_L3
     },
-    rds_group:{
+    database_group:{
         image:"/images/rds group.svg", circle_size: CIRCLE_SIZE_L3
     },
     securitygroups:{
@@ -77,7 +77,7 @@ export const IMAGE_TYPE={
 }
 
 export const resourceState={
-    ec2: resource => {
+    server: resource => {
         let status = resource['State']
         let scase = {
             stopped: 1,
@@ -89,7 +89,7 @@ export const resourceState={
         }
         return scase[status]
     },
-    rds:resource=>{
+    database:resource=>{
         let status = resource['DBInstanceStatus']
         let scase = {
             available: 0,
@@ -102,7 +102,7 @@ export const resourceState={
         }
         return scase[status]
     },
-    ebs:resource=>{
+    volume:resource=>{
         let status = resource['State']
         let scase = {
             "creating": 11,

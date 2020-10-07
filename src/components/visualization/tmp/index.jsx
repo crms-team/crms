@@ -20,6 +20,7 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide){
 
     if (dataSet != undefined) {
         let visualDataset = [];
+        console.log(dataSet)
         for (let dataset of dataSet) {
 
             let datasets = {
@@ -29,13 +30,13 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide){
                 security_group: dataset.filter(item => item.type.toLowerCase() == "securitygroup"),
                 subnet_groups: dataset.filter(item => item.type.toLowerCase() == "subnets"),
                 subnet: dataset.filter(item => item.type.toLowerCase() == "subnet"),
-                ec2: dataset.filter(item => item.type.toLowerCase() == "ec2"),
-                ebs: dataset.filter(item => item.type.toLowerCase() == "ebs"),
+                server: dataset.filter(item => item.type.toLowerCase() == "server"),
+                volume: dataset.filter(item => item.type.toLowerCase() == "volume"),
                 ig: dataset.filter(item => item.type.toLowerCase() == "internetgateway"),
                 s3_groups: dataset.filter(item => item.type.toLowerCase() == "s3_group"),
                 s3: dataset.filter(item => item.type.toLowerCase() == "s3"),
-                rds_groups: dataset.filter(item => item.type.toLowerCase() == "rds_group"),
-                rds: dataset.filter(item => item.type.toLowerCase() == "rds")
+                database_groups: dataset.filter(item => item.type.toLowerCase() == "database_groups"),
+                database: dataset.filter(item => item.type.toLowerCase() == "database")
             }
 
             function make_dataset(resource, parent, vs, check_link){
@@ -59,6 +60,7 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset,showHide){
 
             }
             make_dataset(datasets.cloud, visualDataset, VisualStructure, false)
+
         }
 
         console.log(visualDataset)
@@ -277,7 +279,7 @@ function update(handleInstanceDataset,handleModalShowHide,showHide,root) {
                 }
                 d._children = d.children;
                 d.children = null;
-                update();
+                update(handleInstanceDataset,handleModalShowHide,showHide,root);
                 simulation.restart();
                 if (check != 0) {
                     for (let i = 0; i < check; i++) {
@@ -287,7 +289,7 @@ function update(handleInstanceDataset,handleModalShowHide,showHide,root) {
             } else {
                 d.children = d._children;
                 d._children = null;
-                update();
+                update(handleInstanceDataset,handleModalShowHide,showHide,root);
                 simulation.restart();
             }
 
@@ -403,8 +405,6 @@ function specifyNode(visualSet,dataSet,handleModalShowHide,handleInstanceDataset
     if(specifyData.length==0){
         specifyData=undefined
     }
-
-    console.log(specifyData)
 
     drawChart(specifyData,handleModalShowHide,handleInstanceDataset,showHide)
 }
