@@ -6,7 +6,7 @@ class RDS extends CloudResourceDataFormat{
     constructor(keyId, data) {
         super(keyId)
 
-        let type = 'rds'
+        let type = 'database'
         this.type = type
         this.id = this.makeId(type, data.DBInstanceIdentifier)
         let name = data.DBInstanceIdentifier
@@ -37,13 +37,13 @@ class RDS extends CloudResourceDataFormat{
             this.link.push(this.makeId('subnet', subnet.SubnetIdentifier))
         }
 
-        let rdsGroupId = this.makeId('rds_group', data.DBSubnetGroup.VpcId)
+        let rdsGroupId = this.makeId('database_groups', data.DBSubnetGroup.VpcId)
         
         this.link.push(rdsGroupId)
 
         let parent = new CloudResourceDataFormat()
         parent.name = "RDS Groups"
-        parent.type = "rds_group"
+        parent.type = "database_groups"
         parent.id = rdsGroupId
         parent.link.push(this.makeId('vpc', data.DBSubnetGroup.VpcId))
         this.parent = parent
@@ -52,5 +52,5 @@ class RDS extends CloudResourceDataFormat{
 }
 
 export default {
-    rds: RDS
+    database: RDS
 }
