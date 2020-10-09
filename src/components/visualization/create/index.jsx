@@ -8,6 +8,7 @@ import {
     Col,
     Form,
     Pagination,
+    Nav
 } from "react-bootstrap";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -41,6 +42,7 @@ const TYPEID = {
     }
 }
 
+
 export async function getDynamicOption (key_id,key_vendor,type) {
     let tmp_type=TYPEID[key_vendor][type]["url"]
     let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${tmp_type}?key_id=${key_id}`;
@@ -59,36 +61,6 @@ export async function getDynamicOption (key_id,key_vendor,type) {
         }
     }
     return items;
-}
-
-class Index extends React.Component {
-    render() {
-        return (
-            <>
-                <label for="recipient-name" class="col-form-label">
-                    Select Resource{" "}
-                </label>
-                <select
-                    className="form-control"
-                    name="instance"
-                    onChange={this.props.click}
-                >
-                    <option value="" disabled selected>
-                        Resource
-                    </option>
-                    <option value="ec2">EC2</option>
-                    <option value="eip">EIP</option>
-                    <option value="ebs">EBS</option>
-                    <option value="keypair">KeyPair</option>
-                    <option value="vpc">VPC</option>
-                    <option value="subnet">Subnet</option>
-                    <option value="securitygroup">SecurityGroup</option>
-                    <option value="rds">RDS</option>
-                    <option value="s3">S3</option>
-                </select>
-            </>
-        );
-    }
 }
 
 class SelVendor extends React.Component {
@@ -117,6 +89,28 @@ class SelVendor extends React.Component {
                     { this.state.key.map(v=>{
                         return <option value={v.vendor}>{v.key}</option>
                     })}
+                </select>
+
+                <label for="recipient-name" class="col-form-label">
+                    Select Resource{" "}
+                </label>
+                <select
+                    className="form-control"
+                    name="instance"
+                    onChange={this.props.click}
+                >
+                    <option value="" disabled selected>
+                        Resource
+                    </option>
+                    <option value="ec2">EC2</option>
+                    <option value="eip">EIP</option>
+                    <option value="ebs">EBS</option>
+                    <option value="keypair">KeyPair</option>
+                    <option value="vpc">VPC</option>
+                    <option value="subnet">Subnet</option>
+                    <option value="securitygroup">SecurityGroup</option>
+                    <option value="rds">RDS</option>
+                    <option value="s3">S3</option>
                 </select>
             </>
         );
@@ -252,6 +246,7 @@ class EC2 extends React.Component {
                     id="list-group-tabs-example"
                     defaultActiveKey="#tag"
                 >
+                    <Form.Label className="subtitle"> Server </Form.Label>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Resource Name</Form.Label>
                         <Form.Control
@@ -330,6 +325,46 @@ class EC2 extends React.Component {
                             }}
                         />
                     </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Form.Row className="align-items-center">
+                            <Col xs="auto" className="my-1">
+                            <Form.Label className="mr-sm-2">
+                                KeyName
+                            </Form.Label>
+                            </Col>
+                            <Col xs="auto" className="my-1">
+                                <Button size="sm" style={
+                                    {backgroundColor:"#494949",
+                                    color:"#ffc14d",
+                                    border:"none",
+                                    marginBottom:".5rem"
+                                    }}
+                                >
+                                <FaSync style={{
+                                marginBottom:".2rem"
+                                }}/>
+                                </Button>
+                            </Col>
+                        </Form.Row>
+                        <Form.Control
+                            as="select"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("KeyName", val);
+                            }}
+                        >
+                            <option value="" disabled selected>
+                                KeyName
+                            </option>
+                            {
+                               keyList.map(v=>{
+                                   return <option value={v}>{v}</option>
+                               })
+                            }
+                        </Form.Control>
+                    </Form.Group>
+                    <hr></hr>
+                    <Form.Label className="subtitle"> Volume </Form.Label>      
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>EBS size</Form.Label>
                         <Form.Control
@@ -359,6 +394,8 @@ class EC2 extends React.Component {
                             <option>마그네틱(standard)</option>
                         </Form.Control>
                     </Form.Group>
+                    <hr></hr>
+                    <Form.Label className="subtitle"> Network </Form.Label>   
                     <Form.Group controlId="exampleForm.ControlSelect1">
                     <Form.Row className="align-items-center">
                         <Col xs="auto" className="my-1">
@@ -469,44 +506,6 @@ class EC2 extends React.Component {
                             }
                         </Form.Control>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Form.Row className="align-items-center">
-                            <Col xs="auto" className="my-1">
-                            <Form.Label className="mr-sm-2">
-                                KeyName
-                            </Form.Label>
-                            </Col>
-                            <Col xs="auto" className="my-1">
-                                <Button size="sm" style={
-                                    {backgroundColor:"#494949",
-                                    color:"#ffc14d",
-                                    border:"none",
-                                    marginBottom:".5rem"
-                                    }}
-                                >
-                                <FaSync style={{
-                                marginBottom:".2rem"
-                                }}/>
-                                </Button>
-                            </Col>
-                        </Form.Row>
-                        <Form.Control
-                            as="select"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("KeyName", val);
-                            }}
-                        >
-                            <option value="" disabled selected>
-                                KeyName
-                            </option>
-                            {
-                               keyList.map(v=>{
-                                   return <option value={v}>{v}</option>
-                               })
-                            }
-                        </Form.Control>
-                    </Form.Group>
                 </Tab.Container>
             </>
         );
@@ -535,7 +534,7 @@ class EBS extends React.Component {
             }
         }
         let items = [];
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ebs/etc/zones`, {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/volume/etc/zones`, {
             method: 'post',
             headers:{
                 'Content-Type': 'application/json'
@@ -1532,7 +1531,7 @@ class CreateModal extends React.Component {
             key_name:"",
             type: "",
             data: {},
-            component: <SelVendor choose={this.select_vendor.bind(this)} />,
+            component: <SelVendor choose={this.select_vendor.bind(this)} click={this.select_type.bind(this)} />,
             but_type: <Nextbut click_but={this.clickNextModal.bind(this)} />,
         };
 
@@ -1547,7 +1546,7 @@ class CreateModal extends React.Component {
             this.setState({
                 type: "",
                 vendor: "",
-                component: <SelVendor choose={this.select_vendor.bind(this)} />
+                component: <SelVendor choose={this.select_vendor.bind(this)} click={this.select_type.bind(this)} />
             });
         }
         this.setState({
@@ -1557,7 +1556,7 @@ class CreateModal extends React.Component {
     }
 
     async getAmiData(key_id){
-        let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ami?key_id=${key_id}`
+        let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/image?key_id=${key_id}`
         let items=[];
         const response = await fetch(url).then(res=>res.json())
         for (let i = 0; i < response.data.length; i++) {
@@ -1585,82 +1584,38 @@ class CreateModal extends React.Component {
     }
 
     clickNextModal() {
-        if (this.state.vendor == "aws") {
-            this.setState({
-                component: <Index click={this.select_type.bind(this)} />,
-            });
+        const componentType={
+            aws:{
+                ec2: <EC2 func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name}/>,
+                ebs: <EBS func={this.func.bind(this)} key_name={this.state.key_name} />,
+                eip: <EIP func={this.func.bind(this)} key_name={this.state.key_name}/>,
+                keypair: <KeyPair func={this.func.bind(this)} />,
+                rds: <RDS func={this.func.bind(this)} key_name={this.state.key_name}  key_vendor={this.state.vendor} />,
+                vpc: <VPC func={this.func.bind(this)} />,
+                subnet: <Subnet func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name}/>,
+                securitygroup: <SecurityGroup func={this.func.bind(this)} />,
+                bucket: <S3 func={this.func.bind(this)} />
+            },
+            azure:{
+                server: "",
+                volume: "",
+                ip: "",
+                keypair: "",
+                database: "",
+                vpc: "",
+                subnet: "",
+                securitygroup: "",
+                bucket: ""
+            }
         }
-        if (this.state.type == "ec2") {
-            this.setState({
-                component: <EC2 func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name}/>,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
-        } else if (this.state.type == "rds") {
-            this.setState({
-                component: <RDS func={this.func.bind(this)} key_name={this.state.key_name}  key_vendor={this.state.vendor} />,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
+        if(componentType[this.state.vendor]==undefined||componentType[this.state.vendor][this.state.type]==undefined){
+            alert("Must choose 2 Option")
         }
-        else if (this.state.type == "eip") {
+        else{
             this.setState({
-                component: <EIP func={this.func.bind(this)} key_name={this.state.key_name}/>,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
-        }
-        else if (this.state.type == "ebs") {
-            
-            this.setState({
-                component: <EBS func={this.func.bind(this)} key_name={this.state.key_name} />,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
-        }
-        else if (this.state.type == "keypair") {
-            this.setState({
-                component: <KeyPair func={this.func.bind(this)} />,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
-        }
-        else if (this.state.type == "securitygroup") {
-            this.setState({
-                component: <SecurityGroup func={this.func.bind(this)} />,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
-        }
-        else if (this.state.type == "subnet") {
-            this.setState({
-                component: <Subnet func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name}/>,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
-        }
-        else if (this.state.type == "vpc") {
-            this.setState({
-                component: <VPC func={this.func.bind(this)} />,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
-        }
-        else if (this.state.type == "s3" ) {
-            this.setState({
-                component: <S3 func={this.func.bind(this)} />,
-                but_type: (
-                    <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
-                ),
-            });
+                component: componentType[this.state.vendor][this.state.type],
+                but_type: <Submitbut submit_but={this.clickSubmitbut.bind(this)} />
+            })
         }
     }
 

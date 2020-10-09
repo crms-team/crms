@@ -380,7 +380,10 @@ function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
         })
         .on("contextmenu", function (d) {
             d3.event.preventDefault();
-            if (d.children) {
+            if(d.data.type=="CRMS"){
+                return
+            }
+            else if (d.children) {
                 let check = 0;
                 if (d.data.type == "subnet") {
                     for (let i = 0; i < d.children.length; i++) {
