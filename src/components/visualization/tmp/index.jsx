@@ -584,7 +584,7 @@ function Visual() {
     }, [dataSet])
 
     const handleInstanceDataset = (d) => {
-        setInstanceData(d.data)
+        setInstanceData(d)
     }
 
     const handleModalShowHide = () => {
