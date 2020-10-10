@@ -39,8 +39,8 @@ $cardColor: #232429;
 }
 
 .setting-box {
-    width: 290px;
-    height: 300px;
+    width: 270px;
+    height: 350px;
     border: 3px solid #445069;
     font-weight: 700;
     text-align: center;
@@ -82,11 +82,15 @@ $cardColor: #232429;
 .setting-subtitle {
     margin: 0;
     font-size: 1.5rem;
+
+    &:first-child {
+        margin-bottom: 2rem;
+    }
 }
 
 .icon {
-    font-size: 4rem;
-    padding-bottom: 10px;
+    font-size: 3.7rem;
+    margin-bottom: 1.7rem;
 }
 .previous-btn-container {
     position: relative;
@@ -132,10 +136,12 @@ $cardColor: #232429;
 .select-container {
 }
 
-.select-title {
+.select-title,
+.password-title {
     font-size: 1.7em;
-    color: var(--text-white-color);
-    margin-top: 35px;
+    color: $point;
+    text-align: center;
+    font-weight: 500;
 }
 
 .select {

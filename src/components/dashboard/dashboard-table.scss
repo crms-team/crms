@@ -58,22 +58,22 @@ $lightText: #9298b1;
     }
 
     .Modify {
-        background: #45567a;
+        background: #45567a30;
         height: 18%;
         &:hover {
-            background: #3d4c6b !important;
+            background: #3d4c6b30 !important;
         }
     }
     .Create {
-        background: #8cb1fa;
+        background: #8cb1fa30;
         &:hover {
-            background: #7c9ddd !important;
+            background: #7c9ddd80 !important;
         }
     }
     .Remove {
-        background: #21293b;
+        background: #21293b30;
         &:hover {
-            background: #1e2535 !important;
+            background: #1e253530 !important;
         }
     }
     .Transform {

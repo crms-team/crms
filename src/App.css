@@ -64,18 +64,24 @@ text {
     background: transparent !important;
 }
 
+.btn-primary,
+.btn-secondary,
 .btn-warning {
     border: none;
     background: #5f7fbe !important;
     color: #efffe9 !important;
 }
 
+.btn-primary:hover,
+.btn-secondary:hover,
 .btn-warning:hover {
     background: #7798db !important;
     color: #efffe9;
     border: none !important;
 }
 
+.btn-primary:focus,
+.btn-secondary:focus,
 .btn-warning:focus {
     background-color: #5f7fbe;
     border: 2px solid #5f7fbe;
@@ -84,8 +90,59 @@ text {
     border: none;
 }
 
+.btn-primary:active,
+.btn-secondary:active,
 .btn-warning:active {
     border: none;
     background: #647fb6 !important;
     outline: none;
+}
+
+.form-label {
+    color: var(--point-color);
+}
+
+.form-control {
+    background: transparent;
+    border: 2px solid #252525;
+    color: var(--text-lightgray-color);
+    outline: none;
+}
+
+.form-control:focus {
+    background: transparent;
+    color: var(--text-white-color);
+    outline: none;
+}
+
+.form-control:active {
+    background: transparent;
+    color: var(--text-white-color);
+}
+
+/* Dateil Page New/Delete Btn*/
+
+.react-bs-table-add-btn {
+    background: #436097;
+    border: none;
+    margin-bottom: 0.7rem;
+}
+.react-bs-table-add-btn:hover {
+    background: #698fd4 !important;
+}
+.react-bs-table-add-btn:focus {
+    background: #425d8f !important;
+    box-shadow: none !important;
+    color: #efffe9 !important;
+    border: none;
+}
+.react-bs-table-add-btn:active {
+    background: #5fa3be;
+    outline: none;
+    border: none;
+    z-index: -1;
+}
+
+.react-bs-table-del-btn {
+    margin-bottom: 0.7rem;
 }

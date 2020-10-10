@@ -30,7 +30,6 @@ table {
     font-family: "NanumSquare", sans-serif !important;
 
     & thead th {
-        padding-left: 30px;
         background-color: $cardColor;
     }
     th,
@@ -50,8 +49,7 @@ table {
 
     td {
         text-align: center;
-        width: 3%;
-        height: 600px !important;
+        width: 10%;
     }
     td + td {
         text-align: center;
@@ -98,6 +96,12 @@ table {
     .MuiCheckbox-colorSecondary.Mui-checked {
         color: $point;
     }
+
+    .MuiTableContainer-root {
+        min-height: 700px;
+        max-height: 80vh;
+    }
+
     .MuiTableRow-root.Mui-selected,
     .MuiTableRow-root.Mui-selected:hover {
         background-color: #292933;

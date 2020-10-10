@@ -71,7 +71,7 @@ function Setting({ children }) {
                             <FiKey />
                         </IconContext.Provider>
                         <h2 className="setting-subtitle">Register</h2>
-                        <h2 className="setting-subtitle">cloud key</h2>
+                        <h2 className="setting-subtitle">Cloud key</h2>
                         <div className="setting-box-deco"></div>
                     </div>
 
@@ -98,8 +98,8 @@ function Setting({ children }) {
                         <IconContext.Provider value={{ className: "icon" }}>
                             <FiUnlock />
                         </IconContext.Provider>
-                        <h2 className="setting-subtitle"> Change</h2>
-                        <h2 className="setting-subtitle">password</h2>
+                        <h2 className="setting-subtitle">Change</h2>
+                        <h2 className="setting-subtitle">Password</h2>
                         <div className="setting-box-deco"></div>
                     </div>
                 </div>

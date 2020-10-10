@@ -457,7 +457,7 @@ class Visual extends Component {
                             (IMAGE_TYPE[d.data.type].circle_size * 1.5) / 2 + 3
                         );
                     })
-                    .style("fill", "#ffc14d")
+                    .style("fill", "#7d9edf")
                     .attr("stroke", "white")
                     .attr("stroke-width", "0.2")
                     .style("font-family", "NanumSquare")

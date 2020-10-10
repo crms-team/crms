@@ -672,7 +672,7 @@ export default function EnhancedTable() {
                     })}
                 {emptyRows > 0 && (
                     <TableRow style={{ height: (dense ? 10 : 43) * emptyRows }}>
-                    <TableCell colSpan={8} />
+                    <TableCell colSpan={0} />
                     </TableRow>
                 )}
                 </TableBody>
