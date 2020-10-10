@@ -7,6 +7,8 @@ import {
     FiGitBranch,
     FiLayers,
     FiDatabase,
+    FiCalendar
+    
 } from "react-icons/fi";
 
 class Sidebar extends Component {
@@ -18,10 +20,11 @@ class Sidebar extends Component {
             isDashboard: false,
             isResource: false,
             isSetting: false,
+            isScheduler : false
         };
     }
     render() {
-        const { isDashboard, isResource, isSetting } = this.state;
+        const { isDashboard, isResource, isSetting, isScheduler } = this.state;
 
         return (
             <div className="Sidebar-container">
@@ -37,6 +40,7 @@ class Sidebar extends Component {
                                             isDashboard: !isDashboard,
                                             isResource: false,
                                             isSetting: false,
+                                            isScheduler : false
                                         });
                                     }}
                                 >
@@ -68,6 +72,7 @@ class Sidebar extends Component {
                                             isResource: !isResource,
                                             isDashboard: false,
                                             isSetting: false,
+                                            isScheduler : false
                                         });
                                     }}
                                 >
@@ -143,6 +148,25 @@ class Sidebar extends Component {
                                     </a>
                                 */}
 
+                                {/*     MENU - Scheduler    */}
+                                <li
+                                    onClick={() => {
+                                        this.setState({
+                                            isSetting: false,
+                                            isDashboard: false,
+                                            isResource: false,
+                                            isScheduler : !isScheduler
+                                        });
+                                    }}
+                                >
+                                    <FiCalendar className="material-icons" />
+                                    <p className="menulist">Scheduler</p>
+                                </li>
+                            {isScheduler && (
+                                <>
+                                </>
+                            )}
+
                             {/*     MENU - SETTING   */}
                             <Link to="/setting">
                                 <li
@@ -151,6 +175,7 @@ class Sidebar extends Component {
                                             isSetting: !isSetting,
                                             isDashboard: false,
                                             isResource: false,
+                                            isScheduler : false
                                         });
                                     }}
                                 >
@@ -165,6 +190,7 @@ class Sidebar extends Component {
                                     <p className="menulist-in">Cloud Add</p>
                                 </>
                             )}
+
                         </ul>
                     </div>
                 </div>
