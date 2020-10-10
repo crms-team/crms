@@ -1,4 +1,4 @@
 
 module.exports = {
-    // database: require('')
+    database: require('./sql')
 }

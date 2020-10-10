@@ -23,11 +23,35 @@ function createDataDict(path) {
     }
 }
 
+function compareObject(obj1, obj2) {
+    let result = {}
+    let key1 = Object.keys(obj1)
+    let key2 = Object.keys(obj2)
+
+    let keys = Array.from(new Set([...key1, ...key2]))
+
+
+    for (let key of keys) {
+        let val1 = typeof obj1[key] == 'object' ? JSON.stringify(obj1[key]) : obj1[key]
+        let val2 = typeof obj2[key] == 'object' ? JSON.stringify(obj2[key]) : obj2[key]
+        
+        if (val1 != val2) {
+            result[key] = { 'before': obj1[key], 'after': obj2[key]}
+        }
+    }
+
+    return result
+}
+
 function compareResources(vendor, type, preData, nowData) {
+    if (nowData == undefined) {
+        return undefined
+    }
     let result = {
         create: [],
         remove: [],
-        modify: []
+        modify: [],
+        modifyDetail: {}
     }
 
     let xPreData = {}
@@ -60,6 +84,7 @@ function compareResources(vendor, type, preData, nowData) {
         } else {
             if (JSON.stringify(xPreData[id]) != JSON.stringify(xNowData[id])) {
                 result['modify'].push(id)
+                result['modifyDetail'][id] = compareObject(xPreData[id], xNowData[id])
             }
         }
     }
@@ -82,7 +107,6 @@ function history(path, keyId, vendor, data, time) {
         let readHistory = fs.readFileSync(historyPath)
         let lastFileName = getLastDataFileName(path, keyId)
         prevData = JSON.parse(fs.readFileSync(PATH.normalize(`${path}/data/${keyId}/log/${lastFileName}`)).toString())
-
         historyData = JSON.parse(readHistory)
     } catch {
         fs.closeSync(fs.openSync(historyPath, 'w'))
@@ -122,9 +146,9 @@ function changeFormat(val) {
 
 function getTime() {
     let date = new Date()
-    let timeString = date.toLocaleTimeString('it-IT').replace(/:/g, '.')
-
-    return `${date.getFullYear()}.${changeFormat(date.getMonth() + 1)}.${changeFormat(date.getDate())} ${timeString}`
+    let strDate = `${date.getFullYear()}.${changeFormat(date.getMonth() + 1)}.${changeFormat(date.getDate())}` 
+    let strTime = `${changeFormat(date.getHours())}.${changeFormat(date.getMinutes())}.${changeFormat(date.getSeconds())}`
+    return `${strDate} ${strTime}`
 }
 
 async function saveData(path, keyId, keyVendor, keyData){

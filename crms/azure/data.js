@@ -27,7 +27,7 @@ async function getAzureComputeData(key) {
 async function getAzureNetworkData(key) {
     return {
         vpc: await network.vpc.default.get(key),
-        //subnet: await network.subnet.default.get(key),
+        subnet: await network.subnet.default.get(key),
         securitygroup: await network.securitygroup.default.get(key),
         internetgateway: []
     }
