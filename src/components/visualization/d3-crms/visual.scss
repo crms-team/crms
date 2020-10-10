@@ -1,11 +1,17 @@
 @import url("https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css");
+$darkGray: #25272b;
+$lightGray: #27262b;
+$point: #7d9edf;
+$text: #6b6e7c;
+$lightText: #9298b1;
+$cardColor: #232429;
 
 .Visual {
     width: 100%;
     height: 100%;
     margin: 0 auto;
     padding: 0;
-    background-color: #27262b;
+    background-color: $darkGray;
     font-family: "NanumSquare", sans-serif;
 }
 .toolbut {
@@ -17,12 +23,13 @@
 
 .time {
     position: absolute;
-    right: 40px;
-    bottom: 20px;
+    left: -75px;
+    bottom: 25px;
+    z-index: 999;
 }
 .refresh {
-    background: #ffc14d;
-    color: #27262b;
+    background: $point;
+    color: $darkGray;
     border: none;
     color: transparent;
     z-index: 999;
@@ -38,7 +45,7 @@
 }
 
 .refresh .icon {
-    font-size: 70px;
+    font-size: 3rem;
     padding: 0;
 }
 

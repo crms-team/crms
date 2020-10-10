@@ -1,12 +1,12 @@
 @import url("https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css");
 
 :root {
-    --text-lightgray-color: #cfcfcf;
-    --point-color: #ffc14d;
-    --point-hover-color: #e99a33;
-    --text-gray-color: #494949;
-    --text-white-color: #ececec;
-    --background-color: #27262b;
+    --text-lightgray-color: #c8cad3;
+    --point-color: #7d9edf;
+    --point-hover-color: #efffe9;
+    --text-gray-color: #252525;
+    --text-white-color: #9298b1;
+    --background-color: #1c1d20;
 }
 
 .App {
@@ -19,6 +19,7 @@
 html,
 body {
     background: var(--background-color);
+    color: var(--text-lightgray-color);
 }
 
 a {
@@ -37,6 +38,54 @@ input[type="password"] {
     font-family: sans-serif;
     font-size: 15px;
 }
+
+text {
+    fill: #7d9edf !important;
+    font-weight: normal;
+    stroke: none !important;
+}
+
 .modal-body::-webkit-scrollbar {
     display: none;
+}
+
+.listview-title {
+    width: 83%;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.4rem;
+    box-sizing: border-box;
+    float: right;
+    background: transparent !important;
+}
+
+.btn-warning {
+    border: none;
+    background: #5f7fbe !important;
+    color: #efffe9 !important;
+}
+
+.btn-warning:hover {
+    background: #7798db !important;
+    color: #efffe9;
+    border: none !important;
+}
+
+.btn-warning:focus {
+    background-color: #5f7fbe;
+    border: 2px solid #5f7fbe;
+    box-shadow: none !important;
+    color: #efffe9 !important;
+    border: none;
+}
+
+.btn-warning:active {
+    border: none;
+    background: #647fb6 !important;
+    outline: none;
 }

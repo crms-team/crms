@@ -1,15 +1,16 @@
-$darkGray : #18181f;
-$lightGray : #27262b;
-$point : #ffc14d;
-$text : #6b6e7c;
-$lightText : #9298b1;
+$darkGray: #25272b;
+$lightGray: #27262b;
+$point: #7d9edf;
+$text: #6b6e7c;
+$lightText: #9298b1;
+$cardColor: #232429;
 
-button:focus{
+button:focus {
     outline: none;
 }
 
-.listview-title{
-    color: #ffc14d;
+.listview-title {
+    color: $point;
     margin: 0 auto;
     padding-top: 50px;
     float: right;
@@ -17,20 +18,20 @@ button:focus{
     font-size: 25px;
 }
 
-
-.table{
+.table {
     background: transparent !important;
     margin: 0;
     border-top-left-radius: 1rem;
 
     & thead th {
         padding-left: 30px;
-        background-color: #292933;
-        border-top: 1px solid #27262b;
-        border-bottom: 2px solid #27262b;
+        background-color: $darkGray;
+        border-top: 1px solid $darkGray;
+        border-bottom: 2px solid $darkGray;
     }
-    th, td {
-        padding: 0 ;
+    th,
+    td {
+        padding: 0;
         vertical-align: middle !important;
         text-align: center;
         padding-left: 5px;
@@ -38,7 +39,7 @@ button:focus{
         border: none;
         border-bottom: 1px solid #33353bb4;
     }
-    th{
+    th {
         width: 10%;
         text-align: center;
     }
@@ -46,27 +47,25 @@ button:focus{
     td {
         text-align: center;
         width: 3%;
-
-        
     }
-    td + td{
+    td + td {
         text-align: center;
     }
 
-    .MuiTableCell-paddingCheckbox{
+    .MuiTableCell-paddingCheckbox {
         text-align: left;
         padding-left: 30px;
         width: 3%;
     }
 
     /* TABLE HEAD */
-    .makeStyles-root-5{
-        background: #ffc14d;
+    .makeStyles-root-5 {
+        background: $point;
         min-height: 10px !important;
     }
 
     /* TABLE HEAD TEXT */
-    .makeStyles-title-7{
+    .makeStyles-title-7 {
         color: #2d2e3d;
         padding-left: 10px;
         font-size: 20px;
@@ -75,7 +74,7 @@ button:focus{
     }
 
     /* TABLE TR */
-    .makeStyles-paper-2{
+    .makeStyles-paper-2 {
         background-color: #212125;
         color: $point;
     }
@@ -84,33 +83,35 @@ button:focus{
         color: $lightGray !important;
     }
 
-    .MuiSvgIcon-root{
+    .MuiSvgIcon-root {
         color: $point;
     }
-    .makeStyles-icon-8{
+    .makeStyles-icon-8 {
         color: #18181f;
     }
-    
-    .MuiCheckbox-colorSecondary.Mui-checked{
-        color : #ffc14d;
+
+    .MuiCheckbox-colorSecondary.Mui-checked {
+        color: $point;
     }
-    .MuiTableRow-root.Mui-selected, .MuiTableRow-root.Mui-selected:hover{
+    .MuiTableRow-root.Mui-selected,
+    .MuiTableRow-root.Mui-selected:hover {
         background-color: #292933;
     }
-    .MuiTableSortLabel-root.MuiTableSortLabel-active{
-        color: #ffc14d;
+    .MuiTableSortLabel-root.MuiTableSortLabel-active {
+        color: $point;
     }
 
-    .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active .MuiTableSortLabel-icon{
+    .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active
+        .MuiTableSortLabel-icon {
         color: $point;
     }
 
     // PAGE TEXT
-    .MuiTablePagination-caption{
+    .MuiTablePagination-caption {
         color: $point;
     }
 
-    span:hover{
-        color : $point;
+    span:hover {
+        color: $point;
     }
 }

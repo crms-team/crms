@@ -1,4 +1,10 @@
 @import url("https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css");
+$darkGray: #25272b;
+$lightGray: #27262b;
+$point: #7d9edf;
+$text: #6b6e7c;
+$lightText: #9298b1;
+$cardColor: #232429;
 
 .modal-open {
     padding: 0 !important;
@@ -48,7 +54,7 @@
 
         & .select__option--options:focus {
             outline: none;
-            border: 2px solid #e99a33;
+            border: 2px solid $point;
         }
 
         & .select__option--options.region {
@@ -67,7 +73,7 @@
         margin-bottom: 0;
 
         &:hover {
-            text-decoration: #e99a33 underline;
+            text-decoration: $point underline;
         }
     }
 
@@ -83,7 +89,7 @@
 
     & .select-btn {
         width: 100%;
-        color: #27262b;
+        color: $lightGray;
         font-weight: 700;
         margin-bottom: 0;
     }

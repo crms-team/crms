@@ -26,9 +26,8 @@ class Sidebar extends Component {
         return (
             <div className="Sidebar-container">
                 <div className="Sidebar">
-                    <div style={{overflowX: 'hidden'}}>
+                    <div style={{ overflowX: "hidden" }}>
                         <p className="Sidebar-title">MENU</p>
-                        <hr />
                         <ul className="menu">
                             {/*     MENU - DASHBOARD      */}
                             <a>
@@ -135,16 +134,14 @@ class Sidebar extends Component {
 
                             {/*     MENU - BILLING      */}
 
-                            {
-                                /*
+                            {/*
                                     <a>
                                         <li>
                                             <FiDatabase className="material-icons" />
                                             <p className="menulist">Billing</p>
                                         </li>
                                     </a>
-                                */
-                            }
+                                */}
 
                             {/*     MENU - SETTING   */}
                             <Link to="/setting">

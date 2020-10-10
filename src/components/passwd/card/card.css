@@ -1,3 +1,12 @@
+code {
+    color: #7d9edf;
+    font-weight: 700;
+    font-size: 0.8rem;
+    background: #2a2b30;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+}
+
 .card {
     display: flex;
     flex-direction: column;
@@ -9,7 +18,7 @@
 
 .card__title {
     color: var(--point-color);
-    font-size: 2rem;
+    font-size: 2.3rem;
     font-weight: 700;
     margin: 1rem 0;
     align-self: flex-start;
@@ -27,11 +36,29 @@
 .card__description {
     min-width: 55vw;
     width: 55vw;
-    line-height: 1.5em;
-    font-size: 0.9rem;
-    font-weight: 300;
+    line-height: 0.5em;
+    font-size: 1rem;
+    font-weight: 400;
     color: var(--text-lightgray-color);
-    text-indent: 14px;
+    text-indent: 1.6rem;
     text-align: start;
     margin: 0.5rem 0 1rem 0;
+}
+
+@media screen and (max-width: 1250px) {
+    .card {
+    }
+
+    .card__title {
+        margin: 0 auto;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .card__description {
+        line-height: 1rem;
+        margin: 0.5rem;
+        text-indent: 0.5rem;
+        text-align: center;
+    }
 }
