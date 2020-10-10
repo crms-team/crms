@@ -121,6 +121,11 @@ body {
     }
 }
 
+.sidebar-logout-btn {
+    position: absolute;
+    bottom: 5px;
+}
+
 @media screen and (max-width: 1450px) {
     .Sidebar-container {
         width: 200px;

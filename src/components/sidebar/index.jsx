@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./sidebar.scss";
 import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import {
     FiSettings,
     FiCreditCard,
@@ -27,6 +28,7 @@ class Sidebar extends Component {
         const { isDashboard, isResource, isSetting, isScheduler } = this.state;
 
         return (
+            <>
             <div className="Sidebar-container">
                 <div className="Sidebar">
                     <div style={{ overflowX: "hidden" }}>
@@ -193,8 +195,11 @@ class Sidebar extends Component {
 
                         </ul>
                     </div>
+                    <Button className="sidebar-logout-btn">Logout</Button>
                 </div>
             </div>
+            
+            </>
         );
     }
 }
