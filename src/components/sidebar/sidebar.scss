@@ -1,23 +1,24 @@
-$darkGray: #18181f;
+$darkGray: #1c1d20;
 $lightGray: #27262b;
-$point: #ffc14d;
-$text: #6b6e7c;
-$lightText: #9298b1;
+$point: #7d9edf;
+$text: #8a8b91;
+$lightText: #f1f1f1;
 
 a {
     text-decoration: none !important;
     color: $lightText;
 }
+
 body {
     position: relative;
 }
 
 .Sidebar-container {
     z-index: 999;
-    background: $darkGray;
+    background: #151618;
+    box-shadow: 8px 1px 10px rgba(18, 18, 19, 0.247);
     height: 100%;
     width: 15vw;
-    box-shadow: 5px 5px 10px rgba(31, 30, 34, 0.76);
     padding: 20px;
     position: fixed;
     top: 0;
@@ -25,7 +26,6 @@ body {
 
     & + div {
         position: relative;
-        height: 100%;
         background: $darkGray;
     }
 
@@ -36,7 +36,7 @@ body {
 }
 
 .Sidebar {
-    background: $darkGray;
+    background: #151618;
     color: $text;
     height: 100%;
     position: relative;
@@ -44,14 +44,9 @@ body {
     & .Sidebar-title {
         text-align: center;
         font-weight: 700;
-        font-size: 18px;
+        color: $point;
+        font-size: 1.2rem;
         padding-top: 0.7rem;
-    }
-
-    & hr {
-        border: 1px solid rgba(150, 149, 149, 0.205);
-        width: 70%;
-        margin-bottom: 20px;
     }
 
     & ul {
@@ -72,8 +67,7 @@ body {
         margin: 0 auto;
 
         &:hover {
-            // border: 1px solid #ffc14d;
-            background: rgba(37, 42, 53, 0.651);
+            background: #45567a41;
             transition: linear 0.2s;
             color: rgb(236, 236, 236);
 
@@ -106,23 +100,14 @@ body {
 
         & .menulist-in {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 0.9rem;
             transition: 0.4s linear;
             margin-top: 10px;
             text-indent: 36px;
+            color: $text;
 
             &:hover {
                 color: $point;
-            }
-
-            &::before {
-                content: " ";
-                width: 12px;
-                height: 12px;
-                position: absolute;
-                left: 25px;
-                z-index: 11;
-                background-color: rgba(59, 56, 92, 0.212);
             }
         }
         & .submenu {
@@ -133,5 +118,11 @@ body {
                 color: $point;
             }
         }
+    }
+}
+
+@media screen and (max-width: 1450px) {
+    .Sidebar-container {
+        width: 200px;
     }
 }

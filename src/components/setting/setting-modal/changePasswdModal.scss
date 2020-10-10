@@ -1,3 +1,10 @@
+$darkGray: #25272b;
+$lightGray: #27262b;
+$point: #7d9edf;
+$text: #6b6e7c;
+$lightText: #9298b1;
+$cardColor: #232429;
+
 .password-title {
     margin-bottom: 20px;
     width: 100%;
@@ -15,11 +22,11 @@
     text-indent: 14px;
     font-size: 18px;
     border: transparent;
-    border-bottom: 2px solid #ffc14d;
+    border-bottom: 2px solid $point;
     margin: 0.5rem 0 5px 0;
-    color: #ffc14d;
+    color: $point;
     transition: 0.6s;
-    outline: 2px solid #ffc14d;
+    outline: 2px solid $point;
     background-color: transparent;
     border-bottom: 2px solid transparent;
 
@@ -31,7 +38,7 @@
     &:focus {
         border: none;
         outline: none;
-        border-bottom: 2px solid #ffc14d;
+        border-bottom: 2px solid $point;
     }
 }
 

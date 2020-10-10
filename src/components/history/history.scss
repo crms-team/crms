@@ -1,20 +1,26 @@
-$darkGray: #18181f;
+$darkGray: #25272b;
 $lightGray: #27262b;
-$point: #ffc14d;
+$point: #7d9edf;
 $text: #6b6e7c;
 $lightText: #9298b1;
+$cardColor: #232429;
 
 button:focus {
     outline: none;
 }
 
 .listview-title {
-    color: #ffc14d;
+    color: $point;
     margin: 0 auto;
-    padding-top: 50px;
+    padding-top: 2.4rem;
     float: right;
     width: 83%;
-    font-size: 25px;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+table {
+    height: 100%;
 }
 
 .table {
@@ -25,9 +31,7 @@ button:focus {
 
     & thead th {
         padding-left: 30px;
-        background-color: #292933;
-        border-top: 1px solid #27262b;
-        border-bottom: 2px solid #27262b;
+        background-color: $cardColor;
     }
     th,
     td {
@@ -37,7 +41,6 @@ button:focus {
         padding-left: 5px;
         color: $lightText;
         border: none;
-        border-bottom: 1px solid #33353bb4;
         font-family: "NanumSquare", sans-serif !important;
     }
     th {
@@ -48,29 +51,30 @@ button:focus {
     td {
         text-align: center;
         width: 3%;
+        height: 600px !important;
     }
     td + td {
         text-align: center;
     }
 
     #header {
-        background: #ffc14d;
-        min-height: 10px;
+        background: $point;
+        min-height: 0.8rem;
     }
 
     #tableTitle,
     .MuiTypography-subtitle1 {
-        color: #2d2e3d;
-        padding-left: 10px;
-        font-size: 20px;
-        font-weight: 900;
+        color: $darkGray;
+        padding-left: 0.8rem;
+        font-size: 1rem;
+        font-weight: 500;
         text-align: center;
         font-family: "NanumSquare", sans-serif !important;
     }
 
     .MuiTableCell-paddingCheckbox {
         text-align: left;
-        padding-left: 13px;
+        padding-left: 1rem;
         width: 3%;
     }
 
@@ -80,7 +84,7 @@ button:focus {
     }
 
     .MuiSvgIcon-root {
-        color: #ffc14d;
+        color: $point;
     }
 
     .MuiIconButton-label {
@@ -92,14 +96,14 @@ button:focus {
     }
 
     .MuiCheckbox-colorSecondary.Mui-checked {
-        color: #ffc14d;
+        color: $point;
     }
     .MuiTableRow-root.Mui-selected,
     .MuiTableRow-root.Mui-selected:hover {
         background-color: #292933;
     }
     .MuiTableSortLabel-root.MuiTableSortLabel-active {
-        color: #ffc14d;
+        color: $point;
     }
 
     .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active

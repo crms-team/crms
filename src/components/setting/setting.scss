@@ -1,40 +1,52 @@
+$darkGray: #25272b;
+$lightGray: #27262b;
+$point: #7d9edf;
+$text: #6b6e7c;
+$lightText: #9298b1;
+$cardColor: #232429;
+
 .setting-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    float: right;
+    min-width: 85%;
 
     &.openModal {
         z-index: 999;
-        background-color: rgba(0, 0, 0, 0.705);
+        background-color: $darkGray;
     }
 }
 
 .setting-title {
-    margin-top: 20vh;
-    margin-bottom: 68px;
-    color: var(--text-white-color);
-    background: linear-gradient(135deg, #45444b 10%, #e4b55f 70%, #45444b 10%);
-    background-position: 0;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation-fill-mode: both;
-    -webkit-text-size-adjust: none;
-    font-weight: 900;
-    font-size: 2.8rem;
-    animation: shine 3.5s infinite linear;
+    color: $point;
+    margin: 0 auto;
+    padding-top: 15vh;
+    float: right;
+    width: 83%;
+    font-size: 2.5rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.setting-box-container {
+    width: 85%;
+    float: right;
+    display: flex;
+    justify-content: center;
+    margin-top: 10vh;
 }
 
 .setting-box {
-    width: 250px;
+    width: 290px;
     height: 300px;
-    border: 4px solid #45444b;
+    border: 3px solid #445069;
     font-weight: 700;
     text-align: center;
-    font-size: 24px;
-    color: #45444b;
+    font-size: 2rem;
+    color: $text;
     overflow: hidden;
-    box-shadow: 0 10px 10px rgba(41, 40, 40, 0.527);
     border-radius: 20px;
     cursor: pointer;
     display: inline-flex;
@@ -48,12 +60,12 @@
         transform: scale(1.1);
         background: #00001a13;
         box-shadow: 7px 7px rgba(27, 28, 31, 0.678);
-        color: #ddac51;
-        border: 4px solid #ddac51;
+        color: $point;
+        border: 4px solid $point;
     }
 
     & + & {
-        margin-left: 3.3rem;
+        margin-left: 80px;
     }
 }
 
@@ -69,19 +81,11 @@
 
 .setting-subtitle {
     margin: 0;
-
-    &.en {
-        font-size: 16px;
-    }
-
-    &.ko {
-        margin-top: 1rem;
-        font-size: 23px;
-    }
+    font-size: 1.5rem;
 }
 
 .icon {
-    font-size: 80px;
+    font-size: 4rem;
     padding-bottom: 10px;
 }
 .previous-btn-container {
@@ -117,9 +121,12 @@
     display: flex;
     flex-direction: column;
     border-radius: 14px;
-    border: 4px solid #353332e1;
     box-shadow: 0 10px 10px rgba(31, 30, 30, 0.432);
     transition: 2s;
+}
+
+.modal-content {
+    border: none !important;
 }
 
 .select-container {
@@ -208,7 +215,7 @@
 
 .select-bottom-text {
     margin: 30px 0;
-    color: #b9b3af;
+    color: $lightText;
 }
 
 .select-bottom-text span:first-child {
