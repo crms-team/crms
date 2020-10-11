@@ -1,18 +1,25 @@
-.Modal{
-    top:20px;
-    right:40px;
-    width:100px;
+$darkGray: #25272b;
+$lightGray: #27262b;
+$point: #7d9edf;
+$text: #6b6e7c;
+$lightText: #9298b1;
+$cardColor: #232429;
+
+.Modal {
+    top: 20px;
+    right: 40px;
+    width: 100px;
     height: 50px;
-    background-color: yellow!;
+    background-color: $point;
     position: absolute;
     overflow: hidden;
 }
-.fade.modal.show{
+.fade.modal.show {
     background: #202024a4;
     overflow: hidden;
 }
 
-div .modal-content{
+div .modal-content {
     background-color: rgb(31, 31, 34);
     border-radius: 14px;
     padding: 10px;
@@ -23,9 +30,8 @@ div .modal-content{
     margin: 0 auto;
 }
 
-
-.modal-header .modal-title{
-    color : #ffc14d;
+.modal-header .modal-title {
+    color: $point;
 }
 
 .modal-content .modal-header {
@@ -34,44 +40,44 @@ div .modal-content{
 }
 
 .modal-header .close {
-    color : #9298b1;
+    color: #9298b1;
     text-shadow: none;
     font-size: 2rem;
 }
 .modal-header .close:hover {
-    color : #9298b1;
+    color: #9298b1;
     text-shadow: none;
 }
-.modal-body{
+.modal-body {
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 600px;
-    color : #cfcfcf;
+    color: #cfcfcf;
 }
 
 .modal-body .form-control {
     background-color: rgb(31, 31, 34);
-    border: 2px solid #ffc14d;
-    color : #cfcfcf;
+    border: 2px solid $point;
+    color: #cfcfcf;
     border-radius: 0;
 }
 .modal-body .form-control:focus {
     background-color: rgb(31, 31, 34);
     color: #cfcfcf;
     outline: none;
-    border: 1px solid #ffc14d;
+    border: 1px solid $point;
 }
 
-.modal-content .modal-footer{
+.modal-content .modal-footer {
     border-top: none;
 }
 
-.modal-footer .btn-warning{
-    background-color: #ffc14d;
-    border-radius: .4rem;
+.modal-footer .btn-warning {
+    background-color: $point;
+    border-radius: 0.4rem;
     width: 100px;
     border: none;
 }
-.modal-footer .btn-warning:hover{
-    background-color: #dda02f;
+.modal-footer .btn-warning:hover {
+    background-color: $point;
 }

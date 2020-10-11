@@ -1,6 +1,6 @@
 $darkGray: #18181f;
 $lightGray: #27262b;
-$point: #ffc14d;
+$point: #7d9edf;
 $text: #6b6e7c;
 $lightText: #9298b1;
 
@@ -17,8 +17,6 @@ body {
 }
 
 .tab-container {
-    background-color: $lightGray !important;
-
     & .tab-title {
         color: $point;
         text-align: left;
@@ -67,7 +65,7 @@ body {
                 height: 3px;
                 left: 0;
                 top: 0;
-                background: #ffc14d;
+                background: $point;
                 border-top-left-radius: 10px;
                 border-top-right-radius: 10px;
                 position: absolute;
@@ -75,7 +73,7 @@ body {
         }
         &.noClicked {
             color: rgb(102, 102, 109);
-            background-color: rgb(31, 31, 36);
+            background-color: $lightGray;
         }
     }
 }
@@ -101,6 +99,7 @@ body {
 
     & .top-title {
         transition: 0.2s linear;
+        color: $point !important;
         &:hover {
             background: rgba(58, 66, 82, 0.808);
             transition: 0.2s linear;
@@ -137,7 +136,7 @@ body {
 
     & .right--table-title {
         font-size: 1.5rem;
-        color: #ffc14d;
+        color: $point;
     }
 }
 
@@ -162,14 +161,14 @@ body {
 .detail__right--table {
     position: absolute;
     width: 50%;
-    background: #1f1f25;
+    background: $darkGray;
     padding: 10px;
     border-radius: 0.5rem;
     overflow: scroll;
 
     & th {
         background: #1b1b1f;
-        color: #ffc14d;
+        color: $point;
     }
 
     & th,

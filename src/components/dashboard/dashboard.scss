@@ -1,32 +1,38 @@
-$darkGray: #18181f;
+$darkGray: #25272b;
 $lightGray: #27262b;
-$point: #ffc14d;
+$point: #7d9edf;
 $text: #6b6e7c;
 $lightText: #9298b1;
+$cardColor: #232429;
 
 @media screen and (min-width: 1320px) {
     .left-chart {
         min-width: 432px;
         width: 40%;
     }
-    
+
     .right-chart {
         min-width: 528px;
         width: 60%;
-        
     }
-} 
+}
 
-@media screen and (max-width: 1319px) {
-    .left-chart, .right-chart {
+@media screen and (max-width: 1500px) {
+    .left-chart {
+        min-width: 332px;
         width: 100%;
-    }    
-    
+    }
+
+    .right-chart {
+        min-width: 428px;
+        width: 100%;
+    }
 }
 
 .dashboard-page {
-    width: 100%;
-    position: relative;
+    width: 90%;
+    left: 5%;
+    position: absolute;
     height: auto;
 }
 
@@ -51,9 +57,9 @@ $lightText: #9298b1;
     float: right;
 
     & .select__option--options.form-control {
-        border: 2px solid #ffc14d;
+        border: 2px solid $point;
         background: transparent;
-        color: #6b6e7c;
+        color: $text;
 
         &:focus {
             outline: none;
@@ -62,20 +68,34 @@ $lightText: #9298b1;
     }
 }
 
+.dashboard-title {
+    color: $point;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+}
+
 .resource-list {
     .text-muted {
-        margin-top: 5px;
+        margin-top: 0.5rem;
     }
 }
 
 .card-body {
-    margin-bottom: 10px;
-    background: #212125;
+    margin-bottom: 0.7rem;
+    background: $cardColor;
     height: 100px;
     padding: 15px;
 
     & + & {
-        margin-left: 10px;
+        margin-left: 0.7rem;
+    }
+
+    & strong {
+        // color: $lightText;
+    }
+
+    & .text-undefined {
+        color: $point;
     }
 }
 
@@ -93,11 +113,15 @@ $lightText: #9298b1;
     flex-wrap: wrap;
     flex-direction: row;
     width: 100%;
+    background: $cardColor;
+    border-radius: 0.4rem;
 
     & h3 {
-        font-size: 15px;
-        margin-top: 10px;
-        text-indent: 5px;
+        font-size: 1rem;
+        color: $point;
+        margin-top: 1rem;
+        font-weight: 700;
+        text-indent: 1.5rem;
     }
 }
 
@@ -106,11 +130,28 @@ NumberWidget + NumberWidget {
 }
 
 .progress {
-    background-color: #353741;
+    background-color: #373942;
     width: 100%;
 }
 
 .justify-content-between {
     width: 100%;
     justify-content: space-between !important;
+}
+
+@media screen and (max-width: 979px) {
+    .dashboard-page {
+        width: 85%;
+        min-width: 900px;
+        position: absolute;
+    }
+}
+
+@media screen and (max-width: 978px) {
+    .dashboard-page {
+        width: 85%;
+        min-width: 600px;
+        position: absolute;
+        left: 15vw;
+    }
 }

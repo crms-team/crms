@@ -8,40 +8,41 @@ import { Form } from "react-bootstrap";
 
 const statusColors = {
     create: {
-        backgroundColor: "#5d643f",
-        borderColor: "#5d643f",
-        pointHighlightFill: "#5d643f",
-        fillColor: "rgba(49,51,41,0.2)",
-        pointColor: "rgba(49,51,41,1)",
-        pointHighlightStroke: "rgba(49,51,41,1)",
+        backgroundColor: "#8CB1FA",
+        borderColor: "#8CB1FA",
+        pointHighlightFill: "#8CB1FA",
+        fillColor: "#7595d420",
+        pointColor: "#7595d4",
+        pointHighlightStroke: "#7595d4",
     },
     modify: {
-        backgroundColor: "#43537c",
-        borderColor: "#43537c",
-        pointHighlightFill: "#43537c",
-        fillColor: "rgba(67,83,124,0.2)",
-        pointColor: "rgba(67,83,124,1)",
-        pointHighlightStroke: "rgba(67,83,124,1)",
+        backgroundColor: "#45567A",
+        borderColor: "#45567A",
+        pointHighlightFill: "#45567A",
+        fillColor: "#424f6c20",
+        pointColor: "#424f6c",
+        pointHighlightStroke: "#424f6c",
     },
     remove: {
-        backgroundColor: "#743c4d",
-        borderColor: "#743c4d",
-        pointHighlightFill: "#743c4d",
-        fillColor: "rgba(44,37,40,0.2)",
-        pointColor: "rgba(44,37,404,1)",
-        pointHighlightStroke: "rgba(44,37,40,1)",
+        backgroundColor: "#21293B",
+        borderColor: "#21293B",
+        pointHighlightFill: "#21293B",
+        fillColor: "#1e232820",
+        pointColor: "#1e2328",
+        pointHighlightStroke: "#1e2328",
     },
 };
 const options = {
-    backgroundColor: "#743c4d",
-    borderColor: "743c4d",
+    backgroundColor: "#21293B",
+    borderColor: "21293B",
 };
 
 const styles = {
     graphContainer: {
-        background: "#212125",
+        background: "#1f2124",
         borderRadius: ".5rem",
-        padding: "15px",
+        padding: "10px",
+        margin: "1rem",
     },
 };
 
@@ -57,7 +58,7 @@ class Dashboard extends React.Component {
                 labels: [],
                 datasets: [
                     {
-                        backgroundColor: ["#5d643f"],
+                        backgroundColor: ["#7D9EDF"],
                     },
                 ],
             },
@@ -152,7 +153,7 @@ class Dashboard extends React.Component {
             key_id[i] = {
                 key: key_id[i],
                 vendor: response.keys[key_id[i]].vendor,
-                region: response.keys[key_id[i]].keys.region
+                region: response.keys[key_id[i]].keys.region,
             };
         }
         localStorage.setItem("key", JSON.stringify(key_id));
@@ -203,7 +204,7 @@ class Dashboard extends React.Component {
                             </select>
                         </Form>
                     </div>
-                    <h3>Dashboard</h3>
+                    <h3 className="dashboard-title">Dashboard</h3>
                     <div className="resource-list">
                         <div className="resource compute">
                             <div className="compute-list">

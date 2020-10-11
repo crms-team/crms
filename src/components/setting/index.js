@@ -6,6 +6,7 @@ import "./setting.scss";
 import AddCloudKeyModal from "./setting-modal/addCloudKeyModal";
 import ChangePasswordModal from "./setting-modal/changePasswdModal";
 import CloudListModal from "./setting-modal/cloudListModal";
+import Sidebar from "../sidebar";
 
 function Setting({ children }) {
     const [addCloudModalShow, setAddCloudModalShow] = useState(false);
@@ -16,6 +17,7 @@ function Setting({ children }) {
 
     return (
         <>
+            <Sidebar />
             {/* Open and close the setting page modal */}
             {addCloudModalShow && (
                 <AddCloudKeyModal
@@ -42,7 +44,10 @@ function Setting({ children }) {
             )}
 
             <div className="previous-btn-container">
-                <div className="previous-btn" onClick={()=>window.history.back()}>
+                <div
+                    className="previous-btn"
+                    onClick={() => window.history.back()}
+                >
                     <IconContext.Provider value={{ className: "previous" }}>
                         <div>
                             <GrFormPrevious />
@@ -55,7 +60,7 @@ function Setting({ children }) {
 
             <div className="setting-container">
                 <h1 className="setting-title">Setting Page</h1>
-                <div>
+                <div className="setting-box-container">
                     <div
                         className="setting-box"
                         onClick={() => {
@@ -65,12 +70,8 @@ function Setting({ children }) {
                         <IconContext.Provider value={{ className: "icon" }}>
                             <FiKey />
                         </IconContext.Provider>
-                        <h1 className="setting-subtitle ko">
-                            클라우드 키 등록
-                        </h1>
-                        <h2 className="setting-subtitle en">
-                            Register cloud key
-                        </h2>
+                        <h2 className="setting-subtitle">Register</h2>
+                        <h2 className="setting-subtitle">cloud key</h2>
                         <div className="setting-box-deco"></div>
                     </div>
 
@@ -83,12 +84,8 @@ function Setting({ children }) {
                         <IconContext.Provider value={{ className: "icon" }}>
                             <FiFileText />
                         </IconContext.Provider>
-                        <h1 className="setting-subtitle ko">
-                            등록한 클라우드 리스트
-                        </h1>
-                        <h2 className="setting-subtitle en">
-                            Registered Cloud List
-                        </h2>
+                        <h2 className="setting-subtitle">Registered</h2>
+                        <h2 className="setting-subtitle">Cloud List</h2>
                         <div className="setting-box-deco"></div>
                     </div>
 
@@ -101,8 +98,8 @@ function Setting({ children }) {
                         <IconContext.Provider value={{ className: "icon" }}>
                             <FiUnlock />
                         </IconContext.Provider>
-                        <h1 className="setting-subtitle ko">비밀번호 변경</h1>
-                        <h2 className="setting-subtitle en">Change password</h2>
+                        <h2 className="setting-subtitle"> Change</h2>
+                        <h2 className="setting-subtitle">password</h2>
                         <div className="setting-box-deco"></div>
                     </div>
                 </div>
