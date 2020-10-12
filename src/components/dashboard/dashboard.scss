@@ -134,6 +134,10 @@ NumberWidget + NumberWidget {
     width: 100%;
 }
 
+.progress-bar {
+    background: $point;
+}
+
 .justify-content-between {
     width: 100%;
     justify-content: space-between !important;

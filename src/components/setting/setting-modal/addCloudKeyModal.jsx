@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
+import { TableHeaderColumn, BootstrapTable } from "react-bootstrap-table";
 import './addCloudKeyModal.scss'
 
 const awsRegions = [
@@ -29,6 +30,80 @@ const awsRegions = [
     { value: "us-gov-east-1", name: "AWS GovCloud (미국 동부) us-gov-west-1" },
     { value: "us-gov-west-1", name: "AWS GovCloud (미국) us-gov-east-1" },
 ]
+
+function vendorAzure(props){
+    const isAzure = props.isAzure;
+    if(isAzure){
+        return(
+            <>
+                <BootstrapTable
+                    // data={data}
+                    cellEdit={{
+                        // mode: "click",
+                        // afterSaveCell: this.editRow,
+                    }}
+                    options={{
+                        // afterInsertRow: this.addRow,
+                        // afterDeleteRow: this.deleteRow,
+                    }}
+                    insertRow
+                    deleteRow
+                    selectRow={{
+                        mode: "checkbox",
+                    }}
+                    headerStyle={{
+                        textAlign: "center",
+                    }}
+                    trStyle={{
+                        textAlign: "center",
+                    }}
+                    tableStyle={{
+                        marginBottom: "20px",
+                    }}
+                >
+                    <TableHeaderColumn dataField="index" hidden autoValue isKey>
+                        Index
+                    </TableHeaderColumn>
+                    <TableHeaderColumn
+                        thStyle={{
+                            padding: "0px !important",
+                        }}
+                        dataAlign="center"
+                        dataField="protocol"
+                        editable={{
+                            type: "select",
+                            options: { values: ["tcp", "udp", "icmp", "-1"] },
+                        }}
+                    >
+                        Protocol
+                    </TableHeaderColumn>
+                    <TableHeaderColumn
+                        dataAlign="center"
+                        dataField="port"
+                        editable={{ type: "textarea" }}
+                    >
+                        Port
+                    </TableHeaderColumn>
+                    <TableHeaderColumn
+                        dataAlign="center"
+                        dataField="cidr"
+                        editable={{ type: "textarea" }}
+                    >
+                        CIDR
+                    </TableHeaderColumn>
+                    <TableHeaderColumn
+                        dataAlign="center"
+                        dataField="description"
+                        editable={{ type: "textarea" }}
+                    >
+                        Description
+                    </TableHeaderColumn>
+                </BootstrapTable>
+            </>
+        )
+    }
+    return null;
+}
 
 function AddCloudKeyModal(props) {
     let vendor = React.createRef()
@@ -98,6 +173,7 @@ function AddCloudKeyModal(props) {
                                     Resource
                                 </option>
                                 <option value="aws">AWS</option>
+                                <option value="azure">Azure</option>
                             </select>
                         </Form>
                         <p className="cloud-id"></p>
@@ -111,6 +187,7 @@ function AddCloudKeyModal(props) {
                             중복 확인
                         </Button>
 
+                        {/*  AWS  */}
                         <div className="select-Supplier">
                             <input
                                 className="select-input"
@@ -136,6 +213,7 @@ function AddCloudKeyModal(props) {
                                     }
                                 </select>
                             </Form>
+                            
                             <div className="select-bottom-text">
                                 <span>클라우드 키 발급 방법</span>
                             </div>

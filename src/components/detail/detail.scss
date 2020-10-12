@@ -17,6 +17,7 @@ body {
 }
 
 .tab-container {
+    height: 100%;
     & .tab-title {
         color: $point;
         text-align: left;
@@ -91,7 +92,7 @@ body {
 
     & .tab-content {
         padding: 30px;
-        color: rgb(102, 102, 109);
+        color: $lightText;
     }
     &::-webkit-scrollbar {
         display: none;
@@ -110,20 +111,19 @@ body {
 /* TABLE*/
 .contents-container {
     width: 100%;
+    display: flex;
     flex-direction: row;
-    justify-content: space-around;
 }
 .left--table-container {
     position: relative;
 }
 .right--table-container {
-    position: fixed;
-    width: 38.25%;
+    width: 50%;
     overflow: scroll;
     right: 4.25%;
     border-left: 2px solid #27262b33;
+
     padding: 20px;
-    height: calc(68% - 80px);
     &::-webkit-scrollbar {
         display: none;
     }
@@ -145,10 +145,9 @@ body {
 }
 
 .detail__left--table {
-    width: calc(38.25% - 20px);
     height: calc(68% - 80px);
-    position: fixed;
     overflow-y: scroll;
+    padding: 20px;
     &::-webkit-scrollbar {
         display: none;
     }
@@ -165,6 +164,7 @@ body {
     padding: 10px;
     border-radius: 0.5rem;
     overflow: scroll;
+    transition: 0.2s linear;
 
     & th {
         background: #1b1b1f;
@@ -179,4 +179,8 @@ body {
     tr + tr {
         border-top: 1px solid rgba(255, 255, 255, 0.164);
     }
+}
+
+table {
+    border: none !important;
 }

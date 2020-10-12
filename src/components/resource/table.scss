@@ -24,7 +24,6 @@ button:focus {
     border-top-left-radius: 1rem;
 
     & thead th {
-        padding-left: 30px;
         background-color: $darkGray;
         border-top: 1px solid $darkGray;
         border-bottom: 2px solid $darkGray;
@@ -93,6 +92,7 @@ button:focus {
     .MuiCheckbox-colorSecondary.Mui-checked {
         color: $point;
     }
+
     .MuiTableRow-root.Mui-selected,
     .MuiTableRow-root.Mui-selected:hover {
         background-color: #292933;

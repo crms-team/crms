@@ -495,11 +495,7 @@ export default function EnhancedTable() {
                                         })}
                                     {emptyRows > 0 && (
                                         <TableRow
-                                            style={{
-                                                height:
-                                                    (44.545 + 0.909) *
-                                                    emptyRows,
-                                            }}
+                                            
                                         >
                                             <TableCell colSpan={8} />
                                         </TableRow>

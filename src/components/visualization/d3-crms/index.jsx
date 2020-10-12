@@ -190,11 +190,11 @@ class Visual extends Component {
                 .enter()
                 .append("svg:marker") // This section adds in the arrows
                 .attr("id", String)
-                .style("stroke", "#ffc14d")
-                .style("fill", "#ffc14d")
+                .style("stroke", "transparent")
+                .style("fill", "#7d9edf")
                 .attr("viewBox", "0 -5 10 10")
-                .attr("markerWidth", 10)
-                .attr("markerHeight", 10)
+                .attr("markerWidth", 7)
+                .attr("markerHeight", 7)
                 .attr("orient", "auto")
                 .append("svg:path")
                 .attr("d", "M0,-5L10,0L0,5");
@@ -245,8 +245,8 @@ class Visual extends Component {
                     .enter()
                     .append("line")
                     .attr("class", "link")
-                    .style("stroke-width", "2.5")
-                    .style("stroke", "#ffc14d")
+                    .style("stroke-width", "1.8")
+                    .style("stroke", "#7d9edf")
                     .attr("marker-end", "url(#end)");
 
                 linkSvg = linkEnter.merge(linkSvg);
@@ -423,7 +423,7 @@ class Visual extends Component {
                             return "#7d9edf";
                         }
                     })
-                    .attr("stroke-width", "10")
+                    .attr("stroke-width", "6")
                     .attr("fill", "none")
                     .attr("r", function (d) {
                         return IMAGE_TYPE[d.data.type].circle_size;
@@ -457,12 +457,12 @@ class Visual extends Component {
                             (IMAGE_TYPE[d.data.type].circle_size * 1.5) / 2 + 3
                         );
                     })
-                    .style("fill", "#ffc14d")
+                    .style("fill", "#7d9edf")
                     .attr("stroke", "white")
                     .attr("stroke-width", "0.2")
                     .style("font-family", "NanumSquare")
-                    .style("font-weight", "bold")
-                    .style("font-size", "14px")
+                    .style("font-weight", "500")
+                    .style("font-size", "16px")
                     .style("text-anchor", "middle")
                     .text(function (d) {
                         return d.data.name;

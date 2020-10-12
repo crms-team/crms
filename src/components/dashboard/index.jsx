@@ -8,28 +8,28 @@ import { Form } from "react-bootstrap";
 
 const statusColors = {
     create: {
-        backgroundColor: "#8CB1FA",
-        borderColor: "#8CB1FA",
+        backgroundColor: "#8CB1FA80",
+        borderColor: "#8CB1FA70",
         pointHighlightFill: "#8CB1FA",
-        fillColor: "#7595d420",
+        fillColor: "#7595d4",
         pointColor: "#7595d4",
         pointHighlightStroke: "#7595d4",
     },
     modify: {
-        backgroundColor: "#45567A",
-        borderColor: "#45567A",
-        pointHighlightFill: "#45567A",
-        fillColor: "#424f6c20",
-        pointColor: "#424f6c",
-        pointHighlightStroke: "#424f6c",
+        backgroundColor: "#AD8FF290",
+        borderColor: "#AD8FF290",
+        pointHighlightFill: "#AD8FF90",
+        fillColor: "#A487E620",
+        pointColor: "#A487E6",
+        pointHighlightStroke: "#A487E6",
     },
     remove: {
-        backgroundColor: "#21293B",
-        borderColor: "#21293B",
-        pointHighlightFill: "#21293B",
-        fillColor: "#1e232820",
-        pointColor: "#1e2328",
-        pointHighlightStroke: "#1e2328",
+        backgroundColor: "#F0B6CC30",
+        borderColor: "#F0B6CC30",
+        pointHighlightFill: "#F0B6CC30",
+        fillColor: "#D5B0E320",
+        pointColor: "#D5B0E3",
+        pointHighlightStroke: "#D5B0E3",
     },
 };
 const options = {

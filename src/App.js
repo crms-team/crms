@@ -7,6 +7,7 @@ import Resource from "./components/resource";
 import Detail from "./components/detail";
 import History from "./components/history"
 import Setting from "./components/setting"
+import Scheduler from "./components/scheduler"
 import "./App.css";
 
 class App extends Component {
@@ -30,6 +31,7 @@ class App extends Component {
                 <Route exact path="/visualization" component={Visualization} />
                 <Route exact path="/history" component={History}/>
                 <Route exact path="/setting" component={Setting} />
+                <Route exact path="/scheduler" component={Scheduler} />
             </div>
         );
     }

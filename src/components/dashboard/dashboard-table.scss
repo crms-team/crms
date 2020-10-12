@@ -28,6 +28,7 @@ $lightText: #9298b1;
 
 .dashboard__table {
     border-radius: 0.5rem;
+    font-size: 0.8rem;
 
     & .table-bordered {
         border: none;
@@ -50,30 +51,32 @@ $lightText: #9298b1;
         padding: 0;
     }
     .table td {
-        width: 5%;
-
         &:focus {
             outline: none;
         }
     }
 
+    table th {
+        width: 100px !important;
+    }
+
     .Modify {
-        background: #45567a;
+        background: #ad8ff290;
         height: 18%;
         &:hover {
-            background: #3d4c6b !important;
+            background: #ad8ff230 !important;
         }
     }
     .Create {
-        background: #8cb1fa;
+        background: #8cb1fa30;
         &:hover {
-            background: #7c9ddd !important;
+            background: #8cb1fa50 !important;
         }
     }
     .Remove {
-        background: #21293b;
+        background: #f0b6cc30;
         &:hover {
-            background: #1e2535 !important;
+            background: #f0b6cc40 !important;
         }
     }
     .Transform {
