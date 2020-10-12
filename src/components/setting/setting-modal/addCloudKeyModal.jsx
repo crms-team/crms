@@ -31,79 +31,6 @@ const awsRegions = [
     { value: "us-gov-west-1", name: "AWS GovCloud (미국) us-gov-east-1" },
 ]
 
-function vendorAzure(props){
-    const isAzure = props.isAzure;
-    if(isAzure){
-        return(
-            <>
-                <BootstrapTable
-                    // data={data}
-                    cellEdit={{
-                        // mode: "click",
-                        // afterSaveCell: this.editRow,
-                    }}
-                    options={{
-                        // afterInsertRow: this.addRow,
-                        // afterDeleteRow: this.deleteRow,
-                    }}
-                    insertRow
-                    deleteRow
-                    selectRow={{
-                        mode: "checkbox",
-                    }}
-                    headerStyle={{
-                        textAlign: "center",
-                    }}
-                    trStyle={{
-                        textAlign: "center",
-                    }}
-                    tableStyle={{
-                        marginBottom: "20px",
-                    }}
-                >
-                    <TableHeaderColumn dataField="index" hidden autoValue isKey>
-                        Index
-                    </TableHeaderColumn>
-                    <TableHeaderColumn
-                        thStyle={{
-                            padding: "0px !important",
-                        }}
-                        dataAlign="center"
-                        dataField="protocol"
-                        editable={{
-                            type: "select",
-                            options: { values: ["tcp", "udp", "icmp", "-1"] },
-                        }}
-                    >
-                        Protocol
-                    </TableHeaderColumn>
-                    <TableHeaderColumn
-                        dataAlign="center"
-                        dataField="port"
-                        editable={{ type: "textarea" }}
-                    >
-                        Port
-                    </TableHeaderColumn>
-                    <TableHeaderColumn
-                        dataAlign="center"
-                        dataField="cidr"
-                        editable={{ type: "textarea" }}
-                    >
-                        CIDR
-                    </TableHeaderColumn>
-                    <TableHeaderColumn
-                        dataAlign="center"
-                        dataField="description"
-                        editable={{ type: "textarea" }}
-                    >
-                        Description
-                    </TableHeaderColumn>
-                </BootstrapTable>
-            </>
-        )
-    }
-    return null;
-}
 
 function AddCloudKeyModal(props) {
     let vendor = React.createRef()
@@ -113,6 +40,21 @@ function AddCloudKeyModal(props) {
     let region = React.createRef()
 
     let [overlapCheck, setOverlapCheck] = React.useState(false)
+    let [isAws, setIsAws] = React.useState(false)
+    let [isAzure, setIsAzure] = React.useState(false)
+
+    function showOptions(){
+        if(vendor.current.value==="aws"){
+            setIsAws(true);
+            setIsAzure(false);
+        }else if(vendor.current.value==="azure"){
+            setIsAzure(true);
+            setIsAws(false);
+        }else{
+            setIsAzure(false);
+            setIsAws(false);
+        }
+    }
 
     async function handleCheckOverlap() {
         let response = await (await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/key?key_id=${cloudId.current.value}`)).json()
@@ -168,12 +110,14 @@ function AddCloudKeyModal(props) {
                         <h2 className="select-title">클라우드 계정 추가</h2>
                         <Form className="select__option">
                             <label>제공사를 선택해주세요.</label>
-                            <select className="select__option--options form-control" ref={vendor}>
+                            <select className="select__option--options form-control" 
+                                        ref={vendor} onChange={showOptions}>
                                 <option value="" disabled selected>
                                     Resource
                                 </option>
                                 <option value="aws">AWS</option>
                                 <option value="azure">Azure</option>
+                               
                             </select>
                         </Form>
                         <p className="cloud-id"></p>
@@ -188,18 +132,35 @@ function AddCloudKeyModal(props) {
                         </Button>
 
                         {/*  AWS  */}
+                        
                         <div className="select-Supplier">
-                            <input
-                                className="select-input"
-                                placeholder="Access Key"
-                                ref={accessKey}
-                            ></input>
-                            <input
-                                className="select-input"
-                                placeholder="Secret Key"
-                                type="password"
-                                ref={secretKey}
-                            ></input>
+                        {isAws && 
+                            <>
+                                <input
+                                    className="select-input"
+                                    placeholder="Access Key"
+                                    ref={accessKey}
+                                ></input>
+                                <input
+                                    className="select-input"
+                                    placeholder="Secret Key"
+                                    type="password"
+                                    ref={secretKey}
+                                ></input>
+                            </>
+                        }
+
+                            {/* Azure */}
+                            {isAzure &&
+                                <>
+                                    <div className="select-Supplier">
+                                        <input  className="select-input" placeholder="Subscription ID"></input>
+                                        <input  className="select-input" placeholder="Client ID"></input>
+                                        <input  className="select-input" placeholder="Secret Key" type="password"></input>
+                                        <input  className="select-input" placeholder="Tenant ID"></input>
+                                    </div>
+                                </>
+                            }
 
                             <Form Form className="select__option">
                                 <select className="select__option--options region form-control" ref={region}>
