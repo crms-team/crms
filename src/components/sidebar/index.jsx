@@ -151,6 +151,7 @@ class Sidebar extends Component {
                                 */}
 
                                 {/*     MENU - Scheduler    */}
+                                <Link  to="/scheduler">
                                 <li
                                     onClick={() => {
                                         this.setState({
@@ -164,6 +165,7 @@ class Sidebar extends Component {
                                     <FiCalendar className="material-icons" />
                                     <p className="menulist">Scheduler</p>
                                 </li>
+                                </Link>
                             {isScheduler && (
                                 <>
                                 </>
