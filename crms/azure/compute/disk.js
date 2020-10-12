@@ -3,7 +3,7 @@ const getToken = require('../token')
 
 async function disks(key, args = undefined) {
     let token = await getToken(key)
-    let ep = `https://management.azure.com/subscriptions/${key.subscription}/providers/Microsoft.Compute/disks?api-version=2020-06-01`
+    let ep = `https://management.azure.com/subscriptions/${key.subscription}/providers/Microsoft.Compute/disks?api-version=2020-06-30`
 
     return await fetch(ep, {
         headers: {
