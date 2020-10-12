@@ -9,6 +9,7 @@ class Form extends Component {
         };
         this.onChange.bind()
         this.tryLogin.bind()
+        this.onKeyPress.bind()
     }
 
     tryLogin = () => {
@@ -28,10 +29,16 @@ class Form extends Component {
         })
     };
 
+    onKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            this.tryLogin()
+        }
+    }
+
     render(){
         return(
             <div className="form">
-                <input className="form__input" required type='password' placeholder='password' value={this.state.value} onChange={this.onChange}/>
+                <input className="form__input" required type='password' placeholder='password' value={this.state.value} onChange={this.onChange} onKeyPress={this.onKeyPress}/>
                 <button className="form__button" onClick={this.tryLogin}>continue</button>
             </div>
         );

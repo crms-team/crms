@@ -107,7 +107,7 @@ class ContentSummary extends Component {
         let resource = this.props.resource;
         let data = response.data;
 
-        if (resource == "server") data = data["Instances"][0];
+        if (resource == "server") data = 'Instances' in data ? data['Instances'][0]: data;
 
         this.setState({
             data: data,
@@ -267,7 +267,7 @@ class ContentUpdate extends Component {
         let etcData1 = [];
         let etcData2 = [];
 
-        if (resource == 'server') data = data['Instances'][0]
+        if (resource == 'server') data = 'Instances' in data ? data['Instances'][0]: data
         else if (resource == "volume") {
             ec2list = await this.getEC2List()
             for (let i = 0; i < ec2list.Instances.length; i++) {
@@ -1206,7 +1206,7 @@ class Detail extends Component {
 
         let key_id = this.props.match.params.key_id;
         let resource = this.props.match.params.type;
-        let resource_id = this.props.match.params.id;
+        let resource_id = atob(this.props.match.params.id);
 
         this.state = {
             key_name: key_id,
@@ -1222,7 +1222,7 @@ class Detail extends Component {
         let resource = this.state.resource;
         let data = response.data;
 
-        if (resource == 'server') data = data['Instances'][0]
+        if (resource == 'server') data = 'Instances' in data ? data['Instances'][0]: data
 
         this.setState({
             data: data,

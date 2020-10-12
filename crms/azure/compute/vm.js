@@ -32,7 +32,6 @@ async function virtualMachines(key, args = undefined) {
     }
 
     for (let i in vmData) {
-
         // Add Status Data
         for (let vm of vmStatus) {
             if (vmData[i].id == vm.id) {

@@ -2,24 +2,29 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import PauseIcon from '@material-ui/icons/Pause';
+import { COLUMES, MATCHINGS } from './constants'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+  Toolbar,
+  Typography,
+  Paper,
+  Checkbox,
+  IconButton,
+  Tooltip,
+} from '@material-ui/core';
+import {
+  Delete as DeleteIcon,
+  PlayArrow as PlayArrowIcon,
+  FilterList as FilterListIcon,
+  Pause as PauseIcon,
+} from '@material-ui/icons';
 import './table.scss';
 import {useParams} from 'react-router-dom'
 import { idType } from "../../manager";
@@ -58,253 +63,6 @@ function stableSort(array, comparator) {
     return a[1] - b[1];
   });
   return stabilizedThis.map((el) => el[0]);
-}
-
-const COLUMES = {
-  server: [
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
-    { id: 'public_ip', numeric: false, disablePadding: false, label: 'Public IP' },
-    { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
-    { id: 'type', numeric: false, disablePadding: false, label: 'Type' }
-  ],
-  volume:[
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
-    { id: 'state', numeric: false, disablePadding: false, label: 'State' },
-    { id: 'size', numeric: false, disablePadding: false, label: 'Size' },
-    { id: 'type', numeric: false, disablePadding: false, label: 'Type' }
-  ],
-  ip:[
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
-    { id: 'public_ip', numeric: false, disablePadding: false, label: 'Public IP' },
-    { id: 'private_ip', numeric: false, disablePadding: false, label: 'Private IP' },
-    { id: 'sever_id', numeric: false, disablePadding: false, label: 'Server ID' }
-  ],
-  keypair:[
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
-    { id: 'fingerprint', numeric: false, disablePadding: false, label: 'Fingerprint' }
-  ],
-  database:[
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'identifier', numeric: false, disablePadding: true, label: 'Identifier' },
-    { id: 'engine_type', numeric: false, disablePadding: false, label: 'Engine type' },
-    { id: 'engine_version', numeric: false, disablePadding: false, label: 'Engine version' },
-    { id: 'state', numeric: false, disablePadding: false, label: 'State' },
-    { id: 'size', numeric: false, disablePadding: false, label: 'Size' },
-    { id: 'availability', numeric: false, disablePadding: false, label: 'Availability' },
-    { id: 'vpc', numeric: false, disablePadding: false, label: 'VPC' }
-  ],
-  vpc:[
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
-    { id: 'state', numeric: false, disablePadding: false, label: 'State' },
-    { id: 'ipv4_cidr', numeric: false, disablePadding: false, label: 'IPv4 CIDR' },
-    { id: 'ipv6_cidr', numeric: false, disablePadding: false, label: 'IPv6 CIDR' }
-  ],
-  subnet:[
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
-    { id: 'state', numeric: false, disablePadding: false, label: 'State' },
-    { id: 'vpc', numeric: false, disablePadding: false, label: 'VPC' },
-    { id: 'available_ipv4_cidr', numeric: false, disablePadding: false, label: 'Available IPv4 CIDR' },
-    { id: 'ipv4_cidr', numeric: false, disablePadding: false, label: 'IPv4 CIDR' },
-    { id: 'availability_zone', numeric: false, disablePadding: false, label: 'Availability Zone' }
-  ],
-  securitygroup:[
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'id', numeric: false, disablePadding: false, label: 'ID' },
-    { id: 'vpc_id', numeric: false, disablePadding: false, label: 'VPC ID' },
-    { id: 'descryption', numeric: false, disablePadding: false, label: 'Descryption' },
-    { id: 'group_name', numeric: false, disablePadding: false, label: 'Group Name' }
-  ],
-  bucket:[
-    { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
-    { id: 'name', numeric: false, disablePadding: true, label: ' Name ' },
-    { id: 'encryption', numeric: false, disablePadding: false, label: 'Encrpytion' },
-    { id: 'region', numeric: false, disablePadding: false, label: 'Region' },
-    { id: 'create_data', numeric: false, disablePadding: false, label: 'Create Data' }
-  ]
-}
-
-const MATCHINGS = {
-  aws: {
-    server: (key_id, resource) => {
-      let attr = resource.Instances[0]
-      let name = ""
-
-      for (let tag of attr.Tags) {
-        if (tag.Key == "Name")  {
-          name = tag.Value
-          break
-        }
-      }
-      
-      return {
-        key_id: key_id,
-        name: name,
-        id: attr.InstanceId,
-        public_ip: attr.PublicIpAddress,
-        status: attr.State.Name,
-        type: attr.InstanceType,
-      }
-    },
-    volume: (key_id, resource) => {
-      let attr = resource
-      let name = ""
-
-      for (let tag of attr.Tags) {
-        if (tag.Key == "Name")  {
-          name = tag.Value
-          break
-        }
-      }
-      
-      return {
-        key_id: key_id,
-        name: name,
-        id: attr.VolumeId,
-        state: attr.State,
-        size: attr.Size,
-        type: attr.VolumeType,
-      }
-    },
-    ip: (key_id, resource) => {
-      let attr = resource
-      let name = ""
-
-      for (let tag of attr.Tags) {
-        if (tag.Key == "Name")  {
-          name = tag.Value
-          break
-        }
-      }
-      
-      return {
-        key_id: key_id,
-        name: name,
-        id: attr.AllocationId,
-        public_ip: attr.PublicIp,
-        private_ip: attr.PrivateIpAddress,
-        sever_id: attr.InstanceId,
-      }
-    },
-    keypair: (key_id, resource) => {
-      let attr = resource
-      let name = ""
-      
-      return {
-        key_id: key_id,
-        name: attr.KeyName,
-        id: attr.KeyPairId,
-        fingerprint: attr.KeyFingerprint,
-      }
-    },
-    database: (key_id, resource) => {
-      let attr = resource
-
-      return {
-        key_id: key_id,
-        identifier: attr.DBInstanceIdentifier,
-        engine_type: attr.Engine,
-        engine_version: attr.EngineVersion,
-        state:attr.DBInstanceStatus,
-        size: attr.AllocatedStorage,
-        availability: attr.AvailabilityZone,
-        vpc: attr.DBSubnetGroup.VpcId
-      }
-    },
-    vpc: (key_id, resource) => {
-      let attr = resource
-      let name = ""
-      let ipv6 = ""
-
-      for (let tag of attr.Tags) {
-        if (tag.Key == "Name")  {
-          name = tag.Value
-          break
-        }
-      }
-
-      for (let ipv6 of attr.Ipv6CidrBlockAssociationSet) {
-        if (ipv6.Key == "CidrBlock")  {
-          ipv6 = ipv6.Value
-          break
-        }
-      }
-      
-      return {
-        key_id: key_id,
-        name: name,
-        id: attr.VpcId,
-        state: attr.State,
-        ipv4_cidr: attr.CidrBlock,
-        ipv6_cidr: ipv6
-      }
-    },
-    subnet: (key_id, resource) => {
-      let attr = resource
-      let name = ""
-
-      for (let tag of attr.Tags) {
-        if (tag.Key == "Name")  {
-          name = tag.Value
-          break
-        }
-      }
-      
-      return {
-        key_id: key_id,
-        name: name,
-        id: attr.SubnetId,
-        vpc: attr.VpcId,
-        state: attr.State,
-        available_ipv4_cidr: attr.CidrBlock,
-        ipv4_cidr: attr.CidrBlock,
-        availability_zone: attr.AvailabilityZone
-      }
-    },
-    securitygroup: (key_id, resource) => {
-      let attr = resource
-      let name = ""
-
-      for (let tag of attr.Tags) {
-        if (tag.Key == "Name")  {
-          name = tag.Value
-          break
-        }
-      }
-      
-      return {
-        key_id: key_id,
-        name: name,
-        id: attr.GroupId,
-        vpc_id: attr.VpcId,
-        descryption: attr.Description,
-        group_name: attr.GroupName,
-      }
-    },
-    bucket: (key_id, resource) => {
-      let attr = resource
-      
-      return {
-        key_id: key_id,
-        name: attr.Name,
-        encryption: attr.Encryption == null ? "null" : attr.Encryption,
-        region: attr.LocationConstraint,
-        create_data: attr.CreationDate,
-      }
-    }
-  }
 }
 
 function EnhancedTableHead(props) {
@@ -387,7 +145,6 @@ const EnhancedTableToolbar = (props) => {
   let classes = useToolbarStyles();
   const numSelected  = props.numSelected.length;
   const { data }= props;
-  classes = {"root":"makeStyles-root-5","highlight":"makeStyles-highlight-6","title":"makeStyles-title-7"}
   return (
     
     <Toolbar
@@ -600,7 +357,7 @@ export default function EnhancedTable() {
           tmp_type=key.vendor
         }
       }
-      window.location.href=`/detail/${row.key_id}/${type}/${row.id?row.id: row.identifier ? row.identifier : row.name}`
+      window.location.href=`/detail/${row.key_id}/${type}/${btoa(row.id?row.id: row.identifier ? row.identifier : row.name)}`
     }
   }
 

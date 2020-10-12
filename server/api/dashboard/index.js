@@ -3,12 +3,9 @@ const fs = require('fs')
 const PATH = require('path')
 
 function getStatusData(vendor, data){
-    let result = {
-    }
-    let statusJson = undefined
-
-    if (vendor == "aws") {
-        statusJson = {
+    let result = {}
+    let statusJson = {
+        aws: {
             server: resource => {
                 let status = [0, 0]
                 for (let ec2 of resource.compute.server) {
@@ -24,7 +21,6 @@ function getStatusData(vendor, data){
             volume: resource => {
                 let status = [0, 0]
                 for (let ec2 of resource.compute.volume) {
-
                     if (ec2.State == "in-use") {
                         status[0] += 1
                     }
@@ -87,8 +83,52 @@ function getStatusData(vendor, data){
             
             }
             
+        },
+        azure: {
+            server: resource => {
+                let status = [0, 0]
+                for (let vm of resource.compute.server) {
+                    if (vm.properties.status == "running") {
+                        status[0] += 1
+                    }
+                    status[1] += 1
+                }
+                return status
+
+            },
+            volume: resource => {
+                let status = [0, 0]
+
+                for (let disk of resource.compute.volume) {
+                    status[0] += 1
+                    status[1] += disk.properties.diskState == "Attached"
+                }
+                
+                return status
+            },
+            ip: resource => {
+                let status = [resource.compute.ip.length, resource.compute.ip.length]
+                return status
+            },
+            keypair: resource => {
+                let status = [resource.compute.keypair.length, resource.compute.keypair.length]
+                return status
+            },
+            vpc: resource => {
+                let status = [resource.network.vpc.length, resource.network.vpc.length]
+                return status
+            },
+            subnet: resource => {
+                let status = [resource.network.subnet.length, resource.network.subnet.length]
+                return status
+            },
+            securitygroup: resource => {
+                let status = [resource.network.securitygroup.length, resource.network.securitygroup.length]
+                return status
+            },
         }
-    }   
+    }[vendor]
+
 
     for (let key in statusJson) {
         result[key] = statusJson[key](data)
@@ -125,7 +165,7 @@ module.exports = server => {
                 let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
 
                 if (dataFile == undefined) {
-                    break
+                    continue
                 }
 
                 let data = JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
@@ -134,7 +174,9 @@ module.exports = server => {
 
                 for (let session in result) {
                     for (let i = 0; i < 2; i++){
-                        result[session][i] += statusData[session][i]
+                        try {
+                            result[session][i] += statusData[session][i]
+                        } catch { break }
                     }
                 }
             }
