@@ -1,0 +1,35 @@
+$darkGray: #25272b;
+$lightGray: #27262b;
+$point: #7d9edf;
+$text: #6b6e7c;
+$lightText: #9298b1;
+$cardColor: #232429;
+
+.scheduler-container {
+    & .scheduler-btn-container {
+        display: flex;
+        flex-direction: row;
+        margin-left: 30px;
+        & Button {
+            margin-left: 10px;
+        }
+    }
+}
+
+.add-btn {
+}
+
+Button.btn-primary.change-btn {
+}
+
+Button.btn-primary.delete-btn {
+    background: #aa364d !important;
+
+    &:hover {
+        background: #c4425c !important;
+    }
+}
+
+.table .makeStyles-icon-8 {
+    color: #18181f !important;
+}

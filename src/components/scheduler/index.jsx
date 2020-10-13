@@ -11,6 +11,7 @@ class Scheduler extends Component{
         return(
             <div>
                 <Sidebar/>
+                <SchedulerTable/>
             </div>
         );
     }
