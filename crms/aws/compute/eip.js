@@ -21,7 +21,12 @@ async function allocateAddress(key, args=undefined) {
 async function associateAddress(key, args=undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
-    return (await ec2.associateAddress(args).promise())['AssociationId']
+    try{
+        return (await ec2.associateAddress(args).promise())['AssociationId']
+    }
+    catch(e){
+        console.log(e)
+    }
 }
 
 

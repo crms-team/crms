@@ -1,5 +1,5 @@
-import React,{useState, useEffect} from "react";
-import {Modal} from "react-bootstrap";
+import React, { useState, useEffect, useRef } from "react";
+import { Modal } from "react-bootstrap";
 import * as d3 from "d3";
 import "./index.css";
 import { CreateVisualDataFormat } from "../resource";
@@ -9,15 +9,82 @@ import MInfo from "../summary";
 import { VisualStructure, IMAGE_TYPE, resourceState } from "../resource-params";
 import { IconContext } from "react-icons";
 import { GrFormRefresh } from "react-icons/gr";
+import { Dropdown, Tabs, Tab, Form, Button } from "react-bootstrap"
+import { element } from "prop-types";
 
-function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
-    if(dataSet!=undefined){
-        let width = parseInt(window.getComputedStyle(document.querySelector("#root")).width),
-            height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
-        
-        let visualDataset = [];    
+let nodeSvg, linkSvg, simulation, svg;
+
+function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide, visualSetting) {
+    let width = parseInt(window.getComputedStyle(document.querySelector("#root")).width),
+        height = parseInt(window.getComputedStyle(document.querySelector("#root")).height) - 200;
+
+    let root;
+
+    if (dataSet != undefined) {
+        let visualDataset = [];
+
+        let i = 0;
 
         for (let dataset of dataSet) {
+            let divideGroup = {
+                server: {
+                    id: "servergroups",
+                    name: "servergroups",
+                    type: "servergroups",
+                    link: [],
+                    children: []
+                },
+                volume: {
+                    id: "volumegroups",
+                    name: "volumegroups",
+                    type: "volumegroups",
+                    link: [],
+                    children: []
+                },
+                vpc: {
+                    id: "vpcgroups",
+                    name: "vpcgroups",
+                    type: "vpcgroups",
+                    link: [],
+                    children: []
+                },
+                subnet: {
+                    id: "subnetgroups",
+                    name: "subnetgroups",
+                    type: "subnetgroups",
+                    link: [],
+                    children: []
+                },
+                internetgateway: {
+                    id: "interenetgroups",
+                    name: "interenetgroups",
+                    type: "interenetgroups",
+                    link: [],
+                    children: []
+                },
+                securitygroup: {
+                    id: "securitygroups",
+                    name: "securitygroups",
+                    type: "securitygroups",
+                    link: [],
+                    children: []
+                },
+                storage: {
+                    id: "storagegroups",
+                    name: "storagegroups",
+                    type: "storagegroups",
+                    link: [],
+                    children: []
+                },
+                database: {
+                    id: "databasegroups",
+                    name: "databasegroups",
+                    type: "databasegroups",
+                    link: [],
+                    children: []
+                },
+            }
+
             let datasets = {
                 cloud: dataset.filter(item => item.type.toLowerCase() == "aws"),
                 vpc: dataset.filter(item => item.type.toLowerCase() == "vpc"),
@@ -25,116 +92,185 @@ function drawChart(dataSet,handleModalShowHide,handleInstanceDataset){
                 security_group: dataset.filter(item => item.type.toLowerCase() == "securitygroup"),
                 subnet_groups: dataset.filter(item => item.type.toLowerCase() == "subnets"),
                 subnet: dataset.filter(item => item.type.toLowerCase() == "subnet"),
-                ec2: dataset.filter(item => item.type.toLowerCase() == "ec2"),
-                ebs: dataset.filter(item => item.type.toLowerCase() == "ebs"),
+                server: dataset.filter(item => item.type.toLowerCase() == "server"),
+                volume: dataset.filter(item => item.type.toLowerCase() == "volume"),
                 ig: dataset.filter(item => item.type.toLowerCase() == "internetgateway"),
                 s3_groups: dataset.filter(item => item.type.toLowerCase() == "s3_group"),
-                s3: dataset.filter(item => item.type.toLowerCase() == "s3"),
-                rds_groups: dataset.filter(item => item.type.toLowerCase() == "rds_group"),
-                rds: dataset.filter(item => item.type.toLowerCase() == "rds")
+                bucket: dataset.filter(item => item.type.toLowerCase() == "bucket"),
+                database_groups: dataset.filter(item => item.type.toLowerCase() == "database_groups"),
+                database: dataset.filter(item => item.type.toLowerCase() == "database")
             }
-            function make_dataset(resource, parent, vs, check_link){
+
+            let nouse = {
+                id: "nouse:" + dataset[0].id,
+                name: "nouse:" + dataset[0].id,
+                type: "nouse",
+                link: dataset[0].id,
+                children: []
+            }
+
+            function make_dataset(resource, parent, vs, check_link, is_init, nouse) {
                 for (let element of resource) {
                     if (check_link) {
                         for (let link of element.link) {
                             if (parent.id == link) {
                                 for (let child of Object.keys(vs)) {
-                                    make_dataset(datasets[child], element, vs[child], true)
+                                    make_dataset(datasets[child], element, vs[child], true, is_init, nouse)
                                 }
-                                parent.children.push(element)  
+                                if (is_init) {
+                                    parent.children.push(element)
+                                }
                             }
-                        } 
+                        }
+                        if (element.link.length == 0) {
+                            if (visualSetting.type[element.type]) {
+                                divideGroup[element.type].id = divideGroup[element.type].id + ":" + dataset[0].id
+                                divideGroup[element.type].name = divideGroup[element.type].name + ":" + dataset[0].name
+                                divideGroup[element.type].children.push(element)
+                            }
+                        }
                     } else {
                         for (let child of Object.keys(vs)) {
-                            make_dataset(datasets[child], element, vs[child], true)
+                            make_dataset(datasets[child], element, vs[child], true, is_init, nouse)
                         }
-                        parent.push(element)   
-                    }                 
+                        parent.push(element)
+                    }
+                }
+                for (let tmp in divideGroup) {
+                    if (divideGroup[tmp].children.length > 0) {
+                        nouse.children.push(divideGroup[tmp])
+                    }
                 }
             }
-            make_dataset(datasets.cloud, visualDataset, VisualStructure, false)
-        }
 
-        let root = d3.hierarchy({
+            if (visualSetting.status.inuse) {
+                make_dataset(datasets.cloud, visualDataset, VisualStructure, false, datasets.cloud[0].children.length == 0, nouse)
+                if (visualSetting.status.nouse) {
+                    let isNouse = true
+                    for (let tmp of visualDataset[i].children) {
+                        if (tmp.id == nouse.id) {
+                            isNouse = false
+                        }
+                    }
+                    if (isNouse) {
+                        visualDataset[i].children.push(nouse)
+                    }
+                }
+            }
+            if (visualSetting.status.nouse && !visualSetting.status.inuse) {
+                let tmpText = {
+                    id: "",
+                    vendor: "",
+                }
+                for (let tmp of dataset) {
+                    if (tmp.type == "aws") {
+                        tmpText.id = tmp.id;
+                        tmpText.vendor = tmp.type
+                    }
+                    if (tmp.link.length == 0 && tmp.type != "aws") {
+                        nouse.children.push(tmp)
+                    }
+                }
+                visualDataset[i] = {
+                    id: tmpText.id,
+                    name: tmpText.id,
+                    type: tmpText.vendor,
+                    link: [],
+                    children: []
+                }
+                visualDataset[i].children.push(nouse)
+            }
+            i += 1
+        }
+        if (visualDataset.length == 1) {
+            root = d3.hierarchy(visualDataset[0])
+        }
+        else {
+            root = d3.hierarchy({
+                id: "CRMSRootId",
+                name: "CRMS",
+                type: "CRMS",
+                link: [],
+                children: visualDataset,
+            })
+        }
+    }
+    else {
+        root = d3.hierarchy({
             id: "CRMSRootId",
             name: "CRMS",
             type: "CRMS",
             link: [],
-            children: visualDataset,
+            children: [],
         })
-        console.log(root)
+    }
+    svg = d3.select(".Visual")
+        .call(d3.zoom().scaleExtent([1 / 100, 8]).on("zoom", () => {
+            svg.attr("transform", d3.event.transform);
 
-        let nodeSvg, linkSvg, simulation;
-        
-        let svg = d3.select(".Visual")
-            .call(d3.zoom().scaleExtent([1 / 100, 8]).on("zoom", zoomed))
-            .style("background-color", "#27262b")
-            .on("dblclick.zoom", null)
-            .on("contextmenu", function (d, i) {
-                d3.event.preventDefault();
-            })
-            .select("g")
-        svg.append("svg:defs").selectAll("marker")
-            .data(["end"])      // Different link/path types can be defined here
-            .enter().append("svg:marker")    // This section adds in the arrows
-            .attr("id", String)
-            .style("stroke", "#ffc14d")
-            .style("fill", "#ffc14d")
-            .attr("viewBox", "0 -5 10 10")
-            .attr("markerWidth", 10)
-            .attr("markerHeight", 10)
-            .attr("orient", "auto")
-            .append("svg:path")
-            .attr("d", "M0,-5L10,0L0,5")
-        function zoomed() {
-            svg.attr("transform", d3.event.transform)
-        }
-        simulation = d3
-            .forceSimulation()
-            .alpha(0.5)
-            .alphaDecay(0.001)
-            .force("link", d3.forceLink(linkSvg).distance(400))
-            .force("charge", d3.forceManyBody().strength(-2000))
-            .force(
-                "center",
-                d3.forceCenter(width / 2 + 100, height / 2 + 100)
-            )
-            .on("tick", ticked());
+        }))
+        .style("background-color", "#27262b")
+        .on("dblclick.zoom", null)
+        .on("contextmenu", function (d, i) {
+            d3.event.preventDefault();
+        })
+        .select("g")
 
-        update(root,linkSvg,nodeSvg,simulation,svg)
-        
-        function ticked() {
+    svg.append("svg:defs").selectAll("marker")
+        .data(["end"])      // Different link/path types can be defined here
+        .enter().append("svg:marker")    // This section adds in the arrows
+        .attr("id", String)
+        .style("stroke", "#ffc14d")
+        .style("fill", "#ffc14d")
+        .attr("viewBox", "0 -5 10 10")
+        .attr("markerWidth", 10)
+        .attr("markerHeight", 10)
+        .attr("orient", "auto")
+        .append("svg:path")
+        .attr("d", "M0,-5L10,0L0,5");
+
+    simulation = d3
+        .forceSimulation()
+        .alpha(0.5)
+        .alphaDecay(0.001)
+        .force("link", d3.forceLink(linkSvg).distance(400))
+        .force("charge", d3.forceManyBody().strength(-2000))
+        .force(
+            "center",
+            d3.forceCenter(width / 2 + 100, height / 2 + 100)
+        )
+        .on("tick", () => {
             linkSvg
                 .attr("x1", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                    let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.cos(angle)*1.25;
+                    let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.cos(angle) * 1.25;
                     return d.source.x + length;
                 })
                 .attr("y1", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                    let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.sin(angle)*1.25;
+                    let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.sin(angle) * 1.25;
                     return d.source.y + length;
                 })
                 .attr("x2", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                    let length = IMAGE_TYPE[d.target.data.type].circle_size * Math.cos(angle)*1.28;
+                    let length = IMAGE_TYPE[d.target.data.type].circle_size * Math.cos(angle) * 1.28;
                     return d.target.x - length;
                 })
                 .attr("y2", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                    let length = IMAGE_TYPE[d.target.data.type].circle_size * Math.sin(angle)*1.28;
+                    let length = IMAGE_TYPE[d.target.data.type].circle_size * Math.sin(angle) * 1.28;
                     return d.target.y - length;
                 });
 
             nodeSvg.attr("transform", function (d) {
                 return "translate(" + d.x + ", " + d.y + ")";
             });
-        }    
-        
-    }
+        });
+
+    update(handleInstanceDataset, handleModalShowHide, showHide, root);
 }
 
-function update(root,linkSvg,nodeSvg,simulation,svg) {
+function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
 
     let nodes = flatten(root);
     let links = root.links();
@@ -160,7 +296,7 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
     let linkEnter = linkSvg.enter()
         .append("line")
         .attr("class", "link")
-        .style("stroke-width","2.5")
+        .style("stroke-width", "2.5")
         .style("stroke", "#ffc14d")
         .attr("marker-end", "url(#end)");
 
@@ -178,9 +314,9 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
         .on("mouseover", function (d) {
             let thisNode = d.id
             let thislink = d
-            let tmp=0;
+            let tmp = 0;
 
-            function compareId(list, target){
+            function compareId(list, target) {
                 for (let child of list) {
                     if (child.data.id == target.data.id) {
                         return true
@@ -190,10 +326,10 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
             }
 
             function compareList(source, target) {
-                return compareId(source.children, target) || 
-                compareId(target.children, source) || 
-                compareId(source.data.link, target) || 
-                compareId(target.link, source) ? 1 : 0.2
+                return compareId(source.children, target) ||
+                    compareId(target.children, source) ||
+                    compareId(source.data.link, target) ||
+                    compareId(target.link, source) ? 1 : 0.2
             }
 
             d3.selectAll(".link").attr("opacity", function (d) {
@@ -203,33 +339,33 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
                     : 0.2;
             });
             d3.selectAll(".node").attr("opacity", function (d) {
-                if(thislink.id==d.data.id||thislink.id==d.data.name){
+                if (thislink.id == d.data.id || thislink.id == d.data.name) {
                     return 1;
                 }
-                else{
-                    try{
+                else {
+                    try {
                         return compareList(thislink, d)
                     }
-                    catch{
-                        try{
+                    catch {
+                        try {
                             return compareList(d, thislink)
                         }
-                        catch{
-                            try{
-                                for(let i=0;i<thislink.data.link.length;i++){
-                                    if(thislink.data.link[i]==d.data.id){
+                        catch {
+                            try {
+                                for (let i = 0; i < thislink.data.link.length; i++) {
+                                    if (thislink.data.link[i] == d.data.id) {
                                         return 1;
                                     }
                                 }
-                                for(let i=0;i<d.data.link.length;i++){
-                                    if(d.data.link[i]==thislink.data.id){
+                                for (let i = 0; i < d.data.link.length; i++) {
+                                    if (d.data.link[i] == thislink.data.id) {
                                         return 1;
                                     }
                                 }
                             }
-                            catch{
-                                for(let i=0;i<d.data.link.length;i++){
-                                    if(d.data.link[i]==thislink.data.id){
+                            catch {
+                                for (let i = 0; i < d.data.link.length; i++) {
+                                    if (d.data.link[i] == thislink.data.id) {
                                         return 1;
                                     }
                                 }
@@ -237,7 +373,7 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
                         }
                         return 0.2;
                     }
-                }          
+                }
             });
         })
         .on("mouseout", function (d) {
@@ -246,7 +382,10 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
         })
         .on("contextmenu", function (d) {
             d3.event.preventDefault();
-            if (d.children) {
+            if (d.data.type == "CRMS") {
+                return
+            }
+            else if (d.children) {
                 let check = 0;
                 if (d.data.type == "subnet") {
                     for (let i = 0; i < d.children.length; i++) {
@@ -260,7 +399,7 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
                 }
                 d._children = d.children;
                 d.children = null;
-                update();
+                update(handleInstanceDataset, handleModalShowHide, showHide, root);
                 simulation.restart();
                 if (check != 0) {
                     for (let i = 0; i < check; i++) {
@@ -270,15 +409,23 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
             } else {
                 d.children = d._children;
                 d._children = null;
-                update();
+                update(handleInstanceDataset, handleModalShowHide, showHide, root);
                 simulation.restart();
             }
 
         })
         .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended))
+            .on("start", (d) => {
+                if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                simulation.fix(d);
+            })
+            .on("drag", (d) => {
+                simulation.fix(d, d3.event.x, d3.event.y);
+            })
+            .on("end", (d) => {
+                if (!d3.event.active) simulation.alphaTarget(0);
+                simulation.unfix(d);
+            }))
 
     nodeEnter.append("circle")
         .attr("stroke", function (d) {
@@ -286,10 +433,10 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
             let rType = d.data.type
             try {
                 let status = resourceState[rType](data.data)
-                if (rType == "ebs") {
+                if (rType == "volume") {
                     status -= 6;
                 }
-                let colors = ["#93c900", "#ff5a76", "#ff5a76", "#ff5a76", "#9298b1","#6c9aff"]
+                let colors = ["#93c900", "#ff5a76", "#ff5a76", "#ff5a76", "#9298b1", "#6c9aff"]
                 return colors[status]
             } catch (e) {
                 return "#ffc14d";
@@ -306,23 +453,31 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
         .attr("xlink:href", function (d) {
             return IMAGE_TYPE[d.data.type].image
         })
-        .attr("height", function(d){
-            return (IMAGE_TYPE[d.data.type].circle_size*(1.5))
+        .attr("height", function (d) {
+            return (IMAGE_TYPE[d.data.type].circle_size * (1.5))
         })
-        .attr("width", function(d){
-            return (IMAGE_TYPE[d.data.type].circle_size*(1.5))
+        .attr("width", function (d) {
+            return (IMAGE_TYPE[d.data.type].circle_size * (1.5))
         })
-        .attr("x", function(d){
-            return -(IMAGE_TYPE[d.data.type].circle_size*(1.5))/2
+        .attr("x", function (d) {
+            return -(IMAGE_TYPE[d.data.type].circle_size * (1.5)) / 2
         })
-        .attr("y", function(d){
-            return -(IMAGE_TYPE[d.data.type].circle_size*(1.5))/2
+        .attr("y", function (d) {
+            return -(IMAGE_TYPE[d.data.type].circle_size * (1.5)) / 2
         })
+        .on("click", (d) => {
+            try {
+                handleInstanceDataset(d.data);
+                handleModalShowHide(!showHide)
+            } catch (e) {
+                return;
+            }
+        });
 
     nodeEnter
         .append("text")
-        .attr("dy", (d)=>{
-            return (IMAGE_TYPE[d.data.type].circle_size*(1.5))/2+3
+        .attr("dy", (d) => {
+            return (IMAGE_TYPE[d.data.type].circle_size * (1.5)) / 2 + 3
         })
         .style("fill", "#ffc14d")
         .attr('stroke', 'white')
@@ -342,22 +497,7 @@ function update(root,linkSvg,nodeSvg,simulation,svg) {
     simulation.force("link").links(links);
 }
 
-function dragstarted(d,simulation) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-    simulation.fix(d);
-}
-
-function dragged(d, simulation) {
-    simulation.fix(d, d3.event.x, d3.event.y);
-}
-
-function dragended(d, simulation) {
-    if (!d3.event.active) simulation.alphaTarget(0);
-    simulation.unfix(d);
-}
-
 function flatten(root) {
-    // hierarchical data to flat data for force layout
     let nodes = [];
 
     function recurse(node) {
@@ -365,62 +505,112 @@ function flatten(root) {
         if (!node.id) node.id = node.data.name;
         nodes.push(node);
     }
+
     recurse(root);
+
     return nodes;
 }
 
-function specifyNode(type){
+function specifyNode(visualSet, dataSet, handleModalShowHide, handleInstanceDataset, showHide) {
+    let specifyData = []
 
+    for (let cloud in visualSet.cloudlist) {
+        for (let key of dataSet) {
+            if (visualSet.cloudlist[cloud]) {
+                if (key[0].id == cloud) {
+                    specifyData.push(key)
+                }
+            }
+        }
+    }
+
+    if (specifyData.length == 0) {
+        specifyData = undefined
+    }
+
+    drawChart(specifyData, handleModalShowHide, handleInstanceDataset, showHide, visualSet)
 }
 
 
-function Visual(){
+function Visual() {
 
-    const [showHide,setShowhide]=React.useState(false);
-    const [instanceData,setInstanceData]=React.useState(undefined);
-    const [keyList,setKeyList]=React.useState(undefined);
-    const [isFirst,setIsFirst]=React.useState(true);
-    const [dataSet,setDataset]=React.useState(undefined);
-    const [showDataSet,setShowDataset]=React.useState(undefined);
+    const visualRef = useRef();
 
-    async function getVisualData(type = undefined) {
+    const [visualSetting, setVisualSetting] = React.useState(undefined);
+    const [showHide, setShowhide] = React.useState(false);
+    const [instanceData, setInstanceData] = React.useState(undefined);
+    const [keyList, setKeyList] = React.useState(undefined);
+    const [dataSet, setDataset] = React.useState(undefined);
+    const [showDataSet, setShowDataset] = React.useState(undefined);
+
+    async function getVisualData(keys, type = undefined) {
         let result = []
-        for (let key in keyList) {
-            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${keyList[key].key}` + (type ? `&type=${type}` : '')
-            let response = await fetch(ep).then((res)=>res.json())
-            result.push(CreateVisualDataFormat(keyList[key].key, keyList[key].vendor, response.data))
+        let cloudList = {}
+        for (let key of keys) {
+            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key.key}` + (type ? `&type=${type}` : '')
+            let response = await fetch(ep).then((res) => res.json())
+            cloudList[key.key] = true
+            result.push(CreateVisualDataFormat(key.key, key.vendor, response.data))
         }
+
+        setVisualSetting({
+            cloudlist: cloudList,
+            status: {
+                inuse: true,
+                nouse: false
+            },
+            type: {
+                server: true,
+                volume: true,
+                vpc: true,
+                subnet: true,
+                securitygroup: true,
+                internetgateway: true,
+                storage: true,
+                database: true,
+            }
+        })
         setDataset(result);
     }
 
     async function temp(params) {
-        await getVisualData("data")
+        let keys = JSON.parse(localStorage.getItem("key"))
+        setKeyList(keys)
+        await getVisualData(keys, "data")
     }
 
-    useEffect(()=>{
-        setIsFirst(!isFirst)
-    },[])
-
-    useEffect(()=> {
-        setKeyList(JSON.parse(localStorage.getItem("key")))
+    useEffect(() => {
         temp()
-    },[isFirst])
+    }, [])
 
-    useEffect(()=> {
-        drawChart(dataSet,handleModalShowHide,handleInstanceDataset)
-    },[dataSet])
+    useEffect(() => {
+        visualRef.current = visualSetting
+        drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide, visualSetting)
+    }, [dataSet])
 
-    const handleInstanceDataset = (d) =>{
-        setInstanceData(d.data)
+    const handleInstanceDataset = (d) => {
+        setInstanceData(d)
     }
 
-    const handleModalShowHide = () =>{
+    const handleModalShowHide = () => {
         setShowhide(!showHide);
     }
 
-    return(
+    const handleCloudList = (key) => {
+        visualRef.current.cloudlist[key] = !visualRef.current.cloudlist[key]
+    }
+
+    const handleStatus = (key) => {
+        visualRef.current.status[key] = !visualRef.current.status[key]
+    }
+
+    const handleType = (key) => {
+        visualRef.current.type[key] = !visualRef.current.type[key]
+    }
+
+    return (
         <>
-            <CreateModal/>
+            <CreateModal />
             <Modal
                 show={showHide}
                 size="lg"
@@ -442,6 +632,45 @@ function Visual(){
             <svg className="Visual">
                 <g></g>
             </svg>
+            <div className="selectKey">
+                <Dropdown>
+                    <Dropdown.Toggle variant="warning" id="dropdown-basic">
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Tabs defaultActiveKey="cloudlist" id="controlled-tab-example">
+                            <Tab eventKey="cloudlist" title="Cloud List">
+                                {localStorage.getItem("key") &&
+                                    JSON.parse(localStorage.getItem("key")).map(
+                                        (v) => {
+                                            return (
+                                                <Form.Check key={v.key} type="checkbox" label={v.key} defaultChecked onChange={() => { handleCloudList(v.key) }} />
+                                            );
+                                        }
+                                    )}
+                            </Tab>
+                            <Tab eventKey="status" title="Status">
+                                <Form.Check type="checkbox" key="inuse" label="In use" defaultChecked onChange={() => { handleStatus("inuse") }} />
+                                <Form.Check type="checkbox" key="nouse" label="No use" onChange={() => { handleStatus("nouse") }} />
+                            </Tab>
+                            <Tab eventKey="type" title="Type">
+                                <Form.Check type="checkbox" key="server" label="Server" defaultChecked onChange={() => { handleType("server") }} />
+                                <Form.Check type="checkbox" key="volume" label="Volume" defaultChecked onChange={() => { handleType("volume") }} />
+                                <Form.Check type="checkbox" key="vpc" label="VPC" defaultChecked onChange={() => { handleType("vpc") }} />
+                                <Form.Check type="checkbox" key="subnet" label="Subnet" defaultChecked onChange={() => { handleType("subnet") }} />
+                                <Form.Check type="checkbox" key="internetgateway" label="InternetgateWay" defaultChecked onChange={() => { handleType("internetgateway") }} />
+                                <Form.Check type="checkbox" key="securitygroup" label="SecurityGroup" defaultChecked onChange={() => { handleType("securitygroup") }} />
+                                <Form.Check type="checkbox" key="storage" label="Storage" defaultChecked onChange={() => { handleType("storage") }} />
+                                <Form.Check type="checkbox" key="database" label="Database" defaultChecked onChange={() => { handleType("database") }} />
+                            </Tab>
+                        </Tabs>
+                        <Button variant="primary" onClick={() => {
+                            specifyNode(visualRef.current, dataSet, handleModalShowHide, handleInstanceDataset, showHide)
+                        }}>
+                            Setting
+                    </Button>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div>
             <div className="time">
                 <button
                     className="refresh"

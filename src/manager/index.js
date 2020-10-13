@@ -74,7 +74,7 @@ const summaryType ={
   vpc: {
     manage: awsManager.VpcManager,
   },
-  eip: {
+  ip: {
     manage: awsManager.EIPManager,
   },
   subnet: {

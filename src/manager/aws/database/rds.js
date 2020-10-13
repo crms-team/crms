@@ -3,7 +3,7 @@ import { Manager } from "../../manager";
 
 export class RDSManager extends Manager {
     static endpoint() {
-        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/rds`
+        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/database`
     }
 
     static async update(keyId, args) {

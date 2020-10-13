@@ -22,7 +22,8 @@ async function createVolume(key, args=undefined) {
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     try {
         return (await ec2.createVolume(args).promise())['VolumeId']
-    } catch {
+    } catch(e) {
+        console.log(e)
         console.log("EBS POST Error (createVolume Error)")
         return false        
     }

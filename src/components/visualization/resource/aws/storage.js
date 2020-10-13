@@ -6,7 +6,7 @@ class S3 extends CloudResourceDataFormat{
     constructor(keyId, data) {
         super(keyId)
 
-        let type = 's3'
+        let type = 'bucket'
         this.type = type
         this.id = this.makeId(type, data.Name)
         let name = data.Name
@@ -30,5 +30,5 @@ class S3 extends CloudResourceDataFormat{
 }
 
 export default {
-    s3: S3
+    bucket: S3
 }

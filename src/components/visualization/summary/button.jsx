@@ -24,20 +24,18 @@ class Instancebutton extends React.Component {
     render() {
         let statusButton = undefined
 
-        if (this.state.status < 1) {
+        if (this.state.status < 1 && (this.state.type=="server"||this.state.type=="database") ) {
             statusButton = <Button variant="warning" onClick={async ()=>{
                 let id = this.props.data.id.split(":")[2]
                 let key_id = this.props.data.id.split(":")[0]
                 let rst = await summaryType[this.state.type]["manage"].stop(key_id,id)
-                console.log(rst)
             }}>Off</Button>
 
-        } else if (this.state.status < 5) {
+        } else if (this.state.status < 5 && (this.state.type=="server"||this.state.type=="database")) {
             statusButton = <Button variant="warning" onClick={async ()=>{
                   let id = this.props.data.id.split(":")[2]
                   let key_id = this.props.data.id.split(":")[0]
                   let rst = await summaryType[this.state.type]["manage"].start(key_id,id)
-                  console.log(rst)
               }}>On</Button>
         }
 

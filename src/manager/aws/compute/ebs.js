@@ -2,7 +2,7 @@ import { Manager } from "../../manager";
 
 export class EBSManager extends Manager{
     static endpoint() {
-        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/ebs`
+        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/volume`
     }
 
     static async create(keyId, args) {

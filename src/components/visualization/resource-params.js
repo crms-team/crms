@@ -13,8 +13,8 @@ export const VisualStructure = {
     vpc: {
         subnet_groups: {
             subnet: {
-                ec2: {
-                    ebs: {},
+                server: {
+                    volume: {},
                 },
             },
         },
@@ -22,26 +22,26 @@ export const VisualStructure = {
             security_group: {},
         },
         ig: {},
-        rds_groups: {
-            rds: {},
+        database_groups: {
+            database: {},
         },
     },
     s3_groups: {
-        s3: {},
+        bucket: {},
     },
 };
 
 export const IMAGE_TYPE={
-    ebs:{
+    volume:{
         image:"/images/ebs.svg", circle_size: CIRCLE_SIZE_L1
     },
-    ec2:{
+    server:{
         image:"/images/compute.svg", circle_size:CIRCLE_SIZE_L2
     },
-    rds:{
+    database:{
         image:"/images/rds group.svg", circle_size:CIRCLE_SIZE_L2
     },
-    s3:{
+    bucket:{
         image:"/images/storage.svg", circle_size:CIRCLE_SIZE_L2
     },
     subnet:{
@@ -56,7 +56,7 @@ export const IMAGE_TYPE={
     s3_group:{
         image:"/images/s3 group.svg", circle_size: CIRCLE_SIZE_L3
     },
-    rds_group:{
+    database_groups:{
         image:"/images/rds group.svg", circle_size: CIRCLE_SIZE_L3
     },
     securitygroups:{
@@ -71,13 +71,34 @@ export const IMAGE_TYPE={
     aws: {
         image:"/images/cloud.svg", circle_size: CIRCLE_SIZE_L6
     },
+    nouse: {
+        image:"/images/cloud.svg", circle_size: CIRCLE_SIZE_L3
+    },
     CRMS: {
         image:"/images/CRMS.svg", circle_size: CIRCLE_SIZE_L7
+    },
+    servergroups:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },volumegroups:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },vpcgroups:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },subnetgroups:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },interenetgroups:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },securitygroups:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },storagegroups:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    },databasegroups:{
+        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
     }
+
 }
 
 export const resourceState={
-    ec2: resource => {
+    server: resource => {
         let status = resource['State']
         let scase = {
             stopped: 1,
@@ -89,7 +110,7 @@ export const resourceState={
         }
         return scase[status]
     },
-    rds:resource=>{
+    database:resource=>{
         let status = resource['DBInstanceStatus']
         let scase = {
             available: 0,
@@ -102,7 +123,7 @@ export const resourceState={
         }
         return scase[status]
     },
-    ebs:resource=>{
+    volume:resource=>{
         let status = resource['State']
         let scase = {
             "creating": 11,

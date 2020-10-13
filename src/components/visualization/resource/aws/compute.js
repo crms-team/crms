@@ -7,7 +7,7 @@ class EC2 extends CloudResourceDataFormat {
         super(keyId)
         data = data.Instances[0]
 
-        let type = 'ec2'
+        let type = 'server'
         this.type = type
         this.id = this.makeId(type, data.InstanceId)
         let name = this.getTagName(data.Tags)
@@ -52,7 +52,7 @@ class EBS extends CloudResourceDataFormat {
     constructor(keyId, data) {
         super(keyId)
 
-        let type = 'ebs'
+        let type = 'volume'
         this.type = type
         this.id = this.makeId(type, data.VolumeId)
         let name = this.getTagName(data.Tags)
@@ -74,7 +74,7 @@ class EBS extends CloudResourceDataFormat {
 
         // add link EC2
         for (let ec2 of data.Attachments) {
-            this.link.push(this.makeId('ec2', ec2.InstanceId))
+            this.link.push(this.makeId('server', ec2.InstanceId))
         }
     }
     getTagName(tagData) {
@@ -91,7 +91,7 @@ class EIP extends CloudResourceDataFormat {
         super(keyId)
         data = data.Instances[0]
 
-        let type = 'eip'
+        let type = 'ip'
         this.type = type
         this.id = this.makeId(type, data.InstanceId)
         let name = this.getTagName(data.Tags)
@@ -124,6 +124,6 @@ class EIP extends CloudResourceDataFormat {
 
 
 export default {
-    ec2: EC2,
-    ebs: EBS
+    server: EC2,
+    volume: EBS
 }

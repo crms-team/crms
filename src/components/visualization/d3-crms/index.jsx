@@ -166,7 +166,8 @@ class Visual extends Component {
                 type: "CRMS",
                 link: [],
                 children: visualDataset,
-            });
+            })
+
             let nodeSvg, linkSvg, simulation;
 
             let svg = d3
@@ -199,10 +200,6 @@ class Visual extends Component {
                 .append("svg:path")
                 .attr("d", "M0,-5L10,0L0,5");
 
-            function zoomed() {
-                svg.attr("transform", d3.event.transform);
-            }
-
             simulation = d3
                 .forceSimulation()
                 .alpha(0.5)
@@ -215,6 +212,10 @@ class Visual extends Component {
                 )
                 .on("tick", ticked);
 
+            function zoomed() {
+                svg.attr("transform", d3.event.transform);
+            }
+            
             const stateFunc = this.setState.bind(this);
 
             update(stateFunc, this.state);
@@ -569,7 +570,7 @@ class Visual extends Component {
 
     async componentDidMount() {
         this.setState({ keyList: await this.getKeyData() });
-        this.setState({ dataset: await this.getVisualData() });
+        this.setState({ dataset: await this.getVisualData(true) });
 
         if (this.state.isFirst) {
             this.drawChart();

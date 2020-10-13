@@ -1,8 +1,7 @@
 const fs = require('fs')
 const PATH =  require('path')
 const vendors = {
-    aws: require('./aws'),
-    azure: require('./azure')
+    aws: require('./aws')
 }
 
 function getLastDataFileName(path, keyId){
