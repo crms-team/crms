@@ -365,7 +365,7 @@ class EC2 extends React.Component {
                             }
                         </Form.Control>
                     </Form.Group>
-                    <hr></hr>
+                    <hr className="divideLine"></hr>
                     <Form.Label className="subtitle"> Volume </Form.Label>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>EBS size</Form.Label>
@@ -397,7 +397,7 @@ class EC2 extends React.Component {
                             <option>마그네틱(standard)</option>
                         </Form.Control>
                     </Form.Group>
-                    <hr></hr>
+                    <hr className="divideLine"></hr>
                     <Form.Label className="subtitle"> Network </Form.Label>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Row className="align-items-center">
@@ -677,7 +677,7 @@ class EBS extends React.Component {
                             }}
                         />
                     </Form.Group>
-                    <hr></hr>
+                    <hr className="divideLine"></hr>
                     <Form.Label className="subtitle"> Secure </Form.Label>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Encrypted</Form.Label>
@@ -827,6 +827,7 @@ class VPC extends React.Component {
                     id="list-group-tabs-example"
                     defaultActiveKey="#tag"
                 >
+                    <Form.Label className="subtitle"> CidrBlock </Form.Label>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>CidrBlock *</Form.Label>
                         <Form.Control
@@ -853,6 +854,8 @@ class VPC extends React.Component {
                             <option>false</option>
                         </Form.Control>
                     </Form.Group>
+                    <hr className="divideLine"></hr>
+                    <Form.Label className="subtitle"> Else </Form.Label>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>InstanceTenancy</Form.Label>
                         <Form.Control
@@ -966,6 +969,7 @@ class Subnet extends React.Component {
                     id="list-group-tabs-example"
                     defaultActiveKey="#tag"
                 >
+                    <Form.Label className="subtitle"> CidrBlock </Form.Label>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>CidrBlock *</Form.Label>
                         <Form.Control
@@ -986,6 +990,8 @@ class Subnet extends React.Component {
                             }}
                         />
                     </Form.Group>
+                    <hr className="divideLine"></hr>
+                    <Form.Label className="subtitle"> Network </Form.Label>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Row className="align-items-center">
                             <Col xs="auto" className="my-1">
@@ -1035,6 +1041,8 @@ class Subnet extends React.Component {
                             {this.state.AZ}
                         </Form.Control>
                     </Form.Group>
+                    <hr className="divideLine"></hr>
+                    <Form.Label className="subtitle"> Else </Form.Label>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Tags</Form.Label>
                         <Form.Control
@@ -1218,6 +1226,7 @@ class RDS extends React.Component {
                     id="list-group-tabs-example"
                     defaultActiveKey="#tag"
                 >
+                    <Form.Label className="subtitle"> Engine </Form.Label>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Engine *</Form.Label>
                         <Form.Control
@@ -1255,6 +1264,8 @@ class RDS extends React.Component {
                             {this.state.tmp_version}
                         </Form.Control>
                     </Form.Group>
+                    <hr className="divideLine"></hr>
+                    <Form.Label className="subtitle"> Database </Form.Label>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>DBInstanceIdentifier *</Form.Label>
                         <Form.Control
@@ -1262,6 +1273,16 @@ class RDS extends React.Component {
                             onChange={(e) => {
                                 let val = e.target.value;
                                 this.func("DBInstanceIdentifier", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>DBName</Form.Label>
+                        <Form.Control
+                            placeholder="Enter DBName"
+                            onChange={(e) => {
+                                let val = e.target.value;
+                                this.func("DBName", val);
                             }}
                         />
                     </Form.Group>
@@ -1301,6 +1322,18 @@ class RDS extends React.Component {
                             {this.state.tmp_class}
                         </Form.Control>
                     </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Port</Form.Label>
+                        <Form.Control
+                            placeholder="Enter Port"
+                            onChange={(e) => {
+                                let val = parseInt(e.target.value);
+                                this.func("Port", val);
+                            }}
+                        />
+                    </Form.Group>
+                    <hr className="divideLine"></hr>
+                    <Form.Label className="subtitle"> Volume </Form.Label>
                     {this.state.type == "aurora" ? <></> :
                         <Form.Group controlId="exampleForm.ControlSelect1">
                             <Form.Label>StorageType</Form.Label>
@@ -1346,6 +1379,21 @@ class RDS extends React.Component {
                             </Form.Group>
                             : <></>
                     }
+                    {this.state.type == "aurora" ? <></> :
+                        this.state.volumeType == "standard" ? <></> :
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>MaxAllocatedStorage</Form.Label>
+                                <Form.Control
+                                    placeholder={volumeType[this.state.volumeType]}
+                                    onChange={(e) => {
+                                        let val = parseInt(e.target.value);
+                                        this.func("MaxAllocatedStorage", val);
+                                    }}
+                                />
+                            </Form.Group>
+                    }
+                    <hr className="divideLine"></hr>
+                    <Form.Label className="subtitle"> Network </Form.Label>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>DBSubnetGroupName</Form.Label>
                         <Form.Control
@@ -1365,6 +1413,8 @@ class RDS extends React.Component {
                             }
                         </Form.Control>
                     </Form.Group>
+                    <hr className="divideLine"></hr>
+                    <Form.Label className="subtitle"> Network </Form.Label>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>StorageEncrypted</Form.Label>
                         <Form.Control
@@ -1381,19 +1431,6 @@ class RDS extends React.Component {
                             <option>False</option>
                         </Form.Control>
                     </Form.Group>
-                    {this.state.type == "aurora" ? <></> :
-                        this.state.volumeType == "standard" ? <></> :
-                            <Form.Group controlId="formBasicEmail">
-                                <Form.Label>MaxAllocatedStorage</Form.Label>
-                                <Form.Control
-                                    placeholder={volumeType[this.state.volumeType]}
-                                    onChange={(e) => {
-                                        let val = parseInt(e.target.value);
-                                        this.func("MaxAllocatedStorage", val);
-                                    }}
-                                />
-                            </Form.Group>
-                    }
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>MultiAZ</Form.Label>
                         <Form.Control
@@ -1410,16 +1447,8 @@ class RDS extends React.Component {
                             <option>False</option>
                         </Form.Control>
                     </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>DBName</Form.Label>
-                        <Form.Control
-                            placeholder="Enter DBName"
-                            onChange={(e) => {
-                                let val = e.target.value;
-                                this.func("DBName", val);
-                            }}
-                        />
-                    </Form.Group>
+                    <hr className="divideLine"></hr>
+                    <Form.Label className="subtitle"> Else </Form.Label>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>BackupRetentionPeriod</Form.Label>
                         <Form.Control
@@ -1445,16 +1474,6 @@ class RDS extends React.Component {
                             <option>True</option>
                             <option>False</option>
                         </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Port</Form.Label>
-                        <Form.Control
-                            placeholder="Enter Port"
-                            onChange={(e) => {
-                                let val = parseInt(e.target.value);
-                                this.func("Port", val);
-                            }}
-                        />
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>AutoMinorVersionUpgrade</Form.Label>
