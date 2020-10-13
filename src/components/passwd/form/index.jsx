@@ -7,6 +7,7 @@ class Form extends Component {
         this.state = {
             value : '',
         };
+        
         this.onChange.bind()
         this.tryLogin.bind()
         this.onKeyPress.bind()
