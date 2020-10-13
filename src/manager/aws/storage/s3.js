@@ -3,7 +3,7 @@ import { Manager } from "../../manager";
 
 export class S3Manager extends Manager {
     static endpoint() {
-        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/s3`
+        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/bucket`
     }
 
     static async update(keyId, args) {

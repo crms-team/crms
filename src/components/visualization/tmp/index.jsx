@@ -23,65 +23,65 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
     if (dataSet != undefined) {
         let visualDataset = [];
 
-        let i=0;
+        let i = 0;
 
         for (let dataset of dataSet) {
-            let divideGroup ={
+            let divideGroup = {
                 server: {
                     id: "servergroups",
                     name: "servergroups",
                     type: "servergroups",
-                    link:[],
-                    children:[]
+                    link: [],
+                    children: []
                 },
                 volume: {
                     id: "volumegroups",
                     name: "volumegroups",
                     type: "volumegroups",
-                    link:[],
-                    children:[]
+                    link: [],
+                    children: []
                 },
-                vpc:  {
+                vpc: {
                     id: "vpcgroups",
                     name: "vpcgroups",
                     type: "vpcgroups",
-                    link:[],
-                    children:[]
+                    link: [],
+                    children: []
                 },
                 subnet: {
                     id: "subnetgroups",
                     name: "subnetgroups",
                     type: "subnetgroups",
-                    link:[],
-                    children:[]
+                    link: [],
+                    children: []
                 },
-                internetgateway:  {
+                internetgateway: {
                     id: "interenetgroups",
                     name: "interenetgroups",
                     type: "interenetgroups",
-                    link:[],
-                    children:[]
+                    link: [],
+                    children: []
                 },
-                securitygroup:  {
+                securitygroup: {
                     id: "securitygroups",
                     name: "securitygroups",
                     type: "securitygroups",
-                    link:[],
-                    children:[]
+                    link: [],
+                    children: []
                 },
-                storage:  {
+                storage: {
                     id: "storagegroups",
                     name: "storagegroups",
                     type: "storagegroups",
-                    link:[],
-                    children:[]
+                    link: [],
+                    children: []
                 },
-                database:  {
+                database: {
                     id: "databasegroups",
                     name: "databasegroups",
                     type: "databasegroups",
-                    link:[],
-                    children:[]
+                    link: [],
+                    children: []
                 },
             }
 
@@ -101,85 +101,87 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                 database: dataset.filter(item => item.type.toLowerCase() == "database")
             }
 
-            let nouse={
-                id:"nouse:"+dataset[0].id,
-                name:"nouse:"+dataset[0].id,
-                type:"nouse",
-                link:dataset[0].id,
-                children:[]
+            let nouse = {
+                id: "nouse:" + dataset[0].id,
+                name: "nouse:" + dataset[0].id,
+                type: "nouse",
+                link: dataset[0].id,
+                children: []
             }
 
-            function make_dataset(resource, parent, vs, check_link, is_init,nouse) {
+            function make_dataset(resource, parent, vs, check_link, is_init, nouse) {
                 for (let element of resource) {
                     if (check_link) {
                         for (let link of element.link) {
                             if (parent.id == link) {
                                 for (let child of Object.keys(vs)) {
-                                    make_dataset(datasets[child], element, vs[child], true, is_init,nouse)
+                                    make_dataset(datasets[child], element, vs[child], true, is_init, nouse)
                                 }
                                 if (is_init) {
-                                    
                                     parent.children.push(element)
                                 }
                             }
                         }
-                        if(element.link.length == 0 ){
-                            if(visualSetting.type[element.type]){
-                                divideGroup[element.type].id=divideGroup[element.type].id+":"+dataset[0].id
-                                divideGroup[element.type].name=divideGroup[element.type].name+":"+dataset[0].name
+                        if (element.link.length == 0) {
+                            if (visualSetting.type[element.type]) {
+                                divideGroup[element.type].id = divideGroup[element.type].id + ":" + dataset[0].id
+                                divideGroup[element.type].name = divideGroup[element.type].name + ":" + dataset[0].name
                                 divideGroup[element.type].children.push(element)
-                            }
-                            for(let tmp in divideGroup){
-                                if(divideGroup[tmp].children.length>0){
-                                    nouse.children.push(divideGroup[tmp])
-                                }
                             }
                         }
                     } else {
                         for (let child of Object.keys(vs)) {
-                            make_dataset(datasets[child], element, vs[child], true, is_init,nouse)
+                            make_dataset(datasets[child], element, vs[child], true, is_init, nouse)
                         }
                         parent.push(element)
                     }
                 }
-
+                for (let tmp in divideGroup) {
+                    if (divideGroup[tmp].children.length > 0) {
+                        nouse.children.push(divideGroup[tmp])
+                    }
+                }
             }
-            if(visualSetting.status.inuse){
-                    make_dataset(datasets.cloud, visualDataset, VisualStructure, false, datasets.cloud[0].children.length == 0,nouse)
-                    if(visualSetting.status.nouse){
-                        let isNouse=true
-                        for(let tmp of visualDataset[i].children){
-                            if(tmp.id==nouse.id){
-                                isNouse=false
-                            }
-                        }
-                        if(isNouse) {
-                            visualDataset[i].children.push(nouse)
-                        }
-                        else{
 
+            if (visualSetting.status.inuse) {
+                make_dataset(datasets.cloud, visualDataset, VisualStructure, false, datasets.cloud[0].children.length == 0, nouse)
+                if (visualSetting.status.nouse) {
+                    let isNouse = true
+                    for (let tmp of visualDataset[i].children) {
+                        if (tmp.id == nouse.id) {
+                            isNouse = false
                         }
                     }
+                    if (isNouse) {
+                        visualDataset[i].children.push(nouse)
+                    }
+                }
             }
-            if(visualSetting.status.nouse&&!visualSetting.status.inuse){          
-                for(let tmp of dataset){
-                    if(tmp.link.length==0&&tmp.type!="aws"){
+            if (visualSetting.status.nouse && !visualSetting.status.inuse) {
+                let tmpText = {
+                    id: "",
+                    vendor: "",
+                }
+                for (let tmp of dataset) {
+                    if (tmp.type == "aws") {
+                        tmpText.id = tmp.id;
+                        tmpText.vendor = tmp.type
+                    }
+                    if (tmp.link.length == 0 && tmp.type != "aws") {
                         nouse.children.push(tmp)
                     }
                 }
-                visualDataset[i]={
-                        id: dataset[0].id,
-                        name: dataset[0].name,
-                        type: dataset[0].type,
-                        link: [],
-                        children: []
+                visualDataset[i] = {
+                    id: tmpText.id,
+                    name: tmpText.id,
+                    type: tmpText.vendor,
+                    link: [],
+                    children: []
                 }
                 visualDataset[i].children.push(nouse)
             }
-            i+=1
+            i += 1
         }
-        
-
         if (visualDataset.length == 1) {
             root = d3.hierarchy(visualDataset[0])
         }
@@ -264,12 +266,12 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                 return "translate(" + d.x + ", " + d.y + ")";
             });
         });
-    
+
     update(handleInstanceDataset, handleModalShowHide, showHide, root);
 }
 
 function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
-    
+
     let nodes = flatten(root);
     let links = root.links();
 
@@ -380,7 +382,7 @@ function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
         })
         .on("contextmenu", function (d) {
             d3.event.preventDefault();
-            if(d.data.type=="CRMS"){
+            if (d.data.type == "CRMS") {
                 return
             }
             else if (d.children) {
