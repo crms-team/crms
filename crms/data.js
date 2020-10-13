@@ -1,7 +1,8 @@
 const fs = require('fs')
 const PATH =  require('path')
 const vendors = {
-    aws: require('./aws')
+    aws: require('./aws'),
+    azure: require('./azure')
 }
 
 function getLastDataFileName(path, keyId){
@@ -29,13 +30,30 @@ function compareObject(obj1, obj2) {
 
     let keys = Array.from(new Set([...key1, ...key2]))
 
-
     for (let key of keys) {
         let val1 = typeof obj1[key] == 'object' ? JSON.stringify(obj1[key]) : obj1[key]
         let val2 = typeof obj2[key] == 'object' ? JSON.stringify(obj2[key]) : obj2[key]
         
         if (val1 != val2) {
             result[key] = { 'before': obj1[key], 'after': obj2[key]}
+        }
+    }
+
+    return result
+}
+
+function makeDetailObject(obj1, obj2) {
+    let std = obj1 || obj2
+    let keys = Object.keys(std)
+    let result = {}
+
+    for (let key of keys) {
+        let val1 = typeof obj1[key] == 'object' ? JSON.stringify(obj1[key]) : typeof obj1[key] == 'undefined' ? '' : obj1[key]
+        let val2 = typeof obj2[key] == 'object' ? JSON.stringify(obj2[key]) : typeof obj2[key] == 'undefined' ? '' : obj2[key]
+
+        result[key] = {
+            before: val1,
+            after: val2
         }
     }
 
@@ -49,8 +67,7 @@ function compareResources(vendor, type, preData, nowData) {
     let result = {
         create: [],
         remove: [],
-        modify: [],
-        modifyDetail: {}
+        modify: []
     }
 
     let xPreData = {}
@@ -77,13 +94,21 @@ function compareResources(vendor, type, preData, nowData) {
 
     for (let id of allIds) {
         if (!preIdSet.has(id)) {
-            result['create'].push(id)
+            result['create'].push({
+                id: id,
+                detail: makeDetailObject({}, xNowData[id])
+            })
         } else if (!nowIdSet.has(id)) {
-            result['remove'].push(id)
+            result['remove'].push({
+                id: id,
+                detail: makeDetailObject(xPreData[id], {})
+            })
         } else {
             if (JSON.stringify(xPreData[id]) != JSON.stringify(xNowData[id])) {
-                result['modify'].push(id)
-                result['modifyDetail'][id] = compareObject(xPreData[id], xNowData[id])
+                result['modify'].push({
+                    id: id,
+                    detail: compareObject(xPreData[id], xNowData[id])
+                })
             }
         }
     }
