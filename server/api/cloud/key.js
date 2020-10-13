@@ -5,13 +5,20 @@ const PATH = require('path')
 const crms = require('../../../crms')
 
 function isKeyFormat(vendor, keys){
+    let keyList = Object.keys(keys)
     switch (vendor) {
         case 'aws': {
-            let keyList = Object.keys(keys)
             let existAccessKey = keyList.indexOf('accessKeyId') > -1
             let existSecretKey = keyList.indexOf('secretAccessKey') > -1
             let existRegion = keyList.indexOf('region') > -1
             return existAccessKey && existSecretKey && existRegion
+        } 
+        case 'azure': {
+            let existClientId = keyList.indexOf('client_id') > -1
+            let existSecretKey = keyList.indexOf('secret_key') > -1
+            let existSubscription = keyList.indexOf('subscription') > -1
+            let existTenantId = keyList.indexOf('tenant_id') > -1
+            return existClientId && existSecretKey && existSubscription & existTenantId
         } 
         default:
             break;

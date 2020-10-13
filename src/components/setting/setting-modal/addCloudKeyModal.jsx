@@ -39,6 +39,13 @@ function AddCloudKeyModal(props) {
     let secretKey = React.createRef()
     let region = React.createRef()
 
+
+    let client_id = React.createRef()
+    let tenant_id = React.createRef()
+    let secret_key = React.createRef()
+    let subscription = React.createRef()
+    
+
     let [overlapCheck, setOverlapCheck] = React.useState(false)
     let [isAws, setIsAws] = React.useState(false)
     let [isAzure, setIsAzure] = React.useState(false)
@@ -73,7 +80,22 @@ function AddCloudKeyModal(props) {
             }
         }
 
-        if(vendor.current.value == '' || cloudId.current.value == "" || accessKey.current.value == "" || secretKey.current.value == "" || region.current.value == "") {
+        if (data.vendor == 'aws') {
+            data.keys = {
+                accessKeyId: accessKey.current.value,
+                secretAccessKey: secretKey.current.value,
+                region: region.current.value
+            }
+        } else if (data.vendor == 'azure') {
+            data.keys = {
+                client_id: client_id.current.value,
+                tenant_id: tenant_id.current.value,
+                secret_key: secret_key.current.value,
+                subscription: subscription.current.value
+            }
+        }
+
+        if(vendor.current.value == '' || cloudId.current.value == "") {
             alert("빈 값이 있습니다.");
             return;
         }
@@ -147,33 +169,32 @@ function AddCloudKeyModal(props) {
                                     type="password"
                                     ref={secretKey}
                                 ></input>
-                            </>
+                                <Form Form className="select__option">
+                                    <select className="select__option--options region form-control" ref={region}>
+                                        <option value="" disabled selected>
+                                            Region
+                                        </option>
+                                        {
+                                            awsRegions.map((v)=>{
+                                                return <option value={v.value}>{v.name}</option>
+                                            })
+                                        }
+                                    </select>
+                                </Form>
+                            </>   
                         }
 
                             {/* Azure */}
                             {isAzure &&
                                 <>
                                     <div className="select-Supplier">
-                                        <input  className="select-input" placeholder="Subscription ID"></input>
-                                        <input  className="select-input" placeholder="Client ID"></input>
-                                        <input  className="select-input" placeholder="Secret Key" type="password"></input>
-                                        <input  className="select-input" placeholder="Tenant ID"></input>
+                                        <input  className="select-input" placeholder="Subscription ID" ref={subscription}></input>
+                                        <input  className="select-input" placeholder="Client ID" ref={client_id}></input>
+                                        <input  className="select-input" placeholder="Secret Key" ref={secret_key} type="password"></input>
+                                        <input  className="select-input" placeholder="Tenant ID" ref={tenant_id}></input>
                                     </div>
                                 </>
                             }
-
-                            <Form Form className="select__option">
-                                <select className="select__option--options region form-control" ref={region}>
-                                    <option value="" disabled selected>
-                                        Region
-                                    </option>
-                                    {
-                                        awsRegions.map((v)=>{
-                                            return <option value={v.value}>{v.name}</option>
-                                        })
-                                    }
-                                </select>
-                            </Form>
                             
                             <div className="select-bottom-text">
                                 <span>클라우드 키 발급 방법</span>
