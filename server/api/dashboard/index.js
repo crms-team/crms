@@ -100,8 +100,8 @@ function getStatusData(vendor, data){
                 let status = [0, 0]
 
                 for (let disk of resource.compute.volume) {
-                    status[0] += 1
-                    status[1] += disk.properties.diskState == "Attached"
+                    status[0] += disk.properties.diskState == "Attached"
+                    status[1] += 1
                 }
                 
                 return status

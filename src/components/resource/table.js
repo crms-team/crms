@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import './table.scss';
 import { COLUMES, MATCHINGS } from './constants'
 import {
   Table,
@@ -18,6 +18,7 @@ import {
   Checkbox,
   IconButton,
   Tooltip,
+  makeStyles
 } from '@material-ui/core';
 import {
   Delete as DeleteIcon,
@@ -25,7 +26,6 @@ import {
   FilterList as FilterListIcon,
   Pause as PauseIcon,
 } from '@material-ui/icons';
-import './table.scss';
 import {useParams} from 'react-router-dom'
 import { idType } from "../../manager";
 
@@ -118,31 +118,35 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: '#18181f',
-          backgroundColor: '#6b6e7c',
-        }
-      : {
-          color: '#18181f',
-          backgroundColor: '#6b6e7c',
-        },
-  title: {
-    flex: '1 1 100%',
-  },
-  rowIconButton : {
-      color : '#27262b!important'
-  }
-}));
+// const useToolbarStyles = makeStyles((theme) => ({
+//   root: {
+//     paddingLeft: theme.spacing(2),
+//     paddingRight: theme.spacing(1),
+//   },
+//   highlight:
+//     theme.palette.type === 'light'
+//       ? {
+//           color: '#18181f',
+//           backgroundColor: '#6b6e7c',
+//         }
+//       : {
+//           color: '#18181f',
+//           backgroundColor: '#6b6e7c',
+//         },
+//   title: {
+//     flex: '1 1 100%',
+//   },
+//   rowIconButton : {
+//       color : '#27262b!important'
+//   }
+// }));
 
 const EnhancedTableToolbar = (props) => {
-  let classes = useToolbarStyles();
+  /*
+   * TODO: Fixed SCSS & Material UI Confict Bug
+   */  
+  // let classes = useToolbarStyles();
+  let classes = {root: "makeStyles-root-5", highlight: "makeStyles-highlight-6", title: "makeStyles-title-7", rowIconButton: "makeStyles-rowIconButton-8"}
   const numSelected  = props.numSelected.length;
   const { data }= props;
   return (
