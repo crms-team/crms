@@ -77,7 +77,7 @@ export const COLUMES = {
 export const MATCHINGS = {
   aws: {
     server: (key_id, resource) => {
-      let attr = resource.Instances[0]
+      let attr = resource
       let name = ""
 
       for (let tag of attr.Tags) {

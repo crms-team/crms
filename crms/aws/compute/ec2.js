@@ -3,7 +3,14 @@ const AWS = require('aws-sdk')
 async function describeInstances(key, args = undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
-    return (await ec2.describeInstances().promise())['Reservations']
+    let data = (await ec2.describeInstances().promise())['Reservations']
+    let result = []
+
+    for (let server of data) {
+        result.push(server.Instances[0])
+    }
+
+    return result
 }
 
 async function describeInstanceTypes(key, args = undefined) {

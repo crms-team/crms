@@ -5,7 +5,6 @@ import {
 class EC2 extends CloudResourceDataFormat {
     constructor(keyId, data) {
         super(keyId)
-        data = data.Instances[0]
 
         let type = 'server'
         this.type = type
@@ -89,7 +88,6 @@ class EBS extends CloudResourceDataFormat {
 class EIP extends CloudResourceDataFormat {
     constructor(keyId, data) {
         super(keyId)
-        data = data.Instances[0]
 
         let type = 'ip'
         this.type = type

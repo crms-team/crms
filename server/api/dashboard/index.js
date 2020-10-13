@@ -9,8 +9,6 @@ function getStatusData(vendor, data){
             server: resource => {
                 let status = [0, 0]
                 for (let ec2 of resource.compute.server) {
-                    ec2 = ec2.Instances[0]
-
                     if (ec2.State.Name == "running") {
                         status[0] += 1
                     }

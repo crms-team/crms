@@ -1,24 +1,27 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import "./history.scss";
-import Box from "@material-ui/core/Box";
-import Collapse from "@material-ui/core/Collapse";
-import IconButton from "@material-ui/core/IconButton";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TableSortLabel,
+    Toolbar,
+    Typography,
+    Paper,
+    Box,
+    Collapse,
+    IconButton,
+    makeStyles
+} from "@material-ui/core";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import "./history.scss";
+import { InfoOutlined } from "@material-ui/icons";
 
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
@@ -391,17 +394,13 @@ export default function EnhancedTable() {
                 for (let session in data.detail) {
                     for (let resource in data.detail[session]) {
                         for (let state in data.detail[session][resource]) {
-                            for (let id in data.detail[session][resource][
-                                state
-                            ]) {
+                            for (let info of data.detail[session][resource][state]) {
                                 history.push({
                                     session: session,
                                     resource: resource,
-                                    id:
-                                        data.detail[session][resource][state][
-                                            id
-                                        ],
+                                    id: info.id,
                                     state: state,
+                                    detail: info.detail
                                 });
                             }
                         }
@@ -494,9 +493,7 @@ export default function EnhancedTable() {
                                             return <>{table}</>;
                                         })}
                                     {emptyRows > 0 && (
-                                        <TableRow
-                                            
-                                        >
+                                        <TableRow>
                                             <TableCell colSpan={8} />
                                         </TableRow>
                                     )}

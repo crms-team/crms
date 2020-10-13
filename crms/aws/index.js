@@ -8,7 +8,7 @@ module.exports = {
     }, 
     data: require('./data'),
     getResourceId: {
-        server: resource => resource['Instances'][0]['InstanceId'],
+        server: resource => resource['InstanceId'],
         volume: resource => resource['VolumeId'],
         ip: resource => resource['AllocationId'],
         keypair: resource => resource['KeyPairId'],

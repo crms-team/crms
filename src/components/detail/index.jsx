@@ -107,8 +107,6 @@ class ContentSummary extends Component {
         let resource = this.props.resource;
         let data = response.data;
 
-        if (resource == "server") data = 'Instances' in data ? data['Instances'][0]: data;
-
         this.setState({
             data: data,
             rootData: data,
@@ -201,7 +199,7 @@ class ContentSummary extends Component {
                                                 <td style={tdStyle}>
                                                     <div
                                                         style={{
-                                                            color: "#ffc14d",
+                                                            color: "rgb(125, 158, 223)",
                                                             cursor: "pointer",
                                                         }}
                                                         onClick={() => {
@@ -275,8 +273,7 @@ class ContentUpdate extends Component {
         }
 
         if (this.state.vendor == "aws") {
-            if (resource == 'server') data = data['Instances'][0]
-            else if (resource == "volume") {
+            if (resource == "volume") {
                 ec2list = await this.getEC2List()
                 for (let i = 0; i < ec2list.Instances.length; i++) {
                     ec2item.push(<option>{ec2list.Instances[i].InstanceId}</option>)
@@ -1139,8 +1136,6 @@ class Detail extends Component {
         let response = await (await fetch(this.state.endpoint)).json();
         let resource = this.state.resource;
         let data = response.data;
-
-        if (resource == 'server') data = 'Instances' in data ? data['Instances'][0]: data
 
         this.setState({
             data: data,
