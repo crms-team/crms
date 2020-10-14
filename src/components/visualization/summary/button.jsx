@@ -9,11 +9,11 @@ class Instancebutton extends React.Component {
         super(props)
         let type = props.data.type
         let status;
-        try{
-            status=resourceState[type](props.data.data)
+        try {
+            status = resourceState[type](props.data.data)
         }
-        catch(e){
-            status=5
+        catch (e) {
+            status = 5
         }
         this.state = {
             type: type,
@@ -24,33 +24,33 @@ class Instancebutton extends React.Component {
     render() {
         let statusButton = undefined
 
-        if (this.state.status < 1 && (this.state.type=="server"||this.state.type=="database") ) {
-            statusButton = <Button variant="warning" onClick={async ()=>{
+        if (this.state.status < 1 && (this.state.type == "server" || this.state.type == "database")) {
+            statusButton = <Button variant="warning" onClick={async () => {
                 let id = this.props.data.id.split(":")[2]
                 let key_id = this.props.data.id.split(":")[0]
-                let rst = await summaryType[this.state.type]["manage"].stop(key_id,id)
+                let rst = await summaryType[this.state.type]["manage"].stop(key_id, id)
             }}>Off</Button>
 
-        } else if (this.state.status < 5 && (this.state.type=="server"||this.state.type=="database")) {
-            statusButton = <Button variant="warning" onClick={async ()=>{
-                  let id = this.props.data.id.split(":")[2]
-                  let key_id = this.props.data.id.split(":")[0]
-                  let rst = await summaryType[this.state.type]["manage"].start(key_id,id)
-              }}>On</Button>
+        } else if (this.state.status < 5 && (this.state.type == "server" || this.state.type == "database")) {
+            statusButton = <Button variant="warning" onClick={async () => {
+                let id = this.props.data.id.split(":")[2]
+                let key_id = this.props.data.id.split(":")[0]
+                let rst = await summaryType[this.state.type]["manage"].start(key_id, id)
+            }}>On</Button>
         }
 
         return (
             <table>
                 <tr>
                     <td>{statusButton && statusButton}</td>
-                    <td><Button onClick={async ()=>{
+                    <td><Button onClick={async () => {
                         let id = this.props.data.id.split(":")[2]
                         let key_id = this.props.data.id.split(":")[0]
-                        let rst = await summaryType[this.state.type]["manage"].delete(key_id,id)
+                        let rst = await summaryType[this.state.type]["manage"].delete(key_id, id)
                         console.log(rst)
                     }} variant="warning">Delete</Button></td>
                     <td>
-                        <Button variant="warning" onClick={()=>window.location.href=`/detail/${this.props.data.id.split(':')[0]}/${this.state.type}/${this.props.data.id.split(":")[2]}`} >
+                        <Button variant="warning" onClick={() => window.location.href = `/detail/${this.props.data.id.split(':')[0]}/${this.state.type}/${btoa(this.props.data.id.split(":")[2])}`} >
                             Detail
                         </Button>
                     </td>

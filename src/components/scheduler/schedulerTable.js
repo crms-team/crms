@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,27 +23,9 @@ import './scheduler.scss';
 import { Modal } from "react-bootstrap";
 import ModalComponent from "./modal"
 
-function createData(name, subnetAssociated, shared, external, status, adminState, availabilityZones) {
-  return { name,  subnetAssociated, shared, external, status, adminState, availabilityZones};
+function createData(schedulerId, keyId, session, resourceId, type, time) {
+  return {schedulerId, keyId, session, resourceId, type, time};
 }
-
-let rows = [
-  createData('contribution', 'subnet_1 172.32.0.0/24', '아니오', '아니오', 'Active', 'UP', 'nova'),
-  createData('private', 'ipv6', '아니오', '아니오', 'Active', 'UP', 'nova'),
-  createData('shared', 'subnet_1 172.32.0.0/26', '아니오', '예', 'Active', 'UP', 'nova'),
-  createData('public', 'subnet_1 172.32.0.0/21', '예', '아니오', 'Active', 'UP', 'nova'),
-  createData('data test4', 'subnet_1 172.32.0.0/20', '예', '아니오', 'Active', 'UP', 'nova'),
-  createData('data test5', 'subnet_1 172.32.0.0/21', '아니오', '아니오', 'Active', 'UP', 'nova'),
-  createData('data test6', 'subnet_1 172.32.0.0/24', '아니오', '예', 'Active', 'UP', 'nova'),
-  createData('data test7', 'subnet_1 172.32.0.0/24', '아니오', '아니오', 'Active', 'UP', 'nova'),
-  createData('data test8', 'subnet_1 172.32.0.0/24', '예', '예', 'Active', 'UP', 'nova'),
-  createData('data test9', 'subnet_1 172.32.0.0/24', '아니오', '아니오', 'Active', 'UP', 'nova'),
-  createData('data test10', 'subnet_1 172.32.0.0/24', '예', '아니오', 'Active', 'UP', 'nova'),
-  createData('data test11', 'subnet_1 172.32.0.0/24', '아니오', '아니오', 'Active', 'UP', 'nova'),
-  createData('data test12', 'subnet_1 172.32.0.0/24', '예', '아니오', 'Active', 'UP', 'nova'),
-  createData('data test13', 'subnet_1 172.32.0.0/24', '아니오', '아니오', 'Active', 'UP', 'nova'),
-  
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -72,13 +54,12 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'key_id', numeric: false, disablePadding: true, label: ' KeyID ' },
+  { id: 'schedulerId', numeric: false, disablePadding: true, label: ' Scheduler ID ' },
+  { id: 'keyId', numeric: false, disablePadding: false, label: 'Key ID' },
   { id: 'session', numeric: false, disablePadding: false, label: 'Session' },
-  { id: 'resource_id', numeric: false, disablePadding: false, label: 'ResourceID' },
+  { id: 'resourceId', numeric: false, disablePadding: false, label: 'Resource ID' },
+  { id: 'type', numeric: false, disablePadding: false, label: 'Type' },
   { id: 'time', numeric: false, disablePadding: false, label: 'Time' },
-  { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
-  { id: 'cmd', numeric: false, disablePadding: false, label: 'CMD' },
-  { id: 'always', numeric: false, disablePadding: false, label: 'Always' },
 ];
 
 function EnhancedTableHead(props) {
@@ -229,6 +210,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function getTime(hour, min){
+  let result = ''
+  if (hour < 10) {
+    result += `0`
+  } 
+  result += `${hour}:`
+  
+  if (min < 10) {
+    result += `0`
+  } 
+
+  result += `${min}`
+  return result
+}
+
 export default function EnhancedTable() {
   const classes = useStyles();
   const [showHide,setShowHide]=useState(false);
@@ -238,6 +234,22 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(14);
+  const [schedulerData, setSchederData] = React.useState([])
+
+  useEffect(()=>{
+    async function getSchedulerData() {
+      let url = `${process.env.REACT_APP_SERVER_URL}/api/scheduler`
+      let data = (await fetch(url).then(res=>res.json()))
+      let result = []
+
+      for (let i of data['schedulerData']) {
+        result.push(createData(i.schedulerId, i.keyId, i.session, i.resourceId, i.type? 'ON' : 'OFF', getTime(i.time.hour, i.time.min)))
+      }
+      setSchederData(result)      
+    }
+
+    getSchedulerData()
+  }, [])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -247,7 +259,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = schedulerData.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -293,7 +305,7 @@ export default function EnhancedTable() {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, schedulerData.length - page * rowsPerPage);
 
   return (
     <>
@@ -303,17 +315,21 @@ export default function EnhancedTable() {
                     <Button variant="primary" className="add-btn" onClick={()=>{
                       handleModalShowHide()
                     }} >Add</Button>
-                    <Button variant="primary" className="change-btn">Change</Button>
                     <Button variant="primary" className="delete-btn" onClick={()=>{
                       let result=[]
-                      for(let tmp in rows){
+                      for(let tmp in schedulerData){
                         for(let tmp_select in selected){
-                          if(rows[tmp].name==selected[tmp_select]){
-                            result.push(rows[tmp])
+                          if(schedulerData[tmp].schedulerId==selected[tmp_select]){
+                            result.push(schedulerData[tmp].schedulerId)
                           }
                         }
                       }
-                      console.log(result)
+
+                      let url = `${process.env.REACT_APP_SERVER_URL}/api/scheduler`
+                      for(let id of result) {
+                        fetch(`${url}?schedulerId=${id}`, { method: 'DELETE'})
+                      }
+                      window.location.reload()
                     }}>Delete</Button>
                 </div>
         </h2>
@@ -336,23 +352,23 @@ export default function EnhancedTable() {
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+                rowCount={schedulerData.length}
                 />
                 <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
+                {stableSort(schedulerData, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
+                    const isItemSelected = isSelected(row.schedulerId);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                         <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.name)}
+                        onClick={(event) => handleClick(event, row.schedulerId)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.name}
+                        key={row.schedulerId}
                         selected={isItemSelected}
                         >
                         <TableCell padding="checkbox">
@@ -362,14 +378,13 @@ export default function EnhancedTable() {
                             />
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                            {row.name}
+                            {row.schedulerId}
                         </TableCell>
-                        <TableCell align="right">{row.subnetAssociated}</TableCell>
-                        <TableCell align="right">{row.shared}</TableCell>
-                        <TableCell align="right">{row.external}</TableCell>
-                        <TableCell align="right">{row.status}</TableCell>
-                        <TableCell align="right">{row.adminState}</TableCell>
-                        <TableCell align="right">{row.availabilityZones}</TableCell>
+                        <TableCell align="right">{row.keyId}</TableCell>
+                        <TableCell align="right">{row.session}</TableCell>
+                        <TableCell align="right">{row.resourceId}</TableCell>
+                        <TableCell align="right">{row.type}</TableCell>
+                        <TableCell align="right">{row.time}</TableCell>
                         </TableRow>
                     );
                     })}
@@ -384,7 +399,7 @@ export default function EnhancedTable() {
             <TablePagination
             rowsPerPageOptions={[10]}
             component="div"
-            count={rows.length}
+            count={schedulerData.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onChangePage={handleChangePage}
