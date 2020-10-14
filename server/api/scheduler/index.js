@@ -5,6 +5,7 @@ module.exports = server => {
     server.get('/api/scheduler', (req, res) => {
         let schedulerData = []
         try {
+            const path = server.config.path
             schedulerData = JSON.parse(fs.readFileSync(PATH.normalize(`${path}/data/scheduler.json`)))
         } catch {}
 
@@ -23,8 +24,8 @@ module.exports = server => {
         const resourceId = req.body.resourceId
 
         if (keyId == undefined || time == undefined ||
-            time.hour < 24 || time.hour >= 0 ||
-            time.min < 60 || time.min >= 0 ||
+            time.hour >= 24 || time.hour < 0 ||
+            time.min >= 60 || time.min < 0 ||
             type == undefined || session == undefined) {
             res.send({ result: false, msg: 'Missing Required Params' })
             return
@@ -54,7 +55,6 @@ module.exports = server => {
     })
     
     server.delete('/api/scheduler', (req, res)=>{
-        const keyId = req.query.keyId
         const schedulerId = req.query.schedulerId
         const path = server.config.path
 
@@ -68,7 +68,7 @@ module.exports = server => {
 
         for (let i in schedulerData) {
             if (schedulerData[i].schedulerId == schedulerId) {
-                schedulerData.spice(i, 1)
+                schedulerData.splice(i, 1)
                 break
             }
         }
