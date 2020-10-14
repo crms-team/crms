@@ -1,7 +1,19 @@
 import * as awsManager from './aws'
+//import * as azureManage from './azure'
 
 const managerType = {
     aws: {
+      server: 'ec2',
+      volume: 'ebs',
+      ip: 'eip',
+      keypair:'keypair',
+      database:'rds',
+      vpc:'vpc',
+      subnet:'subnet',
+      securitygroup:'securitygroup',
+      bucket:'s3'
+    },
+    azure:{
       server: 'ec2',
       volume: 'ebs',
       ip: 'eip',
@@ -50,6 +62,44 @@ const idType ={
     },
     bucket: {
       manage:awsManager.S3Manager,
+      id: "name"
+    }
+  },
+  azure:{
+    server: {
+      manage:"",
+      id: "id"
+    },
+    volume: {
+      manage:"",
+      id: "id"
+    },
+    ip: {
+      manage:"",
+      id: "id"
+    },
+    keypair: {
+      manage:"",
+      id: "id"
+    },
+    database: {
+      manage:"",
+      id: "identifier"
+    },
+    vpc: {
+      manage:"",
+      id: "id"
+    },
+    subnet: {
+      manage:"",
+      id: "id"
+    },
+    securitygroup: {
+      manage:"",
+      id: "id"
+    },
+    bucket: {
+      manage:"",
       id: "name"
     }
   }
