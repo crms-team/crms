@@ -68,13 +68,50 @@ async function virtualMachines(key, args = undefined) {
     return vmData
 }
 
-async function describeInstanceTypes(key, args = undefined) {}
+async function powerOff(key, args = undefined) {
+    let token = await getToken(key)
+    let ep = `https://management.azure.com/subscriptions/${key.subscription}/resourceGroups/${args.resourceGroupName}/providers/Microsoft.Compute/virtualMachines/${args.name}/powerOff?api-version=2020-06-01`
 
-async function stopInstances(key, args = undefined) {}
+    let res = await fetch(ep, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        method: 'POST'
+    })
 
-async function startInstances(key, args = undefined) {}
+    return res.status > 400
+}
 
-async function terminateInstance(key, args = undefined) {}
+async function start(key, args = undefined) {
+    let token = await getToken(key)
+    let ep = `https://management.azure.com/subscriptions/${key.subscription}/resourceGroups/${args.resourceGroupName}/providers/Microsoft.Compute/virtualMachines/${args.name}/start?api-version=2020-06-01`
+
+    let res = await fetch(ep, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        method: 'POST'
+    })
+
+    return res.status > 400
+}
+
+async function deleteVirtualMachines(key, args = undefined) {
+    let token = await getToken(key)
+    let ep = `https://management.azure.com/subscriptions/${key.subscription}/resourceGroups/${args.resourceGroupName}/providers/Microsoft.Compute/virtualMachines/${args.name}?api-version=2020-06-01`
+
+    let res = await fetch(ep, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        method: 'DELETE'
+    })
+
+    return res.status > 400
+}
 
 async function runInstances(key, args = undefined) {}
 
@@ -85,11 +122,10 @@ module.exports = {
         get: virtualMachines,
         post: runInstances,
         put: modifyInstanceAttribute,
-        delete: terminateInstance
+        delete: deleteVirtualMachines
     },
     etc: {
-        types: describeInstanceTypes,
-        start: startInstances,
-        stop: stopInstances
+        start: start,
+        stop: powerOff
     }
 }
