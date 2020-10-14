@@ -43,8 +43,10 @@ function compareObject(obj1, obj2) {
 }
 
 function makeDetailObject(obj1, obj2) {
-    let std = obj1 || obj2
-    let keys = Object.keys(std)
+    let key1 = Object.keys(obj1)
+    let key2 = Object.keys(obj2)
+
+    let keys = Array.from(new Set([...key1, ...key2]))
     let result = {}
 
     for (let key of keys) {
@@ -56,7 +58,7 @@ function makeDetailObject(obj1, obj2) {
             after: val2
         }
     }
-
+    
     return result
 }
 

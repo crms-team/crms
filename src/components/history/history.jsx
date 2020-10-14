@@ -18,10 +18,13 @@ import {
     IconButton,
     makeStyles
 } from "@material-ui/core";
+import { Modal } from "react-bootstrap";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import ModalContent from "./modal"
 import "./history.scss";
 import { InfoOutlined } from "@material-ui/icons";
+import { useState } from "react";
 
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
@@ -115,18 +118,20 @@ function Row(props) {
 
     return (
         <React.Fragment>
-            <TableRow className={classes.root}>
+            <TableRow
+                className={classes.root}
+                onClick={() => setOpen(!open)}
+            >
                 <TableCell>
                     <IconButton
                         aria-label="expand row"
                         size="small"
-                        onClick={() => setOpen(!open)}
                     >
                         {open ? (
                             <KeyboardArrowUpIcon />
                         ) : (
-                            <KeyboardArrowDownIcon />
-                        )}
+                                <KeyboardArrowDownIcon />
+                            )}
                     </IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
@@ -157,7 +162,14 @@ function Row(props) {
                                 </TableHead>
                                 <TableBody>
                                     {row.history.map((historyRow) => (
-                                        <TableRow key={historyRow.date}>
+                                        <TableRow key={historyRow.date}
+                                            onClick={(e) => {
+                                                if (!e.target.closest(".MuiSvgIcon-root")) {
+                                                    props.click(true)
+                                                    props.data(historyRow)
+                                                    props.modalKey(row.keyID)
+                                                }
+                                            }}>
                                             <TableCell
                                                 component="th"
                                                 scope="row"
@@ -292,13 +304,13 @@ const useToolbarStyles = makeStyles((theme) => ({
     highlight:
         theme.palette.type === "light"
             ? {
-                  color: "#18181f",
-                  backgroundColor: "#6b6e7c",
-              }
+                color: "#18181f",
+                backgroundColor: "#6b6e7c",
+            }
             : {
-                  color: "#18181f",
-                  backgroundColor: "#6b6e7c",
-              },
+                color: "#18181f",
+                backgroundColor: "#6b6e7c",
+            },
     title: {
         flex: "1 1 100%",
     },
@@ -373,6 +385,10 @@ export default function EnhancedTable() {
     const [dense, setDense] = React.useState(false);
     const [rows, setRows] = React.useState([]);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [openModal, setOpenModal] = React.useState(false);
+    const [modalContent, setModalContent] = React.useState(undefined);
+    const [keyData, setKeyData] = React.useState(undefined);
+
 
     useEffect(() => {
         async function getData() {
@@ -437,6 +453,10 @@ export default function EnhancedTable() {
         setSelected([]);
     };
 
+    const handleModalShowHide = () => {
+        setOpenModal(!openModal);
+    }
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -450,68 +470,82 @@ export default function EnhancedTable() {
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
     return (
-        <div className="table-container">
-            <h2 className="listview-title">History</h2>
-            <div className="table">
-                <div className={classes.root}>
-                    <Paper className={classes.paper}>
-                        <EnhancedTableToolbar numSelected={selected.length} />
-                        <TableContainer>
-                            <Table
-                                className={classes.table}
-                                aria-labelledby="tableTitle"
-                                size={dense ? "small" : "medium"}
-                                aria-label="collapsible enhanced table"
-                            >
-                                <EnhancedTableHead
-                                    classes={classes}
-                                    numSelected={selected.length}
-                                    order={order}
-                                    orderBy={orderBy}
-                                    onSelectAllClick={handleSelectAllClick}
-                                    onRequestSort={handleRequestSort}
-                                    rowCount={rows.length}
-                                />
+        <>
+            <div className="table-container">
+                <h2 className="listview-title">History</h2>
+                <div className="table">
+                    <div className={classes.root}>
+                        <Paper className={classes.paper}>
+                            <EnhancedTableToolbar numSelected={selected.length} />
+                            <TableContainer>
+                                <Table
+                                    className={classes.table}
+                                    aria-labelledby="tableTitle"
+                                    size={dense ? "small" : "medium"}
+                                    aria-label="collapsible enhanced table"
+                                >
+                                    <EnhancedTableHead
+                                        classes={classes}
+                                        numSelected={selected.length}
+                                        order={order}
+                                        orderBy={orderBy}
+                                        onSelectAllClick={handleSelectAllClick}
+                                        onRequestSort={handleRequestSort}
+                                        rowCount={rows.length}
+                                    />
 
-                                <TableBody>
-                                    {stableSort(
-                                        rows,
-                                        getComparator(order, orderBy)
-                                    )
-                                        .slice(
-                                            page * rowsPerPage,
-                                            page * rowsPerPage + rowsPerPage
+                                    <TableBody>
+                                        {stableSort(
+                                            rows,
+                                            getComparator(order, orderBy)
                                         )
-                                        .map((row) => {
-                                            const table = (
-                                                <Row
-                                                    key={row.index}
-                                                    row={row}
-                                                />
-                                            );
+                                            .slice(
+                                                page * rowsPerPage,
+                                                page * rowsPerPage + rowsPerPage
+                                            )
+                                            .map((row) => {
+                                                const table = (
+                                                    <Row
+                                                        key={row.index}
+                                                        row={row}
+                                                        click={setOpenModal}
+                                                        data={setModalContent}
+                                                        modalKey={setKeyData}
+                                                    />
+                                                );
 
-                                            return <>{table}</>;
-                                        })}
-                                    {emptyRows > 0 && (
-                                        <TableRow>
-                                            <TableCell colSpan={8} />
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                            rowsPerPageOptions={[10]}
-                            component="div"
-                            count={rows.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onChangePage={handleChangePage}
-                            onChangeRowsPerPage={handleChangeRowsPerPage}
-                        />
-                    </Paper>
+                                                return <>{table}</>;
+                                            })}
+                                        {emptyRows > 0 && (
+                                            <TableRow>
+                                                <TableCell colSpan={8} />
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <TablePagination
+                                rowsPerPageOptions={[10]}
+                                component="div"
+                                count={rows.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                            />
+                        </Paper>
+                    </div>
                 </div>
             </div>
-        </div>
+            <Modal
+                show={openModal}
+                dialogClassName="modal-90w"
+                centered
+                scrollable={true}
+            >
+                <Modal.Header closeButton onClick={() => handleModalShowHide()}>
+                    <Modal.Title>History</Modal.Title>
+                </Modal.Header>
+                <ModalContent data={modalContent} dataKey={keyData} />
+            </Modal>
+        </>
     );
 }

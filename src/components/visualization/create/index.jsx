@@ -102,15 +102,15 @@ class SelVendor extends React.Component {
                     <option value="" disabled selected>
                         Resource
                     </option>
-                    <option value="ec2">EC2</option>
-                    <option value="eip">EIP</option>
-                    <option value="ebs">EBS</option>
+                    <option value="server">Server</option>
+                    <option value="ip">IP</option>
+                    <option value="volume">Volume</option>
                     <option value="keypair">KeyPair</option>
                     <option value="vpc">VPC</option>
                     <option value="subnet">Subnet</option>
                     <option value="securitygroup">SecurityGroup</option>
-                    <option value="rds">RDS</option>
-                    <option value="s3">S3</option>
+                    <option value="database">Database</option>
+                    <option value="bucket">Bucket</option>
                 </select>
             </>
         );
@@ -1660,11 +1660,11 @@ class CreateModal extends React.Component {
     clickNextModal() {
         const componentType = {
             aws: {
-                ec2: <EC2 func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name} />,
-                ebs: <EBS func={this.func.bind(this)} key_name={this.state.key_name} />,
-                eip: <EIP func={this.func.bind(this)} key_name={this.state.key_name} />,
+                server: <EC2 func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name} />,
+                volume: <EBS func={this.func.bind(this)} key_name={this.state.key_name} />,
+                ip: <EIP func={this.func.bind(this)} key_name={this.state.key_name} />,
                 keypair: <KeyPair func={this.func.bind(this)} />,
-                rds: <RDS func={this.func.bind(this)} key_name={this.state.key_name} key_vendor={this.state.vendor} />,
+                database: <RDS func={this.func.bind(this)} key_name={this.state.key_name} key_vendor={this.state.vendor} />,
                 vpc: <VPC func={this.func.bind(this)} />,
                 subnet: <Subnet func={this.func.bind(this)} key_vendor={this.state.vendor} key_name={this.state.key_name} />,
                 securitygroup: <SecurityGroup func={this.func.bind(this)} />,
@@ -1696,10 +1696,9 @@ class CreateModal extends React.Component {
     async createInstance() {
         let key_id = this.state.key_name
         let args = this.state.data
-        console.log(args)
         let rst = await summaryType[this.state.type]["manage"].create(key_id, args)
-        console.log(rst)
         alert(rst.data ? 'success' : 'failed')
+        window.location.reload()
     }
 
     clickSubmitbut() {

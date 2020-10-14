@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,12 +20,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { Button } from 'react-bootstrap';
 import './scheduler.scss';
+import { Modal } from "react-bootstrap";
+import ModalComponent from "./modal"
 
 function createData(name, subnetAssociated, shared, external, status, adminState, availabilityZones) {
   return { name,  subnetAssociated, shared, external, status, adminState, availabilityZones};
 }
 
-const rows = [
+let rows = [
   createData('contribution', 'subnet_1 172.32.0.0/24', '아니오', '아니오', 'Active', 'UP', 'nova'),
   createData('private', 'ipv6', '아니오', '아니오', 'Active', 'UP', 'nova'),
   createData('shared', 'subnet_1 172.32.0.0/26', '아니오', '예', 'Active', 'UP', 'nova'),
@@ -229,6 +231,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EnhancedTable() {
   const classes = useStyles();
+  const [showHide,setShowHide]=useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('subnetAssociated');
   const [selected, setSelected] = React.useState([]);
@@ -275,6 +278,10 @@ export default function EnhancedTable() {
     setPage(newPage);
   };
 
+  const handleModalShowHide = () => {
+    setShowHide(!showHide);
+}
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -293,9 +300,21 @@ export default function EnhancedTable() {
     <div className="scheduler-container">
         <h2 className="listview-title scheduler-btn-container">SCHEDULER
                 <div className="scheduler-btns">
-                    <Button variant="primary" className="add-btn">Add</Button>
+                    <Button variant="primary" className="add-btn" onClick={()=>{
+                      handleModalShowHide()
+                    }} >Add</Button>
                     <Button variant="primary" className="change-btn">Change</Button>
-                    <Button variant="primary" className="delete-btn">Delete</Button>
+                    <Button variant="primary" className="delete-btn" onClick={()=>{
+                      let result=[]
+                      for(let tmp in rows){
+                        for(let tmp_select in selected){
+                          if(rows[tmp].name==selected[tmp_select]){
+                            result.push(rows[tmp])
+                          }
+                        }
+                      }
+                      console.log(result)
+                    }}>Delete</Button>
                 </div>
         </h2>
     </div>
@@ -374,6 +393,19 @@ export default function EnhancedTable() {
         </Paper>
         </div>
     </div>
+    <Modal
+        show={showHide}
+        size="lg"
+        dialogClassName="width :50%"
+        dialogClassName="height:50%"
+        centered
+        scrollable={true}
+    >
+        <Modal.Header closeButton onClick={() => handleModalShowHide()}>
+            <Modal.Title>Schedule Instance</Modal.Title>
+        </Modal.Header>
+        <ModalComponent/>
+    </Modal>
     </>
   );
 }

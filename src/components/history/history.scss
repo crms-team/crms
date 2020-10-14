@@ -4,9 +4,16 @@ $point: #7d9edf;
 $text: #6b6e7c;
 $lightText: #9298b1;
 $cardColor: #232429;
-
+pre {
+    color: $lightText;
+}
 button:focus {
     outline: none;
+}
+.modal-90w {
+    width: 90%;
+    max-width: 90% !important;
+    min-width: 90% !important;
 }
 
 .listview-title {
@@ -123,4 +130,9 @@ table {
     span:hover {
         color: $point;
     }
+}
+
+.modal-content {
+    width: 80% !important;
+    min-width: 80% !important;
 }

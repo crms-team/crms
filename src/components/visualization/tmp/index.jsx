@@ -182,9 +182,11 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
             }
             i += 1
         }
+
         if (visualDataset.length == 1) {
             root = d3.hierarchy(visualDataset[0])
         }
+
         else {
             root = d3.hierarchy({
                 id: "CRMSRootId",
@@ -194,6 +196,7 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                 children: visualDataset,
             })
         }
+
     }
     else {
         root = d3.hierarchy({
@@ -271,6 +274,8 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
 }
 
 function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
+
+    console.log(root)
 
     let nodes = flatten(root);
     let links = root.links();
@@ -399,6 +404,7 @@ function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
                 }
                 d._children = d.children;
                 d.children = null;
+                console.log(root)
                 update(handleInstanceDataset, handleModalShowHide, showHide, root);
                 simulation.restart();
                 if (check != 0) {

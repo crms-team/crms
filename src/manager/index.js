@@ -56,10 +56,10 @@ const idType ={
 }
 
 const summaryType ={
-  ec2: {
+  server: {
     manage: awsManager.EC2Manager,
   },
-  ebs: {
+  volume: {
     manage: awsManager.EBSManager,
   },
   subnet: {
@@ -68,7 +68,7 @@ const summaryType ={
   keypair: {
     manage: awsManager.KeyPairManager,
   },
-  rds: {
+  database: {
     manage: awsManager.RDSManager,
   },
   vpc: {
