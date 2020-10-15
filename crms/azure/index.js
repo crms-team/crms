@@ -19,6 +19,7 @@ module.exports = {
 
         subnet: resource => resource['id'],
         securitygroup: resource => resource['id'],
+        networkinterface: resource => resource['id'],
         internetgateway: resource => resource['id'],
         vpc: resource => resource['id'],
     } 
