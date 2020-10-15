@@ -1,7 +1,9 @@
 import AWS from './aws'
+import AZURE from './azure'
 
 export const DataFormat = {
-    aws: AWS
+    aws: AWS,
+    azure: AZURE
 }
 
 export function CreateVisualDataFormat(keyId, vendor, data) {

@@ -10,7 +10,7 @@ import { VisualStructure, IMAGE_TYPE, resourceState } from "../resource-params";
 import { IconContext } from "react-icons";
 import { GrFormRefresh } from "react-icons/gr";
 import { Dropdown, Tabs, Tab, Form, Button } from "react-bootstrap"
-import { element } from "prop-types";
+
 
 let nodeSvg, linkSvg, simulation, svg;
 
@@ -26,6 +26,7 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
         let i = 0;
 
         for (let dataset of dataSet) {
+            
             let divideGroup = {
                 server: {
                     id: "servergroups",
@@ -86,7 +87,7 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
             }
 
             let datasets = {
-                cloud: dataset.filter(item => item.type.toLowerCase() == "aws"),
+                cloud: dataset.filter(item => item.type.toLowerCase() == "aws" || item.type.toLowerCase() == "azure" ),
                 vpc: dataset.filter(item => item.type.toLowerCase() == "vpc"),
                 security_groups: dataset.filter(item => item.type.toLowerCase() == "securitygroups"),
                 security_group: dataset.filter(item => item.type.toLowerCase() == "securitygroup"),
@@ -97,6 +98,7 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                 ig: dataset.filter(item => item.type.toLowerCase() == "internetgateway"),
                 s3_groups: dataset.filter(item => item.type.toLowerCase() == "s3_group"),
                 bucket: dataset.filter(item => item.type.toLowerCase() == "bucket"),
+                networkinterface: dataset.filter(item => item.type.toLowerCase() == "networkinterface" ),
                 database_groups: dataset.filter(item => item.type.toLowerCase() == "database_groups"),
                 database: dataset.filter(item => item.type.toLowerCase() == "database")
             }
@@ -144,7 +146,8 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
             }
 
             if (visualSetting.status.inuse) {
-                make_dataset(datasets.cloud, visualDataset, VisualStructure, false, datasets.cloud[0].children.length == 0, nouse)
+                console.log(dataset[0].type)
+                make_dataset(datasets.cloud, visualDataset, VisualStructure[dataset[0].type], false, datasets.cloud[0].children.length == 0, nouse)
                 if (visualSetting.status.nouse) {
                     let isNouse = true
                     for (let tmp of visualDataset[i].children) {

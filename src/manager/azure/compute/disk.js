@@ -1,21 +1,8 @@
 import { Manager } from "../../manager";
 
-export class VMManager extends Manager {
+export class DiskManager extends Manager {
     static endpoint() {
-        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/server`;
-    }
-
-    static async update(keyId, args) {
-        return await fetch(this.endpoint(), {
-            method: "put",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                key_id: keyId,
-                args: args,
-            }),
-        }).then((res) => res.json());
+        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/volume`;
     }
 
     static async create(keyId, args) {
@@ -31,8 +18,21 @@ export class VMManager extends Manager {
         }).then((res) => res.json());
     }
 
-    static async start(keyId, args) {
-        return await fetch(this.endpoint() + "/etc/start", {
+    static async update(keyId, args) {
+        return await fetch(this.endpoint(), {
+            method: "put",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                key_id: keyId,
+                args: args,
+            }),
+        }).then((res) => res.json());
+    }
+
+    static async attach(keyId, args) {
+        return await fetch(this.endpoint() + "/etc/attach", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",
@@ -44,8 +44,8 @@ export class VMManager extends Manager {
         }).then((res) => res.json());
     }
 
-    static async stop(keyId, args) {
-        return await fetch(this.endpoint() + "/etc/stop", {
+    static async detach(keyId, args) {
+        return await fetch(this.endpoint() + "/etc/detach", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",
