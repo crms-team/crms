@@ -10,25 +10,41 @@ const CIRCLE_SIZE_L7 = 150
 
 
 export const VisualStructure = {
-    vpc: {
-        subnet_groups: {
-            subnet: {
-                server: {
-                    volume: {},
+    aws:{
+        vpc: {
+            subnet_groups: {
+                subnet: {
+                    server: {
+                        volume: {},
+                    },
                 },
             },
+            security_groups: {
+                security_group: {},
+            },
+            ig: {},
+            database_groups: {
+                database: {},
+            },
         },
-        security_groups: {
-            security_group: {},
-        },
-        ig: {},
-        database_groups: {
-            database: {},
-        },
+        s3_groups: {
+            bucket: {},
+        }
     },
-    s3_groups: {
-        bucket: {},
-    },
+    azure:{
+        vpc: {
+            subnet: {
+                networkinterface: {
+                    server: {
+                        volume: {
+                            
+                        }
+                    }
+                }
+            }
+        }    
+    }
+
 };
 
 export const IMAGE_TYPE={
@@ -73,6 +89,9 @@ export const IMAGE_TYPE={
     },
     nouse: {
         image:"/images/cloud.svg", circle_size: CIRCLE_SIZE_L3
+    },
+    networkinterface:{
+        image:"/images/ec2-container-registry.svg", circle_size: CIRCLE_SIZE_L4
     },
     CRMS: {
         image:"/images/CRMS.svg", circle_size: CIRCLE_SIZE_L7
@@ -146,6 +165,13 @@ export const resourceState={
         let status = resource['State']
         let scase = {
             "pending": 5,
+            "available": 0
+        }
+        return scase[status]
+    },
+    networkinterface: resource=>{
+        let status = resource['State']
+        let scase = {
             "available": 0
         }
         return scase[status]
