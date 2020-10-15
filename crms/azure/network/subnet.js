@@ -6,8 +6,15 @@ async function subnets(key, args = undefined) {
     let result = []
     let vnets = await virtualNetworks(key)
 
-    for (let subnet of vnets) {
-        result = result.concat(subnet.properties.subnets)
+    for (let vnet of vnets) {
+        let vnetId = vnet.id
+        let subnets = vnet.properties.subnets
+
+        for (let i in subnets) {
+            subnets[i].properties['virtualNetworkId'] = vnetId
+        }
+
+        result = result.concat(subnets)
     }
 
     return result
