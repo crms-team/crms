@@ -584,6 +584,7 @@ class Visual extends Component {
                 <CreateModal />
                 <Modal
                     show={this.state.showHide}
+                    onHide={this.handleModalShowHide}
                     size="lg"
                     dialogClassName="width :50%"
                     dialogClassName="height:50%"
@@ -592,7 +593,7 @@ class Visual extends Component {
                 >
                     <Modal.Header
                         closeButton
-                        onClick={() => this.handleModalShowHide()}
+             
                     >
                         <Modal.Title>
                             {this.state.instanceData
