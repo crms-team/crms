@@ -11,6 +11,7 @@ import {
     FiCalendar
     
 } from "react-icons/fi";
+import { local } from "d3";
 
 class Sidebar extends Component {
     constructor(props) {
@@ -197,7 +198,13 @@ class Sidebar extends Component {
 
                         </ul>
                     </div>
-                    <Button className="sidebar-logout-btn">Logout</Button>
+                    <Button 
+                        className="sidebar-logout-btn"
+                        onClick={()=>{
+                            sessionStorage.setItem("login",false)
+                            window.location.reload()
+                        }}
+                    >Logout</Button>
                 </div>
             </div>
             

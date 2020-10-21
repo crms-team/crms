@@ -12,11 +12,12 @@ import "./App.css";
 
 class App extends Component {
     Auth(){
-      if(sessionStorage.login==undefined){
+      if(sessionStorage.login=="false"){
+          localStorage.removeItem('key')
           return <Redirect to="/"/>
       }
       else if((window.location.href==`${process.env.REACT_APP_SERVER_URL}/`)&&(sessionStorage.login=="true")){
-          return <Redirect to="/dashboard"/>
+        return <Redirect to="/dashboard"/>
       }
     }  
 
