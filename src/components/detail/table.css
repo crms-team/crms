@@ -6,3 +6,16 @@
 .ReactModal__Overlay {
     background-color: rgba(0, 0, 0, 0.705) !important;
 }
+
+.subtitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: gray;
+    border-bottom: 2px solid;
+}
+
+.divideLine {
+    background: var(--point-color);
+    margin-top: 25px !important;
+    border-top: 3px solid rgba(0, 0, 0, 0.1) !important;
+}
