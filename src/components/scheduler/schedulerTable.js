@@ -14,10 +14,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import { Button } from 'react-bootstrap';
 import './scheduler.scss';
 import { Modal } from "react-bootstrap";
@@ -158,20 +154,6 @@ const EnhancedTableToolbar = (props) => {
           No rows selected
         </Typography>
       )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon className={classes.icon} />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon className={classes.icon} />
-          </IconButton>
-        </Tooltip>
-      )}
     </Toolbar>
   );
 };
@@ -259,7 +241,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = schedulerData.map((n) => n.name);
+      const newSelecteds = schedulerData.map((n) => n.schedulerId);
       setSelected(newSelecteds);
       return;
     }
@@ -415,7 +397,7 @@ export default function EnhancedTable() {
         dialogClassName="height:50%"
         centered
         scrollable={true}
-    >
+    > 
         <Modal.Header closeButton onClick={() => handleModalShowHide()}>
             <Modal.Title>Schedule Instance</Modal.Title>
         </Modal.Header>

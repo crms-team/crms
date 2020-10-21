@@ -175,7 +175,7 @@ function ModalComponent() {
                                         case "server":
                                             {
                                                 args = {
-                                                    InstanceId: [instanceId],
+                                                    InstanceIds: [instanceId],
                                                 };
                                             }
                                             break;
