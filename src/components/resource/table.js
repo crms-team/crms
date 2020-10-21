@@ -186,6 +186,7 @@ const EnhancedTableToolbar = (props) => {
         title: "makeStyles-title-7",
         rowIconButton: "makeStyles-rowIconButton-8",
     };
+    let { type } = useParams();
     const numSelected = props.numSelected.length;
     const { data } = props;
     return (
@@ -204,19 +205,19 @@ const EnhancedTableToolbar = (props) => {
                     {numSelected} selected
                 </Typography>
             ) : (
-                <Typography
-                    className={classes.title}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div"
-                >
-                    No rows selected
-                </Typography>
-            )}
+                    <Typography
+                        className={classes.title}
+                        variant="h6"
+                        id="tableTitle"
+                        component="div"
+                    >
+                        No rows selected
+                    </Typography>
+                )}
 
             {numSelected > 0 ? (
                 <>
-                    <Tooltip title="On">
+                    {(type == "server" || type == "database") ? <Tooltip title="On">
                         <IconButton
                             aria-label="off"
                             onClick={async () => {
@@ -236,8 +237,9 @@ const EnhancedTableToolbar = (props) => {
                         >
                             <PlayArrowIcon className="rowIconButton" />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Off">
+                    </Tooltip> : <></>}
+
+                    {(type == "server" || type == "database") ? <Tooltip title="Off">
                         <IconButton
                             onClick={async () => {
                                 let type = props.type;
@@ -246,7 +248,6 @@ const EnhancedTableToolbar = (props) => {
                                     let key_id = data[idx].key_id;
                                     let key_vendor = checkVendor(key_id);
                                     id = getIdValue(key_vendor, id);
-                                    console.log(id);
                                     let rst = await idType[key_vendor][
                                         type
                                     ].manage.stop(key_id, id);
@@ -258,7 +259,8 @@ const EnhancedTableToolbar = (props) => {
                         >
                             <PauseIcon className="rowIconButton" />
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip> : <></>}
+
                     <Tooltip title="Delete">
                         <IconButton
                             aria-label="delete"
@@ -278,6 +280,7 @@ const EnhancedTableToolbar = (props) => {
                                     } else if (type == "bucket") {
                                         id = data[idx].name;
                                     } else if (type == "database") {
+                                        vendor = checkVendor(key_id);
                                         id = data[idx].identifier;
                                     } else {
                                         id = data[idx].id;
@@ -285,10 +288,9 @@ const EnhancedTableToolbar = (props) => {
                                         id = getIdValue(vendor, id);
                                     }
 
-                                    console.log(id);
-                                    //let rst = await idType[vendor][type].manage.delete(key_id, id);
-                                    //alert(rst.result ? "Success" : "Failed");
-                                    //window.location.reload();
+                                    let rst = await idType[vendor][type].manage.delete(key_id, id);
+                                    alert(rst.result ? "Success" : "Failed");
+                                    window.location.reload();
                                 }
                             }}
                         >
@@ -297,12 +299,12 @@ const EnhancedTableToolbar = (props) => {
                     </Tooltip>
                 </>
             ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon className="rowIconButton" />
-                    </IconButton>
-                </Tooltip>
-            )}
+                    <Tooltip title="Filter list">
+                        <IconButton aria-label="filter list">
+                            <FilterListIcon className="rowIconButton" />
+                        </IconButton>
+                    </Tooltip>
+                )}
         </Toolbar>
     );
 };
