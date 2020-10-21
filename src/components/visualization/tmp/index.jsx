@@ -622,13 +622,14 @@ function Visual() {
             <CreateModal />
             <Modal
                 show={showHide}
+                onHide={handleModalShowHide}
                 size="lg"
                 dialogClassName="width :50%"
                 dialogClassName="height:50%"
                 centered
                 scrollable={true}
             >
-                <Modal.Header closeButton onClick={() => handleModalShowHide()}>
+                <Modal.Header closeButton >
                     <Modal.Title>{instanceData ? instanceData.type : ''}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body >

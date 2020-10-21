@@ -237,6 +237,8 @@ export default function EnhancedTable() {
   const [schedulerData, setSchederData] = React.useState([])
 
   useEffect(()=>{
+
+
     async function getSchedulerData() {
       let url = `${process.env.REACT_APP_SERVER_URL}/api/scheduler`
       let data = (await fetch(url).then(res=>res.json()))
@@ -410,13 +412,14 @@ export default function EnhancedTable() {
     </div>
     <Modal
         show={showHide}
+        onHide={handleModalShowHide}
         size="lg"
         dialogClassName="width :50%"
         dialogClassName="height:50%"
         centered
         scrollable={true}
     >
-        <Modal.Header closeButton onClick={() => handleModalShowHide()}>
+        <Modal.Header closeButton>
             <Modal.Title>Schedule Instance</Modal.Title>
         </Modal.Header>
         <ModalComponent/>

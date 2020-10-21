@@ -1719,6 +1719,7 @@ class CreateModal extends React.Component {
 
                 <Modal
                     show={this.state.showHide}
+                    onHide={this.handleModalShowHide}
                     size="lg"
                     dialogClassName="width :50%"
                     dialogClassName="height:50%"
@@ -1726,7 +1727,7 @@ class CreateModal extends React.Component {
                 >
                     <Modal.Header
                         closeButton
-                        onClick={() => this.handleModalShowHide()}
+                        
                     >
                         <Modal.Title>Create {this.state.type}</Modal.Title>
                     </Modal.Header>

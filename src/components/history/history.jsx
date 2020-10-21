@@ -540,8 +540,9 @@ export default function EnhancedTable() {
                 dialogClassName="modal-90w"
                 centered
                 scrollable={true}
+                onHide={handleModalShowHide}
             >
-                <Modal.Header closeButton onClick={() => handleModalShowHide()}>
+                <Modal.Header closeButton>
                     <Modal.Title>History</Modal.Title>
                 </Modal.Header>
                 <ModalContent data={modalContent} dataKey={keyData} />
