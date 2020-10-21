@@ -10,7 +10,7 @@ const CIRCLE_SIZE_L7 = 150
 
 
 export const VisualStructure = {
-    aws:{
+    aws: {
         vpc: {
             subnet_groups: {
                 subnet: {
@@ -31,92 +31,105 @@ export const VisualStructure = {
             bucket: {},
         }
     },
-    azure:{
+    azure: {
         vpc: {
             subnet: {
                 networkinterface: {
                     server: {
-                        volume: {
-                            
-                        }
-                    }
+                        volume: {}
+                    },
+                    security_group: {}
                 }
             }
-        }    
+        }
     }
 
 };
 
-export const IMAGE_TYPE={
-    volume:{
-        image:"/images/ebs.svg", circle_size: CIRCLE_SIZE_L1
-    },
-    server:{
-        image:"/images/compute.svg", circle_size:CIRCLE_SIZE_L2
-    },
-    database:{
-        image:"/images/rds group.svg", circle_size:CIRCLE_SIZE_L2
-    },
-    bucket:{
-        image:"/images/storage.svg", circle_size:CIRCLE_SIZE_L2
-    },
-    subnet:{
-        image:"/images/ec2-container-registry.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    internetgateway: {
-        image:"/images/internet-gateway.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    securitygroup:{
-        image:"/images/security_group.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    s3_group:{
-        image:"/images/s3 group.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    database_groups:{
-        image:"/images/rds group.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    securitygroups:{
-        image:"/images/securityGroup group.svg", circle_size: CIRCLE_SIZE_L4
-    },
-    subnets:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },
-    vpc:{
-        image:"/images/VPC.svg", circle_size: CIRCLE_SIZE_L5
-    },
+export const IMAGE_TYPE = {
+    CRMS: "/images/CRMS.svg",
     aws: {
-        image:"/images/cloud.svg", circle_size: CIRCLE_SIZE_L6
+        volume: "/images/ebs.svg",
+        server: "/images/compute.svg",
+        database: "/images/rds group.svg",
+        bucket: "/images/storage.svg",
+        subnet: "/images/ec2-container-registry.svg",
+        internetgateway: "/images/internet-gateway.svg",
+        securitygroup: "/images/security_group.svg",
+        s3_group: "/images/s3 group.svg",
+        database_groups: "/images/rds group.svg",
+        securitygroups: "/images/securityGroup group.svg",
+        subnets: "/images/subnet group.svg",
+        vpc: "/images/VPC.svg",
+        aws: "/images/cloud.svg",
+        nouse: "/images/cloud.svg",
+        networkinterface: "/images/ec2-container-registry.svg",
+        servergroups: "/images/subnet group.svg",
+        volumegroups: "/images/subnet group.svg",
+        vpcgroups: "/images/subnet group.svg",
+        subnetgroups: "/images/subnet group.svg",
+        interenetgroups: "/images/subnet group.svg",
+        securitygroups: "/images/subnet group.svg",
+        storagegroups: "/images/subnet group.svg",
+        databasegroups: "/images/subnet group.svg",
     },
-    nouse: {
-        image:"/images/cloud.svg", circle_size: CIRCLE_SIZE_L3
-    },
-    networkinterface:{
-        image:"/images/ec2-container-registry.svg", circle_size: CIRCLE_SIZE_L4
-    },
-    CRMS: {
-        image:"/images/CRMS.svg", circle_size: CIRCLE_SIZE_L7
-    },
-    servergroups:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },volumegroups:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },vpcgroups:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },subnetgroups:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },interenetgroups:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },securitygroups:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },storagegroups:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
-    },databasegroups:{
-        image:"/images/subnet group.svg", circle_size: CIRCLE_SIZE_L4
+    azure: {
+        azure: "/images/cloud.svg",
+        volume: "/images/disks.png",
+        server: "/images/compute.png",
+        database: "/images/rds group.svg",
+        bucket: "/images/storage.svg",
+        subnet: "/images/subnet.png",
+        internetgateway: "/images/internet-gateway.svg",
+        securitygroup: "/images/nsg.png",
+        s3_group: "/images/s3 group.svg",
+        database_groups: "/images/rds group.svg",
+        securitygroups: "/images/securityGroup group.svg",
+        subnets: "/images/subnet group.svg",
+        vpc: "/images/vnet.png",
+        aws: "/images/cloud.svg",
+        nouse: "/images/cloud.svg",
+        networkinterface: "/images/nic.png",
+        servergroups: "/images/subnet group.svg",
+        volumegroups: "/images/subnet group.svg",
+        vpcgroups: "/images/subnet group.svg",
+        subnetgroups: "/images/subnet group.svg",
+        interenetgroups: "/images/subnet group.svg",
+        securitygroups: "/images/subnet group.svg",
+        storagegroups: "/images/subnet group.svg",
+        databasegroups: "/images/subnet group.svg",
     }
-
 }
 
-export const resourceState={
+export const LINE_TYPE = {
+    volume: CIRCLE_SIZE_L1,
+    server: CIRCLE_SIZE_L2,
+    database: CIRCLE_SIZE_L2,
+    bucket: CIRCLE_SIZE_L2,
+    subnet: CIRCLE_SIZE_L3,
+    internetgateway: CIRCLE_SIZE_L3,
+    securitygroup: CIRCLE_SIZE_L3,
+    s3_group: CIRCLE_SIZE_L3,
+    database_groups: CIRCLE_SIZE_L3,
+    securitygroups: CIRCLE_SIZE_L4,
+    subnets: CIRCLE_SIZE_L4,
+    vpc: CIRCLE_SIZE_L5,
+    aws: CIRCLE_SIZE_L6,
+    azure: CIRCLE_SIZE_L6,
+    nouse: CIRCLE_SIZE_L3,
+    networkinterface: CIRCLE_SIZE_L4,
+    CRMS: CIRCLE_SIZE_L7,
+    servergroups: CIRCLE_SIZE_L4,
+    volumegroups: CIRCLE_SIZE_L4,
+    vpcgroups: CIRCLE_SIZE_L4,
+    subnetgroups: CIRCLE_SIZE_L4,
+    interenetgroups: CIRCLE_SIZE_L4,
+    securitygroups: CIRCLE_SIZE_L4,
+    storagegroups: CIRCLE_SIZE_L4,
+    atabasegroups: CIRCLE_SIZE_L4
+}
+
+export const resourceState = {
     server: resource => {
         let status = resource['State']
         let scase = {
@@ -125,11 +138,12 @@ export const resourceState={
             terimanted: 4,
             'shutting-down': 2,
             stopping: 3,
-            pending:5
+            pending: 5,
+            undefined: 0
         }
         return scase[status]
     },
-    database:resource=>{
+    database: resource => {
         let status = resource['DBInstanceStatus']
         let scase = {
             available: 0,
@@ -142,7 +156,7 @@ export const resourceState={
         }
         return scase[status]
     },
-    volume:resource=>{
+    volume: resource => {
         let status = resource['State']
         let scase = {
             "creating": 11,
@@ -151,29 +165,37 @@ export const resourceState={
             "deleting": 10,
             "deleted": 10,
             "error": 10,
+            "Attached": 6,
+            "Unattached": 8
         }
         return scase[status]
     },
-    vpc:resource=>{
-        let status = resource['State']
-        let scase = {
-            "available": 0
+    vpc: resource => {
+        if (resource['State']) {
+            let status = resource['State']
+            let scase = {
+                "available": 0
+            }
+            return scase[status]
         }
-        return scase[status]
+        else {
+            return 0
+        }
     },
-    subnet:resource=>{
-        let status = resource['State']
-        let scase = {
-            "pending": 5,
-            "available": 0
+    subnet: resource => {
+        if (resource['State']) {
+            let status = resource['State']
+            let scase = {
+                "pending": 5,
+                "available": 0
+            }
+            return scase[status]
         }
-        return scase[status]
+        else {
+            return 0
+        }
     },
-    networkinterface: resource=>{
-        let status = resource['State']
-        let scase = {
-            "available": 0
-        }
-        return scase[status]
+    networkinterface: resource => {
+        return 0
     }
 }

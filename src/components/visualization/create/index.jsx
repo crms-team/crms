@@ -1641,7 +1641,9 @@ class CreateModal extends React.Component {
 
     select_vendor(e) {
         var index = e.nativeEvent.target.selectedIndex;
-        this.getAmiData(e.nativeEvent.target[index].text)
+        if(e.target.value=="aws"){
+            this.getAmiData(e.nativeEvent.target[index].text)
+        }
         this.setState({
             vendor: e.target.value,
             key_name: e.nativeEvent.target[index].text

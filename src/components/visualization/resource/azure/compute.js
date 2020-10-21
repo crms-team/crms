@@ -20,6 +20,9 @@ class Vm extends CloudResourceDataFormat {
             State: properties.state,
             Os: properties.storageProfile.osDisk.osType
         }
+        if(properties.networkProfile.networkInterfaces[0]){
+            this.link.push(this.makeId("networkinterface",properties.networkProfile.networkInterfaces[0].id))
+        }
     }
 }
 
@@ -42,6 +45,10 @@ class Disk extends CloudResourceDataFormat {
             State: properties.diskState,
             CreationTime: properties.timeCreated,
             osType: properties.osType
+        }
+        
+        if(data.managedBy){
+            this.link.push(this.makeId("server",data.managedBy))
         }
     }
 }

@@ -17,9 +17,9 @@ class SecurityGroup extends CloudResourceDataFormat{
             securityRules:properties.securityRules,
             defaultSecurityRules:properties.defaultSecurityRules,
             networkInterfaces:properties.networkInterfaces
-        }       
-        
-        this.link.push(this.makeId("networkinterface",properties.networkInterfaces))
+        }
+
+        this.link.push(this.makeId("networkinterface",properties.networkInterfaces[0].id))
     }
 }
 

@@ -285,6 +285,75 @@ export const MATCHINGS = {
             id: resource.id,
             fingerprint: attr.publicKey.split('\r\n')[0],
           }
+      },
+      database: (key_id, resource) => {
+        let attr = resource.properties
+  
+        return {
+          key_id: key_id,
+          identifier: resource.id,
+          engine_type: attr.Engine,
+          engine_version: attr.EngineVersion,
+          state:attr.DBInstanceStatus,
+          size: attr.AllocatedStorage,
+          availability: attr.AvailabilityZone,
+          vpc: attr.DBSubnetGroup.VpcId
+        }
+      },
+      vpc: (key_id, resource) => {
+        let attr = resource.properties
+        let name = ""
+        let ipv6 = ""
+        let ipv4 = ""
+        
+        return {
+          key_id: key_id,
+          name: resource.name,
+          id: resource.id,
+          state: attr.provisioningState,
+          ipv4_cidr: attr.addressSpace.addressPrefixes[0],
+          ipv6_cidr: ipv6
+        }
+      },
+      subnet: (key_id, resource) => {
+        let attr = resource.properties
+        let name = ""
+        let tmp = ""
+        
+        return {
+          key_id: key_id,
+          name: resource.name,
+          id: resource.id,
+          vpc: attr.virtualNetworkId,
+          state: attr.provisioningState,
+          available_ipv4_cidr: attr.addressPrefix,
+          ipv4_cidr: attr.addressPrefix,
+          availability_zone: tmp
+        }
+      },
+      securitygroup: (key_id, resource) => {
+        let attr = resource.properties
+        let name = ""
+        
+        return {
+          key_id: key_id,
+          name: resource.name,
+          id: resource.id,
+          vpc_id: attr.networkInterfaces[0].id,
+          descryption: resource.name,
+          group_name: attr.GroupName,
+        }
+      },
+      bucket: (key_id, resource) => {
+      let attr = resource
+      
+      return {
+        key_id: key_id,
+        name: attr.Name,
+        encryption: attr.Encryption == null ? "null" : attr.Encryption,
+        region: attr.LocationConstraint,
+        create_data: attr.CreationDate,
       }
+    }
   }
 }
