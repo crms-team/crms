@@ -1684,7 +1684,13 @@ class CreateModal extends React.Component {
                 bucket: ""
             }
         }
-        if (componentType[this.state.vendor] == undefined || componentType[this.state.vendor][this.state.type] == undefined) {
+
+        if(this.state.vendor=="azure"){
+            alert("Not provide this vendor")
+            this.handleModalShowHide()
+        }
+
+        else if (componentType[this.state.vendor] == undefined || componentType[this.state.vendor][this.state.type] == undefined) {
             alert("Must choose 2 Option")
         }
         else {
