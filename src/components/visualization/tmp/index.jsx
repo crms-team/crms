@@ -7,8 +7,6 @@ import CreateModal from '../create'
 import MButton from "../summary/button";
 import MInfo from "../summary";
 import { VisualStructure, IMAGE_TYPE, resourceState, LINE_TYPE } from "../resource-params";
-import { IconContext } from "react-icons";
-import { GrFormRefresh } from "react-icons/gr";
 import { Dropdown, Tabs, Tab, Form, Button } from "react-bootstrap"
 
 
@@ -698,21 +696,6 @@ function Visual() {
                     </Button>
                     </Dropdown.Menu>
                 </Dropdown>
-            </div>
-            <div className="time">
-                <button
-                    className="refresh"
-                    onClick={async () => {
-                        await getVisualData("data")
-                    }}
-                >
-                    <IconContext.Provider value={{ className: "icon" }}>
-                        <GrFormRefresh
-                            className="refresh-icon"
-                            color="red"
-                        />
-                    </IconContext.Provider>
-                </button>
             </div>
         </>
     );
