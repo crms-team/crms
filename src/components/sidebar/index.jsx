@@ -11,6 +11,7 @@ import {
     FiCalendar
     
 } from "react-icons/fi";
+import { local } from "d3";
 
 class Sidebar extends Component {
     constructor(props) {
@@ -26,6 +27,16 @@ class Sidebar extends Component {
     }
     render() {
         const { isDashboard, isResource, isSetting, isScheduler } = this.state;
+        const key=JSON.parse(localStorage.getItem("key"))
+
+        async function refresh(key){
+            let result=true;
+            for(let tmp of key){
+                let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${tmp.key}&type=data`
+                let response = await fetch(url).then((res) => res.json())
+                response.result==true ? alert(tmp.key + " data fetch Success") : alert(tmp.key + " data fetch Failed")
+            }
+        }
 
         return (
             <>
@@ -197,7 +208,19 @@ class Sidebar extends Component {
 
                         </ul>
                     </div>
-                    <Button className="sidebar-logout-btn">Logout</Button>
+                    <Button 
+                        className="sidebar-logout-btn"
+                        onClick={()=>{
+                            sessionStorage.setItem("login",false)
+                            window.location.reload()
+                        }}
+                    >Logout</Button>
+                    <Button 
+                        className="sidebar-refresh-btn"
+                        onClick={async ()=>{
+                            await refresh(key)
+                        }}
+                    >Refresh</Button>
                 </div>
             </div>
             

@@ -249,7 +249,8 @@ class ContentUpdate extends Component {
         this.state = {
             etcData1: [],
             etcData2: [],
-            vendor: ""
+            vendor: "",
+            voulumeAttach:[],
         }
         this.modifyInstance = this.modifyInstance.bind(this);
         this.handler = this.handler.bind(this);
@@ -275,14 +276,14 @@ class ContentUpdate extends Component {
         if (this.state.vendor == "aws") {
             if (resource == "volume") {
                 ec2list = await this.getEC2List()
-                for (let i = 0; i < ec2list.Instances.length; i++) {
-                    ec2item.push(<option>{ec2list.Instances[i].InstanceId}</option>)
+                for (let i = 0; i < ec2list.length; i++) {
+                    ec2item.push(<option>{ec2list[i].InstanceId}</option>)
                 }
             }
             else if (resource == "ip") {
                 ec2list = await this.getEC2List()
-                for (let i = 0; i < ec2list.Instances.length; i++) {
-                    ec2item.push(<option>{ec2list.Instances[i].InstanceId}</option>)
+                for (let i = 0; i < ec2list.length; i++) {
+                    ec2item.push(<option>{ec2list[i].InstanceId}</option>)
                 }
             }
             else if (resource == "database") {
@@ -350,7 +351,7 @@ class ContentUpdate extends Component {
     async getEC2List() {
         let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/server?key_id=${this.props.modkey}`
         let tmp_ec2 = await fetch(url).then(res => res.json());
-        return tmp_ec2.data[0]
+        return tmp_ec2.data
     }
 
     async getEngineVersion(engine) {
@@ -389,6 +390,27 @@ class ContentUpdate extends Component {
     modifyInstance(resource, data) {
         let tmp_data = {};
         let tmp_attach = {};
+        const azureModify={
+            server:<></>,
+            volume:<></>,
+            keypair:<></>,
+            ip:<></>,
+            database:<></>,
+            vpc:<></>,
+            subnet:<></>,
+            securitygroup:<></>,
+            bucket:<></>
+            
+        }
+        const volumeType = {
+            standard: "Plz Input Size of Volume. min: 1",
+            gp2: "Plz Input Size of Volume. min: 1",
+            io1: "Plz Input Size of Volume. min: 4",
+            io2: "Plz Input Size of Volume. min: 4",
+            sc1: "Plz Input Size of Volume. min: 500",
+            st1: "Plz Input Size of Volume. min: 500",
+            undefined: "Plz check type of volume"
+        }
         function func(key, val) {
             tmp_data[key] = val;
         }
@@ -398,6 +420,19 @@ class ContentUpdate extends Component {
                 return (
                     <>
                         <Form>
+                            <Form.Label className="subtitle"> Server </Form.Label>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Instance Type</Form.Label>
+                                <Form.Control
+                                    placeholder="Enter InstanceType"
+                                    onChange={(e) => {
+                                        let tmp = e.target.value
+                                        func("InstanceType", tmp)
+                                    }}
+                                />
+                            </Form.Group>
+                            <hr className="divideLine"></hr>
+                            <Form.Label className="subtitle"> Volume </Form.Label>
                             <Form.Group controlId="formBasicEmail">
                                 <Form.Label>Ebs DeviceName</Form.Label>
                                 <Form.Control
@@ -458,6 +493,8 @@ class ContentUpdate extends Component {
                                     <option>false</option>
                                 </Form.Control>
                             </Form.Group>
+                            <hr className="divideLine"></hr>
+                            <Form.Label className="subtitle"> Network </Form.Label>
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>EnaSupport</Form.Label>
                                 <Form.Control
@@ -508,37 +545,21 @@ class ContentUpdate extends Component {
                 return (
                     <>
                         <Form>
-                            <Form.Group controlId="formBasicEmail">
-                                <Form.Label>Size</Form.Label>
-                                <Form.Control
-                                    placeholder="Enter Size"
-                                    onChange={(e) => {
-                                        let tmp = parseInt(e.target.value)
-                                        func("Size", tmp)
-                                    }}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="formBasicEmail">
-                                <Form.Label>Iops</Form.Label>
-                                <Form.Control
-                                    placeholder="Enter Iops"
-                                    onChange={(e) => {
-                                        let tmp = parseInt(e.target.value)
-                                        func("Iops", tmp)
-                                    }}
-                                />
-                            </Form.Group>
+                            <Form.Label className="subtitle"> Type </Form.Label>
                             <Form.Group controlId="exampleForm.ControlSelect1">
-                                <Form.Label>VolumeType</Form.Label>
+                                <Form.Label>VolumeType *</Form.Label>
                                 <Form.Control
                                     as="select"
                                     onChange={(e) => {
-                                        func("VolumeType", e.target.value)
+                                        func("VolumeType", e.target.value);
+                                        this.setState({
+                                            volumeType : e.target.value
+                                        })
                                     }}
                                 >
                                     <option value="" disabled selected>
                                         VolumeType
-                            </option>
+                                    </option>
                                     <option>standard</option>
                                     <option>io1</option>
                                     <option>io2</option>
@@ -547,15 +568,43 @@ class ContentUpdate extends Component {
                                     <option>st1</option>
                                 </Form.Control>
                             </Form.Group>
+                            <hr className="divideLine"></hr>
+                            <Form.Label className="subtitle"> Size </Form.Label>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Size</Form.Label>
+                                <Form.Control
+                                    placeholder={volumeType[this.state.volumeType]}
+                                    onChange={(e) => {
+                                        let tmp = parseInt(e.target.value)
+                                        func("Size", tmp)
+                                    }}
+                                />
+                            </Form.Group>
+                            {
+                                (this.state.volumeType == "io2" || this.state.volumeType == "io1") ?
+                                    <Form.Group controlId="formBasicEmail">
+                                        <Form.Label>Iops *</Form.Label>
+                                        <Form.Control
+                                            placeholder="Enter OutpostArn"
+                                            onChange={(e) => {
+                                                let val = e.target.value;
+                                                this.func("Iops", val);
+                                            }}
+                                        />
+                                    </Form.Group>
+                                    : <></>
+                            }
+                            <hr className="divideLine"></hr>
+                            <Form.Label className="subtitle"> Attach of Detach </Form.Label>
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>Attach or Detach</Form.Label>
                                 <Form.Control
                                     as="select"
                                     onChange={(e) => {
                                         if (e.target.value != "") {
-                                            for (let i = 0; i < this.state.ec2list.Instances.length; i++) {
-                                                if (this.state.ec2list.Instances[i].InstanceId == e.target.value) {
-                                                    tmp_attach.Device = this.state.ec2list.Instances[i].RootDeviceName
+                                            for (let i = 0; i < this.state.ec2list.length; i++) {
+                                                if (this.state.ec2list[i].InstanceId == e.target.value) {
+                                                    tmp_attach.Device = this.state.ec2list[i].RootDeviceName
                                                     tmp_attach.InstanceId = e.target.value
                                                     tmp_attach.VolumeId = this.state.data.VolumeId
                                                 }
@@ -599,6 +648,7 @@ class ContentUpdate extends Component {
                 return (
                     <>
                         <Form>
+                            <Form.Label className="subtitle"> Network </Form.Label>
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>EnableDnsHostnames</Form.Label>
                                 <Form.Control
@@ -649,6 +699,7 @@ class ContentUpdate extends Component {
                 return (
                     <>
                         <Form>
+                            <Form.Label className="subtitle"> Network </Form.Label>
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>AssignIpv6AddressOnCreation</Form.Label>
                                 <Form.Control
@@ -730,6 +781,7 @@ class ContentUpdate extends Component {
                     return (
                         <>
                             <Form>
+                                <Form.Label className="subtitle"> Attach </Form.Label>
                                 <Form.Label>EC2 - VPC Attach</Form.Label>
                                 <Form.Group controlId="exampleForm.ControlSelect1">
                                     <Form.Label>InstanceId</Form.Label>
@@ -779,6 +831,7 @@ class ContentUpdate extends Component {
                     return (
                         <>
                             <Form>
+                                <Form.Label className="subtitle"> Detach </Form.Label>
                                 <Form.Group controlId="exampleForm.ControlSelect1">
                                     <Form.Label>VPC Detach</Form.Label>
                                     <Form.Control
@@ -821,11 +874,12 @@ class ContentUpdate extends Component {
                 return (
                     <>
                         <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Form.Label>Ingress Role</Form.Label>
+                            <Form.Label className="subtitle">Ingress Role</Form.Label>
                         </Form.Group>
                         <EditCellClassNameTable rowData={this.state.etcData1} keyId="etcData1" handler={this.handler} />
+                        <hr className="divideLine"></hr>
                         <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Form.Label>Egress Role</Form.Label>
+                            <Form.Label className="subtitle">Egress Role</Form.Label>
                         </Form.Group>
                         <EditCellClassNameTable rowData={this.state.etcData2} keyId="etcData2" handler={this.handler} />
                         <Button
@@ -942,10 +996,17 @@ class ContentUpdate extends Component {
                 );
             }
             else if (resource == "database") {
+                console.log(this.state.data)
+                const databaseType = {
+                    standard: "Plz Input Size of Volume. min: 5",
+                    gp2: "Plz Input Size of Volume. min: 20",
+                    io1: "Plz Input Size of Volume. min: 100"
+                }
                 tmp_data.DBInstanceIdentifier = this.state.data.DBInstanceIdentifier
                 return (
                     <>
                         <Form>
+                            <Form.Label className="subtitle"> Engine </Form.Label>
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>EngineVersion</Form.Label>
                                 <Form.Control
@@ -960,16 +1021,6 @@ class ContentUpdate extends Component {
                             </option>
                                     {this.state.tmp_version}
                                 </Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="formBasicEmail">
-                                <Form.Label>MasterUserPassword</Form.Label>
-                                <Form.Control
-                                    placeholder="Enter MasterUserPassword"
-                                    onChange={(e) => {
-                                        let val = e.target.value;
-                                        func("MasterUserPassword", val);
-                                    }}
-                                />
                             </Form.Group>
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>DBInstanceClass</Form.Label>
@@ -986,16 +1037,9 @@ class ContentUpdate extends Component {
                                     <option>db.t2.small</option>
                                 </Form.Control>
                             </Form.Group>
-                            <Form.Group controlId="formBasicEmail">
-                                <Form.Label>AllocatedStorage</Form.Label>
-                                <Form.Control
-                                    placeholder="Enter AllocatedStorage"
-                                    onChange={(e) => {
-                                        let val = parseInt(e.target.value);
-                                        func("AllocatedStorage", val);
-                                    }}
-                                />
-                            </Form.Group>
+                            <hr className="divideLine"></hr>
+                            <Form.Label className="subtitle"> Size </Form.Label>
+                            {this.state.data.Engine == "aurora" ? <></> :
                             <Form.Group controlId="exampleForm.ControlSelect1">
                                 <Form.Label>StorageType</Form.Label>
                                 <Form.Control
@@ -1003,41 +1047,69 @@ class ContentUpdate extends Component {
                                     onChange={(e) => {
                                         let val = e.target.value;
                                         func("StorageType", val);
+                                        this.setState({
+                                            StorageType: val
+                                        })
                                     }}
-                                >
-                                    <option value="" disabled selected>
-                                        StorageType
-                            </option>
-                                    <option>standard</option>
-                                    <option>gp2</option>
-                                    <option>io1</option>
-                                </Form.Control>
-                            </Form.Group>
+                                    >
+                                        <option value="" disabled selected>
+                                            StorageType
+                                    </option>
+                                        <option>standard</option>
+                                        <option>gp2</option>
+                                        <option>io1</option>
+                                    </Form.Control>
+                                </Form.Group>
+                            }
+                            {this.state.data.Engine == "aurora" ? <></> :
+                                <Form.Group controlId="formBasicEmail">
+                                    <Form.Label>AllocatedStorage</Form.Label>
+                                    <Form.Control
+                                        placeholder={databaseType[this.state.StorageType]}
+                                        onChange={(e) => {
+                                            let val = parseInt(e.target.value);
+                                            func("AllocatedStorage", val);
+                                        }}
+                                    />
+                                </Form.Group>}
+                            {
+                                this.state.data.Engine == "aurora" ? <></> : this.state.StorageType == "io1" ?
+                                    <Form.Group controlId="formBasicEmail">
+                                        <Form.Label>Iops *</Form.Label>
+                                        <Form.Control
+                                            placeholder="Plz Input Size of iops. min: 1000"
+                                            onChange={(e) => {
+                                                let val = e.target.value;
+                                                func("Iops", val);
+                                            }}
+                                        />
+                                    </Form.Group>
+                                    : <></>
+                            }
+                            {this.state.data.Engine == "aurora" ? <></> :
+                                this.state.StorageType == "standard" ? <></> :
+                                    <Form.Group controlId="formBasicEmail">
+                                        <Form.Label>MaxAllocatedStorage</Form.Label>
+                                        <Form.Control
+                                            placeholder={databaseType[this.state.StorageType]}
+                                            onChange={(e) => {
+                                                let val = parseInt(e.target.value);
+                                                func("MaxAllocatedStorage", val);
+                                            }}
+                                        />
+                                    </Form.Group>
+                            }
+                            <hr className="divideLine"></hr>
+                            <Form.Label className="subtitle"> Database </Form.Label>
                             <Form.Group controlId="formBasicEmail">
-                                <Form.Label>MaxAllocatedStorage</Form.Label>
+                                <Form.Label>MasterUserPassword</Form.Label>
                                 <Form.Control
-                                    placeholder="Enter MaxAllocatedStorage"
-                                    onChange={(e) => {
-                                        let val = parseInt(e.target.value);
-                                        func("MaxAllocatedStorage", val);
-                                    }}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="exampleForm.ControlSelect1">
-                                <Form.Label>MultiAZ</Form.Label>
-                                <Form.Control
-                                    as="select"
+                                    placeholder="Enter MasterUserPassword"
                                     onChange={(e) => {
                                         let val = e.target.value;
-                                        func("MultiAZ", ("true" == val));
+                                        func("MasterUserPassword", val);
                                     }}
-                                >
-                                    <option value="" disabled selected>
-                                        MultiAZ
-                            </option>
-                                    <option>True</option>
-                                    <option>False</option>
-                                </Form.Control>
+                                />
                             </Form.Group>
                             <Form.Group controlId="formBasicEmail">
                                 <Form.Label>BackupRetentionPeriod</Form.Label>
@@ -1097,6 +1169,24 @@ class ContentUpdate extends Component {
                                     <option>False</option>
                                 </Form.Control>
                             </Form.Group>
+                            <hr className="divideLine"></hr>
+                            <Form.Label className="subtitle"> Network </Form.Label>
+                            <Form.Group controlId="exampleForm.ControlSelect1">
+                                <Form.Label>MultiAZ</Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    onChange={(e) => {
+                                        let val = e.target.value;
+                                        func("MultiAZ", ("true" == val));
+                                    }}
+                                >
+                                    <option value="" disabled selected>
+                                        MultiAZ
+                            </option>
+                                    <option>True</option>
+                                    <option>False</option>
+                                </Form.Control>
+                            </Form.Group>
                         </Form>
 
                         <Button variant="warning" onClick={async () => {
@@ -1107,6 +1197,9 @@ class ContentUpdate extends Component {
                     </>
                 )
             }
+        }
+        else{
+            return azureModify[resource]
         }
     }
 

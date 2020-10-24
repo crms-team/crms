@@ -6,9 +6,7 @@ import { CreateVisualDataFormat } from "../resource";
 import CreateModal from '../create'
 import MButton from "../summary/button";
 import MInfo from "../summary";
-import { VisualStructure, IMAGE_TYPE, resourceState } from "../resource-params";
-import { IconContext } from "react-icons";
-import { GrFormRefresh } from "react-icons/gr";
+import { VisualStructure, IMAGE_TYPE, resourceState, LINE_TYPE } from "../resource-params";
 import { Dropdown, Tabs, Tab, Form, Button } from "react-bootstrap"
 
 
@@ -104,8 +102,8 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
             }
 
             let nouse = {
-                id: "nouse:" + dataset[0].id,
-                name: "nouse:" + dataset[0].id,
+                id:  dataset[0].id+":nouse",
+                name: dataset[0].id + ":nouse",
                 type: "nouse",
                 link: dataset[0].id,
                 children: []
@@ -126,8 +124,8 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                         }
                         if (element.link.length == 0) {
                             if (visualSetting.type[element.type]) {
-                                divideGroup[element.type].id = divideGroup[element.type].id + ":" + dataset[0].id
-                                divideGroup[element.type].name = divideGroup[element.type].name + ":" + dataset[0].name
+                                divideGroup[element.type].id = dataset[0].id + ":" + divideGroup[element.type].id 
+                                divideGroup[element.type].name = dataset[0].name + ":" + divideGroup[element.type].name 
                                 divideGroup[element.type].children.push(element)
                             }
                         }
@@ -146,7 +144,6 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
             }
 
             if (visualSetting.status.inuse) {
-                console.log(dataset[0].type)
                 make_dataset(datasets.cloud, visualDataset, VisualStructure[dataset[0].type], false, datasets.cloud[0].children.length == 0, nouse)
                 if (visualSetting.status.nouse) {
                     let isNouse = true
@@ -155,12 +152,17 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                             isNouse = false
                         }
                     }
+                    for(let tmp of dataset){
+                        if(tmp.link.length == 0 && (tmp.type != "aws" && tmp.type != "azure")){
+                            nouse.children.push(tmp)
+                        }
+                    }
                     if (isNouse) {
                         visualDataset[i].children.push(nouse)
                     }
                 }
             }
-            if (visualSetting.status.nouse && !visualSetting.status.inuse) {
+            else if (visualSetting.status.nouse) {
                 let tmpText = {
                     id: "",
                     vendor: "",
@@ -170,7 +172,11 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                         tmpText.id = tmp.id;
                         tmpText.vendor = tmp.type
                     }
-                    if (tmp.link.length == 0 && tmp.type != "aws") {
+                    else if (tmp.type == "azure") {
+                        tmpText.id = tmp.id;
+                        tmpText.vendor = tmp.type
+                    }
+                    else if (tmp.link.length == 0 ) {
                         nouse.children.push(tmp)
                     }
                 }
@@ -249,22 +255,22 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
             linkSvg
                 .attr("x1", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                    let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.cos(angle) * 1.25;
+                    let length = LINE_TYPE[d.source.data.type]* Math.cos(angle) * 1.25;
                     return d.source.x + length;
                 })
                 .attr("y1", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                    let length = IMAGE_TYPE[d.source.data.type].circle_size * Math.sin(angle) * 1.25;
+                    let length = LINE_TYPE[d.source.data.type] * Math.sin(angle) * 1.25;
                     return d.source.y + length;
                 })
                 .attr("x2", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                    let length = IMAGE_TYPE[d.target.data.type].circle_size * Math.cos(angle) * 1.28;
+                    let length = LINE_TYPE[d.target.data.type] * Math.cos(angle) * 1.28;
                     return d.target.x - length;
                 })
                 .attr("y2", function (d) {
                     let angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                    let length = IMAGE_TYPE[d.target.data.type].circle_size * Math.sin(angle) * 1.28;
+                    let length = LINE_TYPE[d.target.data.type] * Math.sin(angle) * 1.28;
                     return d.target.y - length;
                 });
 
@@ -272,13 +278,11 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                 return "translate(" + d.x + ", " + d.y + ")";
             });
         });
-
+    
     update(handleInstanceDataset, handleModalShowHide, showHide, root);
 }
 
 function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
-
-    console.log(root)
 
     let nodes = flatten(root);
     let links = root.links();
@@ -407,7 +411,6 @@ function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
                 }
                 d._children = d.children;
                 d.children = null;
-                console.log(root)
                 update(handleInstanceDataset, handleModalShowHide, showHide, root);
                 simulation.restart();
                 if (check != 0) {
@@ -454,25 +457,36 @@ function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
         .attr("stroke-width", "10")
         .attr("fill", "none")
         .attr("r", function (d) {
-            return IMAGE_TYPE[d.data.type].circle_size
+            return LINE_TYPE[d.data.type]
         });
 
     nodeEnter
         .append("svg:image")
-        .attr("xlink:href", function (d) {
-            return IMAGE_TYPE[d.data.type].image
+        .attr("xlink:href", function (d) {     
+            let tmpName=d.data.id.split(":")[0]
+            let keyVendor;
+            if(tmpName!="CRMS"){
+                let keyTmp=JSON.parse(localStorage.getItem("key"))
+                for(let tmp in keyTmp){
+                    if(keyTmp[tmp].key==tmpName){
+                        keyVendor=keyTmp[tmp].vendor
+                        break
+                    }
+                }
+            }      
+            return d.data.type=="CRMS"? IMAGE_TYPE[d.data.type] : IMAGE_TYPE[keyVendor][d.data.type]
         })
         .attr("height", function (d) {
-            return (IMAGE_TYPE[d.data.type].circle_size * (1.5))
+            return (LINE_TYPE[d.data.type] * (1.5))
         })
         .attr("width", function (d) {
-            return (IMAGE_TYPE[d.data.type].circle_size * (1.5))
+            return (LINE_TYPE[d.data.type] * (1.5))
         })
         .attr("x", function (d) {
-            return -(IMAGE_TYPE[d.data.type].circle_size * (1.5)) / 2
+            return -(LINE_TYPE[d.data.type] * (1.5)) / 2
         })
         .attr("y", function (d) {
-            return -(IMAGE_TYPE[d.data.type].circle_size * (1.5)) / 2
+            return -(LINE_TYPE[d.data.type] * (1.5)) / 2
         })
         .on("click", (d) => {
             try {
@@ -486,7 +500,7 @@ function update(handleInstanceDataset, handleModalShowHide, showHide, root) {
     nodeEnter
         .append("text")
         .attr("dy", (d) => {
-            return (IMAGE_TYPE[d.data.type].circle_size * (1.5)) / 2 + 3
+            return (LINE_TYPE[d.data.type] * (1.5)) / 2 + 3
         })
         .style("fill", "#ffc14d")
         .attr('stroke', 'white')
@@ -533,6 +547,9 @@ function specifyNode(visualSet, dataSet, handleModalShowHide, handleInstanceData
         }
     }
 
+    d3.selectAll(".link").remove()
+    d3.selectAll(".node").remove()
+
     if (specifyData.length == 0) {
         specifyData = undefined
     }
@@ -556,7 +573,7 @@ function Visual() {
         let result = []
         let cloudList = {}
         for (let key of keys) {
-            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key.key}` + (type ? `&type=${type}` : '')
+            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key.key}`
             let response = await fetch(ep).then((res) => res.json())
             cloudList[key.key] = true
             result.push(CreateVisualDataFormat(key.key, key.vendor, response.data))
@@ -680,21 +697,6 @@ function Visual() {
                     </Button>
                     </Dropdown.Menu>
                 </Dropdown>
-            </div>
-            <div className="time">
-                <button
-                    className="refresh"
-                    onClick={async () => {
-                        await getVisualData("data")
-                    }}
-                >
-                    <IconContext.Provider value={{ className: "icon" }}>
-                        <GrFormRefresh
-                            className="refresh-icon"
-                            color="red"
-                        />
-                    </IconContext.Provider>
-                </button>
             </div>
         </>
     );

@@ -1,6 +1,8 @@
 const crms = require('../../crms')
 const { getKeyData } = require('./key')
 const key = require('./key')
+const fs = require('fs')
+const PATH = require('path')
 
 function scanning(path) { 
     let keys = key.getKeyData(path)
@@ -25,12 +27,12 @@ function scheduler(path) {
     let schedulerData = []
     let keyData = getKeyData(path)
     try {
-        schedulerData = JSON.parse(fs.readFileSync(PATH.normalize(`${path}/data/scheduler.json`)))
+        schedulerData = JSON.parse(fs.readFileSync(PATH.normalize(`${path}/data/scheduler.json`)).toString())
     } catch {}
 
     let now = new Date()
     let nowTime = now.getHours() * 60 + now.getMinutes()
-
+    
     for (let element of schedulerData) {
         let keyId = element.keyId
         let session = element.session
@@ -38,10 +40,11 @@ function scheduler(path) {
         let args = element.args
         let vendor = keyData[keyId].vendor
 
-        let time = element.hour * 60 + element.min
+        let time = element.time.hour * 60 + element.time.min
         if (nowTime -5 <= time && time <= nowTime) {
             crms[vendor].session[getSession(session)][session].etc[type](keyData[keyId].keys, args)
         }
+
     }
 
 
@@ -57,7 +60,7 @@ async function logger(path) {
 
     setInterval(()=>{
         scheduler(path)
-    }, 1000 * 60 * 5)
+    }, 1000 * 60 * 1)
 }
 
 module.exports = {

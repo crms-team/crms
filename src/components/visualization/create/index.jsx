@@ -1641,7 +1641,9 @@ class CreateModal extends React.Component {
 
     select_vendor(e) {
         var index = e.nativeEvent.target.selectedIndex;
-        this.getAmiData(e.nativeEvent.target[index].text)
+        if(e.target.value=="aws"){
+            this.getAmiData(e.nativeEvent.target[index].text)
+        }
         this.setState({
             vendor: e.target.value,
             key_name: e.nativeEvent.target[index].text
@@ -1682,7 +1684,13 @@ class CreateModal extends React.Component {
                 bucket: ""
             }
         }
-        if (componentType[this.state.vendor] == undefined || componentType[this.state.vendor][this.state.type] == undefined) {
+
+        if(this.state.vendor=="azure"){
+            alert("Not provide this vendor")
+            this.handleModalShowHide()
+        }
+
+        else if (componentType[this.state.vendor] == undefined || componentType[this.state.vendor][this.state.type] == undefined) {
             alert("Must choose 2 Option")
         }
         else {
