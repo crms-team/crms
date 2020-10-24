@@ -115,22 +115,19 @@ const useToolbarStyles = makeStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(1),
+    background: "#7d9edf",
+    minHeight: "10px !important",
   },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: '#18181f',
-          backgroundColor: '#6b6e7c',
-        }
-      : {
-          color: '#18181f',
-          backgroundColor: '#6b6e7c',
-        },
   title: {
     flex: '1 1 100%',
+    color: "#2d2e3d",
+    paddingLeft: "10px",
+    fontSize: "20px",
+    fontWeight: 700,
+    textAlign: "center",
   },
   icon : {
-      color : '#18181f'
+      color : '#18181f !important'
   }
 }));
 

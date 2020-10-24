@@ -57,26 +57,7 @@ button:focus {
         width: 3%;
     }
 
-    /* TABLE HEAD */
-    .makeStyles-root-5 {
-        background: $point;
-        min-height: 10px !important;
-    }
 
-    /* TABLE HEAD TEXT */
-    .makeStyles-title-7 {
-        color: #2d2e3d;
-        padding-left: 10px;
-        font-size: 20px;
-        font-weight: 700;
-        text-align: center;
-    }
-
-    /* TABLE TR */
-    .makeStyles-paper-2 {
-        background-color: #212125;
-        color: $point;
-    }
 
     .rowIconButton {
         color: $lightGray !important;
@@ -85,10 +66,6 @@ button:focus {
     .MuiSvgIcon-root {
         color: $point;
     }
-    .makeStyles-icon-8 {
-        color: #18181f;
-    }
-
     .MuiCheckbox-colorSecondary.Mui-checked {
         color: $point;
     }
