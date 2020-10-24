@@ -27,7 +27,7 @@ async function deleteDisks(key, args = undefined) {
         method: 'DELETE'
     })
 
-    return res.status > 400
+    return res.status < 400
 }
 
 module.exports = {

@@ -80,7 +80,7 @@ async function powerOff(key, args = undefined) {
         method: 'POST'
     })
 
-    return res.status > 400
+    return res.status < 400
 }
 
 async function start(key, args = undefined) {
@@ -95,7 +95,7 @@ async function start(key, args = undefined) {
         method: 'POST'
     })
 
-    return res.status > 400
+    return res.status < 400
 }
 
 async function deleteVirtualMachines(key, args = undefined) {
@@ -110,10 +110,15 @@ async function deleteVirtualMachines(key, args = undefined) {
         method: 'DELETE'
     })
 
-    return res.status > 400
+    return res.status < 400
 }
 
-async function runInstances(key, args = undefined) {}
+async function runInstances(key, args = undefined) {
+    let token = await getToken(key)
+    let ep = `https://management.azure.com/subscriptions/${args.subscriptionId}/resourceGroups/${args.resourceGroupName}/providers/Microsoft.Compute/virtualMachines/${args.vmName}?api-version=2020-06-01`
+
+    return res.status <  400
+}
 
 async function modifyInstanceAttribute(key, args = undefined) {}
 
