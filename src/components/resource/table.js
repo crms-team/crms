@@ -152,40 +152,28 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-// const useToolbarStyles = makeStyles((theme) => ({
-//   root: {
-//     paddingLeft: theme.spacing(2),
-//     paddingRight: theme.spacing(1),
-//   },
-//   highlight:
-//     theme.palette.type === 'light'
-//       ? {
-//           color: '#18181f',
-//           backgroundColor: '#6b6e7c',
-//         }
-//       : {
-//           color: '#18181f',
-//           backgroundColor: '#6b6e7c',
-//         },
-//   title: {
-//     flex: '1 1 100%',
-//   },
-//   rowIconButton : {
-//       color : '#27262b!important'
-//   }
-// }));
+const useToolbarStyles = makeStyles((theme) => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+    background: "#7d9edf",
+    minHeight: "10px !important",
+  },
+  title: {
+    flex: '1 1 100%',
+    color: "#2d2e3d",
+    paddingLeft: "10px",
+    fontSize: "20px",
+    fontWeight: 700,
+    textAlign: "center",
+  },
+  rowIconButton : {
+      color : '#27262b!important'
+  }
+}));
 
 const EnhancedTableToolbar = (props) => {
-    /*
-     * TODO: Fixed SCSS & Material UI Confict Bug
-     */
-    // let classes = useToolbarStyles();
-    let classes = {
-        root: "makeStyles-root-5",
-        highlight: "makeStyles-highlight-6",
-        title: "makeStyles-title-7",
-        rowIconButton: "makeStyles-rowIconButton-8",
-    };
+    let classes = useToolbarStyles();
     const numSelected = props.numSelected.length;
     const { data } = props;
     return (
@@ -324,6 +312,8 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: "5px 10px 20px #18181f99",
         borderRadius: ".7rem",
         overflow: "hidden",
+        backgroundColor: '#212125',
+        color: "#7d9edf",
     },
     table: {
         minWidth: 750,
