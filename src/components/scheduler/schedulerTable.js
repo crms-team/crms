@@ -116,7 +116,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(1),
     background: "#7d9edf",
-    minHeight: "10px !important",
+    minHeight: "48px !important",
   },
   title: {
     flex: '1 1 100%',

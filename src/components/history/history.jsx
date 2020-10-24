@@ -23,8 +23,6 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import ModalContent from "./modal"
 import "./history.scss";
-import { InfoOutlined } from "@material-ui/icons";
-import { useState } from "react";
 
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
@@ -300,19 +298,15 @@ const useToolbarStyles = makeStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
+        minHeight: "48px !important",
     },
-    highlight:
-        theme.palette.type === "light"
-            ? {
-                color: "#18181f",
-                backgroundColor: "#6b6e7c",
-            }
-            : {
-                color: "#18181f",
-                backgroundColor: "#6b6e7c",
-            },
     title: {
         flex: "1 1 100%",
+        color: "#2d2e3d",
+        paddingLeft: "10px",
+        fontSize: "20px",
+        fontWeight: 700,
+        textAlign: "center",    
     },
     icon: {
         color: "#18181f",
@@ -359,6 +353,9 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: "5px 10px 20px #18181f99",
         borderRadius: ".7rem",
         overflow: "hidden",
+        backgroundColor: '#212125',
+        color: "#7d9edf",
+
     },
     table: {
         minWidth: 750,
