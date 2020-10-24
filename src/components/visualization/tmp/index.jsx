@@ -573,7 +573,7 @@ function Visual() {
         let result = []
         let cloudList = {}
         for (let key of keys) {
-            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key.key}` + (type ? `&type=${type}` : '')
+            let ep = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${key.key}`
             let response = await fetch(ep).then((res) => res.json())
             cloudList[key.key] = true
             result.push(CreateVisualDataFormat(key.key, key.vendor, response.data))
