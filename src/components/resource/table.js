@@ -53,7 +53,7 @@ function getIdValue(vendor, id) {
         return id;
     } else {
         let tmp_arr = id.split("/");
-        return (id = {
+        return ({
             resourceGroupName: tmp_arr[4],
             name: tmp_arr[8],
         });
@@ -153,23 +153,23 @@ EnhancedTableHead.propTypes = {
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-    background: "#7d9edf",
-    minHeight: "10px !important",
-  },
-  title: {
-    flex: '1 1 100%',
-    color: "#2d2e3d",
-    paddingLeft: "10px",
-    fontSize: "20px",
-    fontWeight: 700,
-    textAlign: "center",
-  },
-  rowIconButton : {
-      color : '#27262b!important'
-  }
+    root: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(1),
+        background: "#7d9edf",
+        minHeight: "10px !important",
+    },
+    title: {
+        flex: '1 1 100%',
+        color: "#2d2e3d",
+        paddingLeft: "10px",
+        fontSize: "20px",
+        fontWeight: 700,
+        textAlign: "center",
+    },
+    rowIconButton: {
+        color: '#27262b!important'
+    }
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -274,11 +274,11 @@ const EnhancedTableToolbar = (props) => {
                                         id = data[idx].id;
                                         vendor = checkVendor(key_id);
                                         id = getIdValue(vendor, id);
-                                    }
 
+                                    }
+                                    console.log(id)
                                     let rst = await idType[vendor][type].manage.delete(key_id, id);
-                                    alert(rst.result ? "Success" : "Failed");
-                                    window.location.reload();
+                                    alert(vendor == "aws" ? (rst.result == true ? "Success" : "Failed") : (rst.data == true ? "Success" : "Failed"));
                                 }
                             }}
                         >

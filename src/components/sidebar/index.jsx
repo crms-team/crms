@@ -219,6 +219,7 @@ class Sidebar extends Component {
                         className="sidebar-refresh-btn"
                         onClick={async ()=>{
                             await refresh(key)
+                            window.location.reload()
                         }}
                     >Refresh</Button>
                 </div>

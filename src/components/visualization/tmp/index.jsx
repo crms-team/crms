@@ -679,16 +679,6 @@ function Visual() {
                                 <Form.Check type="checkbox" key="inuse" label="In use" defaultChecked onChange={() => { handleStatus("inuse") }} />
                                 <Form.Check type="checkbox" key="nouse" label="No use" onChange={() => { handleStatus("nouse") }} />
                             </Tab>
-                            <Tab eventKey="type" title="Type">
-                                <Form.Check type="checkbox" key="server" label="Server" defaultChecked onChange={() => { handleType("server") }} />
-                                <Form.Check type="checkbox" key="volume" label="Volume" defaultChecked onChange={() => { handleType("volume") }} />
-                                <Form.Check type="checkbox" key="vpc" label="VPC" defaultChecked onChange={() => { handleType("vpc") }} />
-                                <Form.Check type="checkbox" key="subnet" label="Subnet" defaultChecked onChange={() => { handleType("subnet") }} />
-                                <Form.Check type="checkbox" key="internetgateway" label="InternetgateWay" defaultChecked onChange={() => { handleType("internetgateway") }} />
-                                <Form.Check type="checkbox" key="securitygroup" label="SecurityGroup" defaultChecked onChange={() => { handleType("securitygroup") }} />
-                                <Form.Check type="checkbox" key="storage" label="Storage" defaultChecked onChange={() => { handleType("storage") }} />
-                                <Form.Check type="checkbox" key="database" label="Database" defaultChecked onChange={() => { handleType("database") }} />
-                            </Tab>
                         </Tabs>
                         <Button variant="primary" onClick={() => {
                             specifyNode(visualRef.current, dataSet, handleModalShowHide, handleInstanceDataset, showHide)

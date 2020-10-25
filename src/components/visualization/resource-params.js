@@ -132,6 +132,9 @@ export const LINE_TYPE = {
 export const resourceState = {
     server: resource => {
         let status = resource['State']
+        if (status == undefined) {
+            status = resource['status']
+        }
         let scase = {
             stopped: 1,
             running: 0,
@@ -139,7 +142,7 @@ export const resourceState = {
             'shutting-down': 2,
             stopping: 3,
             pending: 5,
-            undefined: 0
+            undefined: 4
         }
         return scase[status]
     },
