@@ -37,7 +37,7 @@ If site is fetching cloud data or you don't have data, site show loading. but if
 
 <br/>
 
-> Without setting page, all of page render sidebar. Sidebar's main function is route to other page.
+> Without setting page, all of page render sidebar. Sidebar's main function is route to other page. Also it provide logout and Refresh func. 
 
 <br/>
 
@@ -45,7 +45,7 @@ If site is fetching cloud data or you don't have data, site show loading. but if
 
 <br/>
 
-> If url is "/history" App.js render index.jsx in history folder. Hisotry page provide information of CRUD cloud resource history. On our table, you can show all of cloud history after registry key on site. 
+> If url is "/history" App.js render index.jsx in history folder. Hisotry page provide information of CRUD cloud resource history. On our table, you can show all of cloud history after registry key on site. And if you click row of history, you can show detail of your history.
 
 <br/>
 
@@ -62,6 +62,7 @@ If site is fetching cloud data or you don't have data, site show loading. but if
 > You can collapse cloud resources's child node by right click. 
 >
 >The last function is Create cloud resource. If you click the create button and put info of resource that you want, create resource on your cloud.
+>If you Click collapse button on left-top, you can set visual setting what you want.
 
 <br/>
 
@@ -90,6 +91,14 @@ If site is fetching cloud data or you don't have data, site show loading. but if
 > If information is big to show on your left or you click the view object, we show info on right.
 >
 > We provide modify function on this page. If you click modify button, render page to modify. In modify page, you can input data to modify resource data. After that, if you click the modify button, reload page and you can see data onchanged.
+
+<br/>
+
+### Scheduler
+
+<br/>
+
+> If url is "/scheduler" App.js render index.jsx in scheduler folder. Scheduler page provide information of scheduler that power on and off when you want. On our table, you can show all of scheduler after regist on our website. And it active automatically 
 
 <br/>
 

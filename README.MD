@@ -7,26 +7,30 @@
 CRMS is a tool for management cloud resource as a user interface. CRMS can confirm information of cloud resource and manage cloud resource.
 
 
-We concentrated at four feature when we develop our system. 
-Four feature of our system is that:
+We concentrated at five feature when we develop our system. 
+Five feature of our system is that:
 <br/>
 
 - **CRUD Resource** : Our system provide Crud that Create, Read ,Update, Delete of cloud resource. you can manage cloud resource more easier and comfortable.
 
 
-![image](https://user-images.githubusercontent.com/37172677/92096409-d1353000-ee11-11ea-9561-88b1bf24da4d.png)
+![image](https://user-images.githubusercontent.com/37172677/97113086-6aeece80-172b-11eb-889d-c1fdbb1cc39e.png)
 
 - **Visualization** : Our system provide cloud architecture visualization. In our system, you can see information about your current cloud architecture and resources.
 
- ![image](https://user-images.githubusercontent.com/37172677/92096191-8f0bee80-ee11-11ea-948a-3528d16ef737.png)
+![image](https://user-images.githubusercontent.com/37172677/97113048-23684280-172b-11eb-9e9a-8b5d9129aaf1.png)
 
-- **History** : When you have been removed, created or updated cloud resource, if you want see your Cloud record about cloud resource, use our system. Our system has a technology to view  records aobut the cloud resouce. 
+- **History** : CRMS makes it easy to check the change of resource information according to modification to multi-cloud resources. You can see which cloud resources have changed and how.
 
-![image](https://user-images.githubusercontent.com/37172677/92096770-3be66b80-ee12-11ea-825b-d2b640cb4d6b.png)
+![image](https://user-images.githubusercontent.com/37172677/97113104-8063f880-172b-11eb-8042-45e0744c569e.png)
 
 - **Integration API** : Currently, CRMS only supports aws, but in the future, it will be an integrated API that supports multi-vendor. To this end, the program has been implemented so that there will be no significant changes even if vendors are added later.
 
 ![image](https://user-images.githubusercontent.com/37172677/92099538-97662880-ee15-11ea-95b8-7fc3fbfe3960.png)
+
+- **Scheduler** : With the cloud, you can lose money on running your resources all the time. To reduce the inconvenience to these users, we have developed a Scheduler that can automatically turn on and off resources at a time set by the customer.
+
+![image](https://user-images.githubusercontent.com/37172677/97113123-9c679a00-172b-11eb-8e52-22dc81c86d4f.png)
 
 For more information on our systems, please visit our website.
 
@@ -72,6 +76,8 @@ The file structure of our system consists of three things that Back-end on serve
 > 8. click setting and regist your Cloud access key and secret key and region
 > 9. it's worked!
 
+If you have a problem in start, please visit our website and check guide!
+
 <br/>
 
 ## How to Contribute CRMS
@@ -93,6 +99,3 @@ If you want contribute CRMS, Clink the Link!
 [ReturnReason](https://github.com/ReturnReason)
 
 [backtion](https://github.com/backtion)
-
-
-
