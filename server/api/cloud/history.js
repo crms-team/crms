@@ -53,15 +53,20 @@ function setHistoryTitle(history) {
 
 
 function getHistory(path, keyId) {
-    let historyPath = PATH.normalize(`${path}/data/${keyId}/history.json`)
-    let historys = JSON.parse(fs.readFileSync(historyPath))
-
-    for (let i = 0; i < historys.length; i++) {
-        historys[i].keyId = keyId
-        historys[i].title = setHistoryTitle(historys[i].detail)
+    try {
+        let historyPath = PATH.normalize(`${path}/data/${keyId}/history.json`)
+        let historys = JSON.parse(fs.readFileSync(historyPath))
+    
+        for (let i = 0; i < historys.length; i++) {
+            historys[i].keyId = keyId
+            historys[i].title = setHistoryTitle(historys[i].detail)
+        }
+    
+        return historys    
+    } catch {
+        console.log("History API Key Error or No such File")
+        return []
     }
-
-    return historys
 }
 
 function changeHisotry(historys, count) {

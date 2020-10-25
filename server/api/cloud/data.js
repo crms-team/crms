@@ -46,6 +46,7 @@ module.exports = server => {
             let keys = server.keys.getKeyData(server.config.path)
             let vendor = keys[keyId].vendor
             let checkParms = checkKeyParms(keyId, keys)
+            let result = true
 
             if (checkParms) {
                 res.send(checkParms)
@@ -53,16 +54,30 @@ module.exports = server => {
             }
 
             if (apiType){
-                await crms.data.saveData(server.config.path, keyId, vendor, keys[keyId].keys)
-            }                 
+                result = await crms.data.saveData(server.config.path, keyId, vendor, keys[keyId].keys)
+            }            
             
-            let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
-            res.send({
-                result: true,
-                vendor: vendor,
-                time: dataFile.split('.json')[0],
-                data: JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
-            })
+            if (result) {            
+                let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
+                if (dataFile) {
+                    res.send({
+                        result: true,
+                        vendor: vendor,
+                        time: dataFile.split('.json')[0],
+                        data: JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
+                    })    
+                } else {
+                    res.send({
+                        result: false,
+                        msg: 'No Data File'
+                    })
+                }
+            } else {
+                res.send({
+                    result: false,
+                    msg: 'Key Error'
+                })
+            }
 
         })
     }
@@ -97,11 +112,16 @@ module.exports = server => {
 
 
             if (apiType){
-                let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
-                data = JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))[resourceType][resource]
-            } else {
                 let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['get']
                 data = await crmsFunction(keys[keyId].keys)
+            } else {
+                let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
+                if (dataFile) {
+                    data = JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))[resourceType][resource]
+                } else {
+                    console.log("No such log File or Key Error")
+                    data = []
+                }
             }
 
             if (resourceId) {
