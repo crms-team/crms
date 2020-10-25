@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Button, Modal, ListGroup, Tab, Row, Col, Form, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { resourceState } from "../resource-params";
-import { managerType, awsManager, summaryType } from "../../../manager";
-import { Tune } from '@material-ui/icons';
+import { idType } from "../../../manager";
 
 class Instancebutton extends React.Component {
     constructor(props) {
@@ -42,18 +41,70 @@ class Instancebutton extends React.Component {
             subnetgroups : true
         }
 
+        function checkVendor(key) {
+            let tmp_list = JSON.parse(localStorage.getItem("key"));
+            for (let tmp of tmp_list) {
+                if (tmp.key == key) {
+                    return tmp.vendor;
+                }
+            }
+        }
+
+        function getIdValue(vendor, id) {
+            if (vendor == "aws") {
+                return id;
+            } else {
+                let tmp_arr = id.split("/");
+                return ({
+                    resourceGroupName: tmp_arr[4],
+                    name: tmp_arr[8],
+                });
+            }
+        }
+
+        function getSubnetValue(vendor ,id){
+            if (vendor == "aws") {
+                return id;
+            } else {
+                let tmp_arr = id.split("/");
+                return ({
+                    resourceGroupName: tmp_arr[4],
+                    vnetName: tmp_arr[8],
+                    subnetName: tmp_arr[10]
+                });
+            }
+        }
+
         if (this.state.status < 1 && (this.state.type == "server" || this.state.type == "database")) {
             statusButton = <Button variant="warning" onClick={async () => {
                 let id = this.props.data.id.split(":")[2]
                 let key_id = this.props.data.id.split(":")[0]
-                let rst = await summaryType[this.state.type]["manage"].stop(key_id, id)
+                let key_vendor = checkVendor(key_id);
+                id=getIdValue(key_vendor,id);
+                if (idType[key_vendor][this.state.type]["manage"] == "") {
+                    alert("Not Support this api");
+                }
+                else {
+                    let rst = await idType[key_vendor][this.state.type]["manage"].stop(key_id, id)
+                    alert(rst.data == true ? "Success" : "Failed" )
+                }
+                window.location.reload();
             }}>Off</Button>
 
         } else if (this.state.status < 5 && (this.state.type == "server" || this.state.type == "database")) {
             statusButton = <Button variant="warning" onClick={async () => {
                 let id = this.props.data.id.split(":")[2]
                 let key_id = this.props.data.id.split(":")[0]
-                let rst = await summaryType[this.state.type]["manage"].start(key_id, id)
+                let key_vendor = checkVendor(key_id);
+                id=getIdValue(key_vendor,id);
+                if (idType[key_vendor][this.state.type]["manage"] == "") {
+                    alert("Not Support this api");
+                }
+                else{
+                    let rst = await idType[key_vendor][this.state.type]["manage"].start(key_id, id)
+                    alert(rst.data == true ? "Success" : "Failed" )
+                }
+                window.location.reload();
             }}>On</Button>
         }
 
@@ -64,8 +115,20 @@ class Instancebutton extends React.Component {
                     <td>{ vendorButton[this.state.type]==true ? <></>:<Button onClick={async () => {
                         let id = this.props.data.id.split(":")[2]
                         let key_id = this.props.data.id.split(":")[0]
-                        let rst = await summaryType[this.state.type]["manage"].delete(key_id, id)
-                        alert(rst.result == true ? "Success" : "Failed" )
+                        let keyVendor = checkVendor(key_id);
+                        if(this.state.type=="subnet"){
+                            id = getSubnetValue(keyVendor,id);
+                        }
+                        else{
+                            id = getIdValue(keyVendor,id);
+                        }
+                        if(idType[keyVendor][this.state.type]["manage"]==""){
+                            alert("Not Support this api");
+                        }
+                        else {
+                            let rst = await idType[keyVendor][this.state.type]["manage"].delete(key_id, id)
+                            alert(rst.data == true ? "Success" : "Failed" )
+                        }
                         window.location.reload();
                     }} variant="warning">Delete</Button>}</td>
                     <td>

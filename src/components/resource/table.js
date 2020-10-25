@@ -60,6 +60,19 @@ function getIdValue(vendor, id) {
     }
 }
 
+function getSubnetValue(vendor, id) {
+    if (vendor == "aws") {
+        return id;
+    } else {
+        let tmp_arr = id.split("/");
+        return ({
+            resourceGroupName: tmp_arr[4],
+            vnetName: tmp_arr[8],
+            subnetName: tmp_arr[10]
+        });
+    }
+}
+
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -215,10 +228,13 @@ const EnhancedTableToolbar = (props) => {
                                     let key_id = data[idx].key_id;
                                     let key_vendor = checkVendor(key_id);
                                     id = getIdValue(key_vendor, id);
-                                    let rst = await idType[key_vendor][
-                                        type
-                                    ].manage.start(key_id, id);
-                                    alert(rst.result ? "Success" : "Failed");
+                                    if (idType[key_vendor][type]["manage"] == "") {
+                                        alert("Not Support this api");
+                                    }
+                                    else {
+                                        let rst = await idType[key_vendor][type]["manage"].start(key_id, id);
+                                        alert(rst.data ? "Success" : "Failed");
+                                    }
                                     window.location.reload();
                                 }
                             }}
@@ -236,10 +252,13 @@ const EnhancedTableToolbar = (props) => {
                                     let key_id = data[idx].key_id;
                                     let key_vendor = checkVendor(key_id);
                                     id = getIdValue(key_vendor, id);
-                                    let rst = await idType[key_vendor][
-                                        type
-                                    ].manage.stop(key_id, id);
-                                    alert(rst.result ? "Success" : "Failed");
+                                    if (idType[key_vendor][type]["manage"] == "") {
+                                        alert("Not Support this api");
+                                    }
+                                    else {
+                                        let rst = await idType[key_vendor][type]["manage"].stop(key_id, id);
+                                        alert(rst.data ? "Success" : "Failed");
+                                    }
                                     window.location.reload();
                                 }
                             }}
@@ -270,15 +289,22 @@ const EnhancedTableToolbar = (props) => {
                                     } else if (type == "database") {
                                         vendor = checkVendor(key_id);
                                         id = data[idx].identifier;
+                                    } else if (type == "subnet") {
+                                        vendor = checkVendor(key_id);
+                                        id = getSubnetValue(vendor, id);
                                     } else {
                                         id = data[idx].id;
                                         vendor = checkVendor(key_id);
                                         id = getIdValue(vendor, id);
 
                                     }
-                                    console.log(id)
-                                    let rst = await idType[vendor][type].manage.delete(key_id, id);
-                                    alert(vendor == "aws" ? (rst.result == true ? "Success" : "Failed") : (rst.data == true ? "Success" : "Failed"));
+                                    if (idType[vendor][type]["manage"] == "") {
+                                        alert("Not Support this api");
+                                    } else {
+                                        let rst = await idType[vendor][type]["manage"].delete(key_id, id);
+                                        alert(rst.data == true ? "Success" : "False");
+                                    }
+                                    window.location.reload();
                                 }
                             }}
                         >

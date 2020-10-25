@@ -45,7 +45,7 @@ const TYPEID = {
 
 export async function getDynamicOption(key_id, key_vendor, type) {
     let tmp_type = TYPEID[key_vendor][type]["url"]
-    let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${tmp_type}?key_id=${key_id}`;
+    let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${tmp_type}?key_id=${key_id}&type=true`;
     let items = [];
     const response = await fetch(url).then(res => res.json())
     if (type == "subnet") {
@@ -1122,7 +1122,7 @@ class RDS extends React.Component {
 
     async getSubnetList() {
         let items = []
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/database/etc/subnets`, {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/database/etc/subnets&type=data`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -1630,9 +1630,10 @@ class CreateModal extends React.Component {
     }
 
     async getAmiData(key_id) {
-        let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/image?key_id=${key_id}`
+        let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/image?key_id=${key_id}&type=true`
         let items = [];
         const response = await fetch(url).then(res => res.json())
+        console.log(response)
         for (let i = 0; i < response.data.length; i++) {
             items.push(response.data[i]);
         }

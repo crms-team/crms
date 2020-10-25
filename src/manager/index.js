@@ -87,15 +87,19 @@ const idType = {
             id: "identifier",
         },
         vpc: {
-            manage: "",
+            manage: azureManager.VNetManager,
             id: "id",
         },
         subnet: {
-            manage: "",
+            manage: azureManager.SubnetManager,
             id: "id",
         },
         securitygroup: {
-            manage: "",
+            manage: azureManager.NSGManager,
+            id: "id",
+        },
+        networkinterface: {
+            manage: azureManager.InterfaceManager,
             id: "id",
         },
         bucket: {
