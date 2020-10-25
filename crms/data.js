@@ -185,14 +185,15 @@ async function saveData(path, keyId, keyVendor, keyData){
         createDataDict(dataPath)
 
         let time = getTime()
-        let fileName =  `${time}.json`
+        let fileName = `${time}.json`
         
         history(path, keyId, keyVendor, data, time)
         fs.writeFileSync(PATH.normalize(`${dataPath}/${fileName}`), JSON.stringify(data))
         console.log(`${getTime()} Success Scanning ${keyId}`) 
+        return true
     } catch (e) {
-        console.log(e)
-        console.log("saveData function Error")
+        console.log(`saveData function Error (Maybe Key Error) [Key:${keyId}]`)
+        return false
     }
 }
 
