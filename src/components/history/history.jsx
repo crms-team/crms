@@ -527,6 +527,8 @@ export default function EnhancedTable() {
                                 count={rows.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
+                                onChangePage={handleChangePage}
+                                onChangeRowsPerPage={handleChangeRowsPerPage}    
                             />
                         </Paper>
                     </div>
