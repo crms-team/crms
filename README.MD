@@ -34,6 +34,8 @@ Five feature of our system is that:
 
 For more information on our systems, please visit our website.
 
+https://crms-team.github.io/crms-page/functions.html
+
 <br/>
 
 ## Built With
@@ -54,6 +56,8 @@ We Programing based on:
 
 ---
 Documentation is on our website.
+
+https://crms-team.github.io/crms-page/api.html
 
 <br/>
 
@@ -77,6 +81,8 @@ The file structure of our system consists of three things that Back-end on serve
 > 9. it's worked!
 
 If you have a problem in start, please visit our website and check guide!
+
+https://crms-team.github.io/crms-page/guide.html
 
 <br/>
 
