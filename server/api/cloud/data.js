@@ -2,13 +2,13 @@ const fs = require('fs')
 const PATH = require('path')
 const crms = require('../../../crms')
 
-function getType(vendor, resource){
+function getType(vendor, resource) {
     let types = Object.keys(crms[vendor]['session'])
 
-    for (let type of types){
+    for (let type of types) {
         let crmsObject = crms[vendor]['session'][type]
-        for (let res in crmsObject){
-            if (res == resource) 
+        for (let res in crmsObject) {
+            if (res == resource)
                 return type
         }
     }
@@ -17,7 +17,7 @@ function getType(vendor, resource){
 }
 
 function checkKeyParms(keyId, keys) {
-    if (!keyId){
+    if (!keyId) {
         return {
             result: false,
             msg: "Required key ID"
@@ -36,11 +36,11 @@ function checkKeyParms(keyId, keys) {
 
 
 module.exports = server => {
-    
+
     // /api/cloud/data
     // get cloud all data
     {
-        server.get("/api/cloud/data", async (req, res)=> {
+        server.get("/api/cloud/data", async (req, res) => {
             let keyId = req.query.key_id
             let apiType = req.query.type
             let keys = server.keys.getKeyData(server.config.path)
@@ -50,14 +50,14 @@ module.exports = server => {
 
             if (checkParms) {
                 res.send(checkParms)
-                return 
+                return
             }
 
-            if (apiType){
+            if (apiType) {
                 result = await crms.data.saveData(server.config.path, keyId, vendor, keys[keyId].keys)
-            }            
-            
-            if (result) {            
+            }
+
+            if (result) {
                 let dataFile = crms.data.getLastDataFileName(server.config.path, keyId)
                 if (dataFile) {
                     res.send({
@@ -65,7 +65,7 @@ module.exports = server => {
                         vendor: vendor,
                         time: dataFile.split('.json')[0],
                         data: JSON.parse(fs.readFileSync(PATH.normalize(`${server.config.path}/data/${keyId}/log/${dataFile}`)))
-                    })    
+                    })
                 } else {
                     res.send({
                         result: false,
@@ -81,7 +81,7 @@ module.exports = server => {
 
         })
     }
-    
+
     // /api/cloud/data/:resource
     // get cloud resource data
     {
@@ -102,7 +102,7 @@ module.exports = server => {
             let vendor = keys[keyId].vendor
             let resourceType = getType(vendor, resource)
 
-            if (resourceType == undefined) { 
+            if (resourceType == undefined) {
                 res.send({
                     result: false,
                     msg: "Not Support this resource"
@@ -111,7 +111,7 @@ module.exports = server => {
             }
 
 
-            if (apiType){
+            if (apiType) {
                 let crmsFunction = crms[vendor]['session'][resourceType][resource]['default']['get']
                 data = await crmsFunction(keys[keyId].keys)
             } else {
@@ -163,8 +163,8 @@ module.exports = server => {
             let vendor = keys[keyId].vendor
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
-            
-            if (resourceType == undefined) { 
+
+            if (resourceType == undefined) {
                 res.send({
                     result: false,
                     msg: "Not Support this resource"
@@ -194,7 +194,7 @@ module.exports = server => {
             }
         })
 
-        
+
         server.put("/api/cloud/data/:resource", async (req, res) => {
             let keyId = req.body.key_id
             let args = req.body.args
@@ -209,8 +209,8 @@ module.exports = server => {
             let vendor = keys[keyId].vendor
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
-            
-            if (resourceType == undefined) { 
+
+            if (resourceType == undefined) {
                 res.send({
                     result: false,
                     msg: "Not Support this resource"
@@ -254,8 +254,8 @@ module.exports = server => {
             let vendor = keys[keyId].vendor
             let resource = req.params.resource
             let resourceType = getType(vendor, resource)
-            
-            if (resourceType == undefined) { 
+
+            if (resourceType == undefined) {
                 res.send({
                     result: false,
                     msg: "Not Support this resource"
@@ -306,8 +306,8 @@ module.exports = server => {
             let vendor = keys[keyId].vendor
             let resourceType = getType(vendor, resource)
             let args = req.body.args
-            
-            if (resourceType == undefined) { 
+
+            if (resourceType == undefined) {
                 res.send({
                     result: false,
                     msg: "Not Support this resource"
@@ -324,7 +324,7 @@ module.exports = server => {
                 })
                 return
             }
-            
+
             let result = await crmsFunction(keys[keyId].keys, args)
 
             res.send({

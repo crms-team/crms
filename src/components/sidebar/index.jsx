@@ -30,12 +30,11 @@ class Sidebar extends Component {
         const key=JSON.parse(localStorage.getItem("key"))
 
         async function refresh(key){
-            let result=true;
             for(let tmp of key){
                 let url=`${process.env.REACT_APP_SERVER_URL}/api/cloud/data?key_id=${tmp.key}&type=data`
-                let response = await fetch(url).then((res) => res.json())
-                response.result==true ? alert(tmp.key + " data fetch Success") : alert(tmp.key + " data fetch Failed")
+                await fetch(url).then((res) => res.json())
             }
+            alert("finish");
         }
 
         return (
@@ -65,12 +64,12 @@ class Sidebar extends Component {
                                 <>
                                     <Link to="/dashboard">
                                         {" "}
-                                        <p className="menulist-in dashboard">
+                                        <p className="menulist-in1 dashboard">
                                             Home
                                         </p>
                                     </Link>
                                     <Link to="/history">
-                                        <p className="menulist-in dashboard">
+                                        <p className="menulist-in1 dashboard">
                                             History
                                         </p>
                                     </Link>
@@ -111,11 +110,12 @@ class Sidebar extends Component {
                                         <p className="submenu">Key Pair</p>
                                     </Link>
 
+
+                                    <p className="menulist-in resource">
+                                        Database
+                                    </p>
                                     <Link to="/resources/database">
-                                        {" "}
-                                        <p className="menulist-in resource">
-                                            Database
-                                        </p>
+                                        <p className="submenu">Database (R)</p>
                                     </Link>
 
                                     <p className="menulist-in resource">
@@ -219,6 +219,7 @@ class Sidebar extends Component {
                         className="sidebar-refresh-btn"
                         onClick={async ()=>{
                             await refresh(key)
+                            window.location.reload()
                         }}
                     >Refresh</Button>
                 </div>

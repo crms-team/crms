@@ -77,6 +77,7 @@ function makeValue(instances) {
 
 const useRowStyles = makeStyles({
     root: {
+        height:"70px!important",
         "& > *": {
             borderBottom: "unset",
         },

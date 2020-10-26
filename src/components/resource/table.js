@@ -53,9 +53,22 @@ function getIdValue(vendor, id) {
         return id;
     } else {
         let tmp_arr = id.split("/");
-        return (id = {
+        return ({
             resourceGroupName: tmp_arr[4],
             name: tmp_arr[8],
+        });
+    }
+}
+
+function getSubnetValue(vendor, id) {
+    if (vendor == "aws") {
+        return id;
+    } else {
+        let tmp_arr = id.split("/");
+        return ({
+            resourceGroupName: tmp_arr[4],
+            vnetName: tmp_arr[8],
+            subnetName: tmp_arr[10]
         });
     }
 }
@@ -153,23 +166,23 @@ EnhancedTableHead.propTypes = {
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-    background: "#7d9edf",
-    minHeight: "10px !important",
-  },
-  title: {
-    flex: '1 1 100%',
-    color: "#2d2e3d",
-    paddingLeft: "10px",
-    fontSize: "20px",
-    fontWeight: 700,
-    textAlign: "center",
-  },
-  rowIconButton : {
-      color : '#27262b!important'
-  }
+    root: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(1),
+        background: "#7d9edf",
+        minHeight: "10px !important",
+    },
+    title: {
+        flex: '1 1 100%',
+        color: "#2d2e3d",
+        paddingLeft: "10px",
+        fontSize: "20px",
+        fontWeight: 700,
+        textAlign: "center",
+    },
+    rowIconButton: {
+        color: '#27262b!important'
+    }
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -211,14 +224,21 @@ const EnhancedTableToolbar = (props) => {
                             onClick={async () => {
                                 let type = props.type;
                                 for (let idx of props.numSelected) {
-                                    let id = data[idx].id;
+                                    let typeId = "id";
+                                    if (type == "database") {
+                                        typeId = "identifier";
+                                    }
+                                    let id = data[idx][typeId];
                                     let key_id = data[idx].key_id;
                                     let key_vendor = checkVendor(key_id);
                                     id = getIdValue(key_vendor, id);
-                                    let rst = await idType[key_vendor][
-                                        type
-                                    ].manage.start(key_id, id);
-                                    alert(rst.result ? "Success" : "Failed");
+                                    if (idType[key_vendor][type]["manage"] == "") {
+                                        alert("Not Support this api");
+                                    }
+                                    else {
+                                        let rst = await idType[key_vendor][type]["manage"].start(key_id, id);
+                                        alert(rst.data ? "Success" : "Failed");
+                                    }
                                     window.location.reload();
                                 }
                             }}
@@ -231,16 +251,22 @@ const EnhancedTableToolbar = (props) => {
                         <IconButton
                             onClick={async () => {
                                 let type = props.type;
+                                let typeId = "id";
+                                if (type == "database") {
+                                    typeId = "identifier";
+                                }
                                 for (let idx of props.numSelected) {
-                                    let id = data[idx].id;
+                                    let id = data[idx][typeId];
                                     let key_id = data[idx].key_id;
                                     let key_vendor = checkVendor(key_id);
                                     id = getIdValue(key_vendor, id);
-                                    let rst = await idType[key_vendor][
-                                        type
-                                    ].manage.stop(key_id, id);
-                                    alert(rst.result ? "Success" : "Failed");
-                                    window.location.reload();
+                                    if (idType[key_vendor][type]["manage"] == "") {
+                                        alert("Not Support this api");
+                                    }
+                                    else {
+                                        let rst = await idType[key_vendor][type]["manage"].stop(key_id, id);
+                                        alert(rst.data ? "Success" : "Failed");
+                                    }
                                 }
                             }}
                             aria-label="off"
@@ -258,6 +284,7 @@ const EnhancedTableToolbar = (props) => {
                                 let vendor;
                                 for (let idx of props.numSelected) {
                                     let key_id = data[idx].key_id;
+                                    vendor = checkVendor(key_id);
                                     if (type == "keypair") {
                                         id = data[idx].name;
                                         vendor = checkVendor(key_id);
@@ -268,16 +295,23 @@ const EnhancedTableToolbar = (props) => {
                                     } else if (type == "bucket") {
                                         id = data[idx].name;
                                     } else if (type == "database") {
-                                        vendor = checkVendor(key_id);
                                         id = data[idx].identifier;
+                                    } else if (type == "subnet") {
+                                        id = data[idx].id;
+                                        id = getSubnetValue(vendor, id);
                                     } else {
                                         id = data[idx].id;
-                                        vendor = checkVendor(key_id);
                                         id = getIdValue(vendor, id);
-                                    }
 
-                                    let rst = await idType[vendor][type].manage.delete(key_id, id);
-                                    alert(rst.result ? "Success" : "Failed");
+                                    }
+                                    if (idType[vendor][type]["manage"] == "") {
+                                        alert("Not Support this api");
+                                    } else {
+                                        console.log(vendor, type)
+                                        let rst = await idType[vendor][type]["manage"].delete(key_id, id);
+                                        console.log(rst)
+                                        alert(rst.data == true ? "Success" : "Failed");
+                                    }
                                     window.location.reload();
                                 }
                             }}
@@ -292,8 +326,9 @@ const EnhancedTableToolbar = (props) => {
                             <FilterListIcon className="rowIconButton" />
                         </IconButton>
                     </Tooltip>
-                )}
-        </Toolbar>
+                )
+            }
+        </Toolbar >
     );
 };
 
@@ -308,6 +343,7 @@ const useStyles = makeStyles((theme) => ({
         margin: "0 1.5vw 0 0",
         paddingTop: "20px",
         boxSizing: "border-box",
+
     },
     paper: {
         width: "100%",
@@ -506,6 +542,7 @@ export default function EnhancedTable() {
                                                     }
                                                     tabIndex={-1}
                                                     key={index}
+                                                    style={{ height: "70px" }}
                                                     selected={isItemSelected}
                                                 >
                                                     <TableCell padding="checkbox">

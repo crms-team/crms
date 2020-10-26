@@ -1,7 +1,7 @@
 import { CloudResourceDataFormat } from "../format";
 
-class SecurityGroup extends CloudResourceDataFormat{
-    constructor (keyId, data) {
+class SecurityGroup extends CloudResourceDataFormat {
+    constructor(keyId, data) {
         super(keyId)
 
         let type = 'securitygroup'
@@ -10,14 +10,14 @@ class SecurityGroup extends CloudResourceDataFormat{
         this.name = data.GroupName
 
         this.data = {
-            IpPermissions:data.IpPermissions,
-            IpPermissionsEngress:data.IpPermissionsEngress,
-            VpcId:data.VpcId
-        }       
+            IpPermissions: data.IpPermissions,
+            IpPermissionsEngress: data.IpPermissionsEngress,
+            VpcId: data.VpcId
+        }
 
         let securityGroupsId = this.makeId('securitygroups', data.VpcId)
         this.link.push(securityGroupsId)
-        
+
         let parent = new CloudResourceDataFormat()
         parent.name = "SecurityGroups"
         parent.type = "securitygroups"
@@ -27,8 +27,8 @@ class SecurityGroup extends CloudResourceDataFormat{
     }
 }
 
-class Subnet extends CloudResourceDataFormat{
-    constructor (keyId, data) {
+class Subnet extends CloudResourceDataFormat {
+    constructor(keyId, data) {
         super(keyId)
 
         let type = 'subnet'
@@ -36,24 +36,24 @@ class Subnet extends CloudResourceDataFormat{
         this.id = this.makeId(type, data.SubnetId)
         let name = this.getTagName(data.Tags)
 
-        this.name = name === undefined ? data.SubnetId : name        
+        this.name = name === undefined ? data.SubnetId : name
 
         this.data = {
             AvailabilityZone: data.AvailabilityZone,
-            AvailableIpAddressCount:data.AvailableIpAddressCount,
-            CidrBlock : data.CidrBlock,
-            MapPublicIpOnLaunch:data.MapPublicIpOnLaunch,
+            AvailableIpAddressCount: data.AvailableIpAddressCount,
+            CidrBlock: data.CidrBlock,
+            MapPublicIpOnLaunch: data.MapPublicIpOnLaunch,
             State: data.State,
             Ipv6CidrBlockAssociationSet: data.Ipv6CidrBlockAssociationSet,
-            SubnetId:data.SubnetId,
-            VpcId:data.VpcId,
-            Tags:data.Tags,
+            SubnetId: data.SubnetId,
+            VpcId: data.VpcId,
+            Tags: data.Tags,
             SubnetArn: data.SubnetArn
-        }       
+        }
 
         let subnetsId = this.makeId('subnets', data.VpcId)
         this.link.push(subnetsId)
-        
+
         let parent = new CloudResourceDataFormat()
         parent.name = "Subnets"
         parent.type = "subnets"
@@ -69,29 +69,29 @@ class Subnet extends CloudResourceDataFormat{
         }
         return undefined
     }
-} 
+}
 
-class VPC extends CloudResourceDataFormat{
-    constructor (keyId, data) {
+class VPC extends CloudResourceDataFormat {
+    constructor(keyId, data) {
         super(keyId)
-        
+
         let type = 'vpc'
         this.type = type
         this.id = this.makeId(type, data.VpcId)
         let name = this.getTagName(data.Tags)
 
-        this.name = name === undefined ? data.VpcId : name        
+        this.name = name === undefined ? data.VpcId : name
 
         this.data = {
-            CidrBlock : data.CidrBlock,
+            CidrBlock: data.CidrBlock,
             DhcpOptionsId: data.DhcpOptionsId,
             State: data.State,
             InstanceTenancy: data.InstanceTenancy,
             Ipv6CidrBlockAssociationSet: data.Ipv6CidrBlockAssociationSet,
             CidrBlockAssociationSet: data.CidrBlockAssociationSet,
             IsDefault: data.IsDefault,
-            Tags:data.Tags
-        }       
+            Tags: data.Tags
+        }
 
         // add link Cloud (root)
         this.link.push(this.keyId)
@@ -106,23 +106,24 @@ class VPC extends CloudResourceDataFormat{
     }
 }
 
-class InternetGateway extends CloudResourceDataFormat{
-    constructor (keyId, data) {
+class InternetGateway extends CloudResourceDataFormat {
+    constructor(keyId, data) {
         super(keyId)
-        
+
         let type = 'internetgateway'
         this.type = type
         this.id = this.makeId(type, data.InternetGatewayId)
         let name = this.getTagName(data.Tags)
 
-        this.name = name === undefined ? data.InternetGatewayId : name        
+        this.name = name === undefined ? data.InternetGatewayId : name
+        if (data.Attachments.length > 0) {
+            this.data = {
+                State: data.Attachments[0].State, // 원래 배열이니까 바꿔야함
+                InternetGatewayId: data.InternetGatewayId,
+                Tags: data.Tags
+            }
+        }
 
-        this.data = {
-            State:data.Attachments[0].State, // 원래 배열이니까 바꿔야함
-            InternetGatewayId:data.InternetGatewayId,
-            Tags:data.Tags
-        }       
-        
         for (let vpc of data.Attachments) {
             this.link.push(this.makeId('vpc', vpc.VpcId))
         }
@@ -145,4 +146,4 @@ export default {
     vpc: VPC,
     internetgateway: InternetGateway
 
-  }
+}
