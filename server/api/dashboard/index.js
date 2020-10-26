@@ -2,7 +2,7 @@ const crms = require('../../../crms')
 const fs = require('fs')
 const PATH = require('path')
 
-function getStatusData(vendor, data){
+function getStatusData(vendor, data) {
     let result = {}
     let statusJson = {
         aws: {
@@ -30,7 +30,7 @@ function getStatusData(vendor, data){
                 let status = [resource.compute.keypair.length, resource.compute.keypair.length]
                 return status
             },
-            ip: resource =>{ 
+            ip: resource => {
                 let status = [0, 0]
                 for (let ip of resource.compute.ip) {
                     if (ip.AllocationId) {
@@ -40,7 +40,7 @@ function getStatusData(vendor, data){
                 }
                 return status
             },
-            database: resource =>{ 
+            database: resource => {
                 let status = [0, 0]
                 for (let db of resource.database.database) {
                     if (db.DBInstanceStatus == "available") {
@@ -50,7 +50,7 @@ function getStatusData(vendor, data){
                 }
                 return status
             },
-            vpc: resource =>{ 
+            vpc: resource => {
                 let status = [0, 0]
                 for (let vpc of resource.network.vpc) {
                     if (vpc.State == "available") {
@@ -60,7 +60,7 @@ function getStatusData(vendor, data){
                 }
                 return status
             },
-            subnet: resource =>{ 
+            subnet: resource => {
                 let status = [0, 0]
                 for (let subnet of resource.network.subnet) {
                     if (subnet.State == "available") {
@@ -70,7 +70,7 @@ function getStatusData(vendor, data){
                 }
                 return status
             },
-            securitygroup: resource =>{ 
+            securitygroup: resource => {
                 let status = [resource.network.securitygroup.length, resource.network.securitygroup.length]
                 return status
             },
@@ -78,9 +78,9 @@ function getStatusData(vendor, data){
             bucket: resource => {
                 let status = [resource.storage.bucket.length, resource.storage.bucket.length]
                 return status
-            
+
             }
-            
+
         },
         azure: {
             server: resource => {
@@ -101,7 +101,7 @@ function getStatusData(vendor, data){
                     status[0] += disk.properties.diskState == "Attached"
                     status[1] += 1
                 }
-                
+
                 return status
             },
             ip: resource => {
@@ -129,7 +129,11 @@ function getStatusData(vendor, data){
 
 
     for (let key in statusJson) {
-        result[key] = statusJson[key](data)
+        let temp = [0, 0]
+        try {
+            temp = statusJson[key](data)
+        } catch { }
+        result[key] = temp
     }
 
     return result
@@ -137,20 +141,20 @@ function getStatusData(vendor, data){
 
 module.exports = server => {
     {
-        server.get("/api/dashboard", (req, res)=>{
+        server.get("/api/dashboard", (req, res) => {
             let result = {
-                server : [0, 0],
-                volume : [0, 0],
-                ip : [0, 0],
-                keypair : [0, 0],
-                database : [0, 0],
-                vpc : [0, 0],
-                subnet : [0, 0],
+                server: [0, 0],
+                volume: [0, 0],
+                ip: [0, 0],
+                keypair: [0, 0],
+                database: [0, 0],
+                vpc: [0, 0],
+                subnet: [0, 0],
                 securitygroup: [0, 0],
-                bucket : [0, 0],
+                bucket: [0, 0],
             }
             let keys = []
-            
+
             if (req.query.key_id) {
                 let keyId = req.query.key_id
                 keys[keyId] = server.keys.getKeyData(server.config.path)[keyId]
@@ -171,7 +175,7 @@ module.exports = server => {
                 let statusData = getStatusData(vendor, data)
 
                 for (let session in result) {
-                    for (let i = 0; i < 2; i++){
+                    for (let i = 0; i < 2; i++) {
                         try {
                             result[session][i] += statusData[session][i]
                         } catch { break }
