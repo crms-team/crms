@@ -1122,7 +1122,7 @@ class RDS extends React.Component {
 
     async getSubnetList() {
         let items = []
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/database/etc/subnets&type=data`, {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/cloud/data/database/etc/subnets`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -1133,7 +1133,7 @@ class RDS extends React.Component {
             )
         }).then(res => res.json())
 
-
+        console.log(response)
         for (let subnet of response.data) {
             items.push(subnet.DBSubnetGroupName);
         }
@@ -1706,8 +1706,16 @@ class CreateModal extends React.Component {
         let key_id = this.state.key_name
         let args = this.state.data
         let rst = await summaryType[this.state.type]["manage"].create(key_id, args)
+        if(this.state.type=="keypair"){
+            const element = document.createElement("a");
+            const file = new Blob([rst.data], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = args.KeyName + ".pem";
+            document.body.appendChild(element); // Required for this to work in FireFox
+            element.click();
+        }
         alert(rst.data ? 'success' : 'failed')
-        window.location.reload()
+        window.location.reload();
     }
 
     clickSubmitbut() {
