@@ -585,10 +585,10 @@ class ContentUpdate extends Component {
                                     <Form.Group controlId="formBasicEmail">
                                         <Form.Label>Iops *</Form.Label>
                                         <Form.Control
-                                            placeholder="Enter OutpostArn"
+                                            placeholder="min is 100"
                                             onChange={(e) => {
                                                 let val = e.target.value;
-                                                this.func("Iops", val);
+                                                func("Iops", val);
                                             }}
                                         />
                                     </Form.Group>

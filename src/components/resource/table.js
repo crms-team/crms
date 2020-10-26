@@ -237,7 +237,7 @@ const EnhancedTableToolbar = (props) => {
                                     }
                                     else {
                                         let rst = await idType[key_vendor][type]["manage"].start(key_id, id);
-                                        alert(rst.data ? "Success" : "Failed");
+                                        alert(rst.result ? "Success" : "Failed");
                                     }
                                     window.location.reload();
                                 }
@@ -265,7 +265,7 @@ const EnhancedTableToolbar = (props) => {
                                     }
                                     else {
                                         let rst = await idType[key_vendor][type]["manage"].stop(key_id, id);
-                                        alert(rst.data ? "Success" : "Failed");
+                                        alert(rst.result ? "Success" : "Failed");
                                     }
                                 }
                             }}
@@ -310,7 +310,7 @@ const EnhancedTableToolbar = (props) => {
                                         console.log(vendor, type)
                                         let rst = await idType[vendor][type]["manage"].delete(key_id, id);
                                         console.log(rst)
-                                        alert(rst.data == true ? "Success" : "Failed");
+                                        alert(rst.result == true ? "Success" : "Failed");
                                     }
                                     window.location.reload();
                                 }
