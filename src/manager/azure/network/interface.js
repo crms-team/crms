@@ -2,7 +2,7 @@ import { Manager } from "../../manager";
 
 export class InterfaceManager extends Manager {
     static endpoint() {
-        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/interface`
+        return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/networkinterface`
     }
 
     static async delete(keyId, args) {

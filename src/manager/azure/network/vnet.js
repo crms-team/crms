@@ -1,7 +1,7 @@
 import { Manager } from "../../manager";
 
 
-export class VNetManager extends Manager {
+export class VnetManager extends Manager {
     static endpoint() {
         return `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/vpc`
     }
