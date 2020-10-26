@@ -122,13 +122,6 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
                                 }
                             }
                         }
-                        if (element.link.length == 0) {
-                            if (visualSetting.type[element.type]) {
-                                divideGroup[element.type].id = dataset[0].id + ":" + divideGroup[element.type].id 
-                                divideGroup[element.type].name = dataset[0].name + ":" + divideGroup[element.type].name 
-                                divideGroup[element.type].children.push(element)
-                            }
-                        }
                     } else {
                         for (let child of Object.keys(vs)) {
                             make_dataset(datasets[child], element, vs[child], true, is_init, nouse)
@@ -146,19 +139,28 @@ function drawChart(dataSet, handleModalShowHide, handleInstanceDataset, showHide
             if (visualSetting.status.inuse) {
                 make_dataset(datasets.cloud, visualDataset, VisualStructure[dataset[0].type], false, datasets.cloud[0].children.length == 0, nouse)
                 if (visualSetting.status.nouse) {
-                    let isNouse = true
-                    for (let tmp of visualDataset[i].children) {
-                        if (tmp.id == nouse.id) {
-                            isNouse = false
-                        }
-                    }
+                    let check=true;
                     for(let tmp of dataset){
                         if(tmp.link.length == 0 && (tmp.type != "aws" && tmp.type != "azure")){
                             nouse.children.push(tmp)
                         }
                     }
-                    if (isNouse) {
-                        visualDataset[i].children.push(nouse)
+                    for(let tmp of dataset[0].children){
+                        if(tmp.id==dataset[0].id+":nouse"){
+                            check=false;
+                            break;
+                        }
+                    }
+                    if(check==true){
+                        dataset[0].children.push(nouse)
+                    }
+                }
+                else{
+                    for(let tmp in dataset[0].children){
+                        if (dataset[0].children[tmp].id==dataset[0].id+":nouse"){
+                            dataset[0].children.splice(tmp,1);
+                            break;
+                        }
                     }
                 }
             }
@@ -525,7 +527,7 @@ function flatten(root) {
 
     function recurse(node) {
         if (node.children) node.children.forEach(recurse);
-        if (!node.id) node.id = node.data.name;
+        if (!node.id) node.id = node.data.id;
         nodes.push(node);
     }
 
