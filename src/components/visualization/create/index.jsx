@@ -2,18 +2,14 @@ import React, { Component } from "react";
 import {
     Button,
     Modal,
-    ListGroup,
     Tab,
-    Row,
     Col,
     Form,
-    Pagination,
-    Nav
 } from "react-bootstrap";
 import "./index.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaSync } from "react-icons/fa";
-import { managerType, awsManager, summaryType } from "../../../manager";
+import { summaryType } from "../../../manager";
 
 const EC2Data = {
     Ami: [],

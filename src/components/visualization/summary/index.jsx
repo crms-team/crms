@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import {Button,Modal,ListGroup,Tab,Row,Col,Form,Pagination} from 'react-bootstrap';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class InstanceInfo extends React.Component{
