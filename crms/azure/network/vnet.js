@@ -14,10 +14,9 @@ async function virtualNetworks(key, args = undefined) {
 }
 
 
-async function deleteVirtualNetworks(key, args=undefined) {
+async function deleteVirtualNetworks(key, args = undefined) {
     let token = await getToken(key)
-    let ep = `https://management.azure.com/subscriptions/${key.subscription}/resourceGroups/${name.resourceGroupName}/providers/Microsoft.Network/virtualNetworks/${args.name}?api-version=2020-05-01`
-    
+    let ep = `https://management.azure.com/subscriptions/${key.subscription}/resourceGroups/${args.resourceGroupName}/providers/Microsoft.Network/virtualNetworks/${args.name}?api-version=2020-05-01`
     let res = await fetch(ep, {
         headers: {
             "Content-Type": "application/json",

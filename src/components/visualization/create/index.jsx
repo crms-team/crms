@@ -41,7 +41,7 @@ const TYPEID = {
 
 export async function getDynamicOption(key_id, key_vendor, type) {
     let tmp_type = TYPEID[key_vendor][type]["url"]
-    let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${tmp_type}?key_id=${key_id}`;
+    let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/${tmp_type}?key_id=${key_id}&type=true`;
     let items = [];
     const response = await fetch(url).then(res => res.json())
     if (type == "subnet") {
@@ -1129,7 +1129,7 @@ class RDS extends React.Component {
             )
         }).then(res => res.json())
 
-
+        console.log(response)
         for (let subnet of response.data) {
             items.push(subnet.DBSubnetGroupName);
         }
@@ -1626,9 +1626,10 @@ class CreateModal extends React.Component {
     }
 
     async getAmiData(key_id) {
-        let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/image?key_id=${key_id}`
+        let url = `${process.env.REACT_APP_SERVER_URL}/api/cloud/data/image?key_id=${key_id}&type=true`
         let items = [];
         const response = await fetch(url).then(res => res.json())
+        console.log(response)
         for (let i = 0; i < response.data.length; i++) {
             items.push(response.data[i]);
         }
@@ -1701,8 +1702,16 @@ class CreateModal extends React.Component {
         let key_id = this.state.key_name
         let args = this.state.data
         let rst = await summaryType[this.state.type]["manage"].create(key_id, args)
+        if(this.state.type=="keypair"){
+            const element = document.createElement("a");
+            const file = new Blob([rst.data], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = args.KeyName + ".pem";
+            document.body.appendChild(element); // Required for this to work in FireFox
+            element.click();
+        }
         alert(rst.data ? 'success' : 'failed')
-        window.location.reload()
+        window.location.reload();
     }
 
     clickSubmitbut() {

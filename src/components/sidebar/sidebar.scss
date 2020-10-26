@@ -99,21 +99,30 @@ body {
         }
 
         & .menulist-in {
-            font-weight: 700;
+            font-weight: 900;
             font-size: 0.9rem;
             transition: 0.4s linear;
             margin-top: 10px;
             text-indent: 36px;
             color: $text;
-
-            &:hover {
-                color: $point;
-            }
+            cursor: default;
         }
         & .submenu {
             color: "#9298b1" !important;
             text-indent: 57px;
             font-size: 13px;
+            &:hover {
+                color: $point;
+            }
+        }
+
+        & .menulist-in1 {
+            font-weight: 900;
+            font-size: 0.9rem;
+            transition: 0.4s linear;
+            margin-top: 10px;
+            text-indent: 36px;
+            color: $text;
             &:hover {
                 color: $point;
             }

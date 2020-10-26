@@ -87,15 +87,19 @@ const idType = {
             id: "identifier",
         },
         vpc: {
-            manage: "",
+            manage: azureManager.VnetManager,
             id: "id",
         },
         subnet: {
-            manage: "",
+            manage: azureManager.SubnetManager,
             id: "id",
         },
         securitygroup: {
-            manage: "",
+            manage: azureManager.NSGManager,
+            id: "id",
+        },
+        networkinterface: {
+            manage: azureManager.InterfaceManager,
             id: "id",
         },
         bucket: {
@@ -133,7 +137,7 @@ const summaryType = {
     securitygroup: {
         manage: awsManager.SecurityGroupManager,
     },
-    s3: {
+    bucket: {
         manage: awsManager.S3Manager,
     },
 };

@@ -1,13 +1,13 @@
 const AWS = require('aws-sdk')
 
 
-async function describeVpcs(key, args=undefined) {
+async function describeVpcs(key, args = undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     return (await ec2.describeVpcs().promise())['Vpcs']
 }
 
-async function createVpc(key, args=undefined) {
+async function createVpc(key, args = undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     try {
@@ -18,7 +18,7 @@ async function createVpc(key, args=undefined) {
     }
 }
 
-async function modifyVpcAttribute(key, args=undefined) {
+async function modifyVpcAttribute(key, args = undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     try {
@@ -30,13 +30,14 @@ async function modifyVpcAttribute(key, args=undefined) {
     }
 }
 
-async function deleteVpc(key, args=undefined) {
+async function deleteVpc(key, args = undefined) {
     AWS.config.update(key)
     let ec2 = new AWS.EC2({ apiVersion: '2016-11-15' })
     try {
         await ec2.deleteVpc(args).promise()
         return true
-    } catch {
+    } catch (e) {
+        console.log(e)
         console.log("VPC DELETE Error (describeVpcs Error)")
         return false
     }
@@ -49,7 +50,7 @@ module.exports = {
         post: createVpc,
         put: modifyVpcAttribute,
         delete: deleteVpc
-    }, 
+    },
     etc: {}
 }
 
