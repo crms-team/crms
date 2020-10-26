@@ -64,12 +64,12 @@ class Sidebar extends Component {
                                 <>
                                     <Link to="/dashboard">
                                         {" "}
-                                        <p className="menulist-in dashboard">
+                                        <p className="menulist-in1 dashboard">
                                             Home
                                         </p>
                                     </Link>
                                     <Link to="/history">
-                                        <p className="menulist-in dashboard">
+                                        <p className="menulist-in1 dashboard">
                                             History
                                         </p>
                                     </Link>

@@ -115,6 +115,18 @@ body {
                 color: $point;
             }
         }
+
+        & .menulist-in1 {
+            font-weight: 900;
+            font-size: 0.9rem;
+            transition: 0.4s linear;
+            margin-top: 10px;
+            text-indent: 36px;
+            color: $text;
+            &:hover {
+                color: $point;
+            }
+        }
     }
 }
 

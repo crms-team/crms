@@ -277,6 +277,7 @@ const EnhancedTableToolbar = (props) => {
                                 let vendor;
                                 for (let idx of props.numSelected) {
                                     let key_id = data[idx].key_id;
+                                    vendor = checkVendor(key_id);
                                     if (type == "keypair") {
                                         id = data[idx].name;
                                         vendor = checkVendor(key_id);
@@ -287,22 +288,22 @@ const EnhancedTableToolbar = (props) => {
                                     } else if (type == "bucket") {
                                         id = data[idx].name;
                                     } else if (type == "database") {
-                                        vendor = checkVendor(key_id);
                                         id = data[idx].identifier;
                                     } else if (type == "subnet") {
-                                        vendor = checkVendor(key_id);
+                                        id = data[idx].id;
                                         id = getSubnetValue(vendor, id);
                                     } else {
                                         id = data[idx].id;
-                                        vendor = checkVendor(key_id);
                                         id = getIdValue(vendor, id);
 
                                     }
                                     if (idType[vendor][type]["manage"] == "") {
                                         alert("Not Support this api");
                                     } else {
+                                        console.log(vendor, type)
                                         let rst = await idType[vendor][type]["manage"].delete(key_id, id);
-                                        alert(rst.data == true ? "Success" : "False");
+                                        console.log(rst)
+                                        alert(rst.data == true ? "Success" : "Failed");
                                     }
                                     window.location.reload();
                                 }
@@ -334,6 +335,7 @@ const useStyles = makeStyles((theme) => ({
         margin: "0 1.5vw 0 0",
         paddingTop: "20px",
         boxSizing: "border-box",
+
     },
     paper: {
         width: "100%",
@@ -532,6 +534,7 @@ export default function EnhancedTable() {
                                                     }
                                                     tabIndex={-1}
                                                     key={index}
+                                                    style={{ height: "70px" }}
                                                     selected={isItemSelected}
                                                 >
                                                     <TableCell padding="checkbox">

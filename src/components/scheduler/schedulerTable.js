@@ -20,7 +20,7 @@ import { Modal } from "react-bootstrap";
 import ModalComponent from "./modal"
 
 function createData(schedulerId, keyId, session, resourceId, type, time) {
-  return {schedulerId, keyId, session, resourceId, type, time};
+  return { schedulerId, keyId, session, resourceId, type, time };
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -126,8 +126,8 @@ const useToolbarStyles = makeStyles((theme) => ({
     fontWeight: 700,
     textAlign: "center",
   },
-  icon : {
-      color : '#18181f !important'
+  icon: {
+    color: '#18181f !important'
   }
 }));
 
@@ -136,7 +136,7 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
 
   return (
-    
+
     <Toolbar
       className={clsx(classes.root, {
         [classes.highlight]: numSelected > 0,
@@ -147,10 +147,10 @@ const EnhancedTableToolbar = (props) => {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          No rows selected
-        </Typography>
-      )}
+          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+            No rows selected
+          </Typography>
+        )}
     </Toolbar>
   );
 };
@@ -162,16 +162,16 @@ EnhancedTableToolbar.propTypes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '82%',
-    float : 'right',
-    margin : '0 1.5vw 0 0',
-    paddingTop : '20px',
-    boxSizing : 'border-box'
+    float: 'right',
+    margin: '0 1.5vw 0 0',
+    paddingTop: '20px',
+    boxSizing: 'border-box'
   },
   paper: {
     width: '100%',
-    boxShadow : '5px 10px 20px #18181f99',
-    borderRadius : '.7rem',
-    overflow:'hidden'
+    boxShadow: '5px 10px 20px #18181f99',
+    borderRadius: '.7rem',
+    overflow: 'hidden'
   },
   table: {
     minWidth: 750,
@@ -189,16 +189,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getTime(hour, min){
+function getTime(hour, min) {
   let result = ''
   if (hour < 10) {
     result += `0`
-  } 
+  }
   result += `${hour}:`
-  
+
   if (min < 10) {
     result += `0`
-  } 
+  }
 
   result += `${min}`
   return result
@@ -206,7 +206,7 @@ function getTime(hour, min){
 
 export default function EnhancedTable() {
   const classes = useStyles();
-  const [showHide,setShowHide]=useState(false);
+  const [showHide, setShowHide] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('subnetAssociated');
   const [selected, setSelected] = React.useState([]);
@@ -215,18 +215,18 @@ export default function EnhancedTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(14);
   const [schedulerData, setSchederData] = React.useState([])
 
-  useEffect(()=>{
+  useEffect(() => {
 
 
     async function getSchedulerData() {
       let url = `${process.env.REACT_APP_SERVER_URL}/api/scheduler`
-      let data = (await fetch(url).then(res=>res.json()))
+      let data = (await fetch(url).then(res => res.json()))
       let result = []
 
       for (let i of data['schedulerData']) {
-        result.push(createData(i.schedulerId, i.keyId, i.session, i.resourceId, i.type? 'ON' : 'OFF', getTime(i.time.hour, i.time.min)))
+        result.push(createData(i.schedulerId, i.keyId, i.session, i.resourceId, i.type ? 'ON' : 'OFF', getTime(i.time.hour, i.time.min)))
       }
-      setSchederData(result)      
+      setSchederData(result)
     }
 
     getSchedulerData()
@@ -273,7 +273,7 @@ export default function EnhancedTable() {
 
   const handleModalShowHide = () => {
     setShowHide(!showHide);
-}
+  }
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -290,106 +290,107 @@ export default function EnhancedTable() {
 
   return (
     <>
-    <div className="scheduler-container">
+      <div className="scheduler-container">
         <h2 className="listview-title scheduler-btn-container">SCHEDULER
                 <div className="scheduler-btns">
-                    <Button variant="primary" className="add-btn" onClick={()=>{
-                      handleModalShowHide()
-                    }} >Add</Button>
-                    <Button variant="primary" className="delete-btn" onClick={()=>{
-                      let result=[]
-                      for(let tmp in schedulerData){
-                        for(let tmp_select in selected){
-                          if(schedulerData[tmp].schedulerId==selected[tmp_select]){
-                            result.push(schedulerData[tmp].schedulerId)
-                          }
-                        }
-                      }
+            <Button variant="primary" className="add-btn" onClick={() => {
+              handleModalShowHide()
+            }} >Add</Button>
+            <Button variant="primary" className="delete-btn" onClick={() => {
+              let result = []
+              for (let tmp in schedulerData) {
+                for (let tmp_select in selected) {
+                  if (schedulerData[tmp].schedulerId == selected[tmp_select]) {
+                    result.push(schedulerData[tmp].schedulerId)
+                  }
+                }
+              }
 
-                      let url = `${process.env.REACT_APP_SERVER_URL}/api/scheduler`
-                      for(let id of result) {
-                        fetch(`${url}?schedulerId=${id}`, { method: 'DELETE'})
-                      }
-                      window.location.reload()
-                    }}>Delete</Button>
-                </div>
+              let url = `${process.env.REACT_APP_SERVER_URL}/api/scheduler`
+              for (let id of result) {
+                fetch(`${url}?schedulerId=${id}`, { method: 'DELETE' })
+              }
+              window.location.reload()
+            }}>Delete</Button>
+          </div>
         </h2>
-    </div>
-    <div className="table">
+      </div>
+      <div className="table">
         <div className={classes.root}>
-        <Paper className={classes.paper}>
+          <Paper className={classes.paper}>
             <EnhancedTableToolbar numSelected={selected.length} />
             <TableContainer>
-            <Table
+              <Table
                 className={classes.table}
                 aria-labelledby="tableTitle"
                 size={dense ? 'small' : 'medium'}
                 aria-label="enhanced table"
-            >
+              >
                 <EnhancedTableHead
-                classes={classes}
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={schedulerData.length}
+                  classes={classes}
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={schedulerData.length}
                 />
                 <TableBody>
-                {stableSort(schedulerData, getComparator(order, orderBy))
+                  {stableSort(schedulerData, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                    const isItemSelected = isSelected(row.schedulerId);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                      const isItemSelected = isSelected(row.schedulerId);
+                      const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
+                      return (
                         <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row.schedulerId)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.schedulerId}
-                        selected={isItemSelected}
+                          hover
+                          onClick={(event) => handleClick(event, row.schedulerId)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.schedulerId}
+                          selected={isItemSelected}
+                          style={{ height: "70px" }}
                         >
-                        <TableCell padding="checkbox">
+                          <TableCell padding="checkbox">
                             <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ 'aria-labelledby': labelId }}
+                              checked={isItemSelected}
+                              inputProps={{ 'aria-labelledby': labelId }}
                             />
-                        </TableCell>
-                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                          </TableCell>
+                          <TableCell component="th" id={labelId} scope="row" padding="none">
                             {row.schedulerId}
-                        </TableCell>
-                        <TableCell align="right">{row.keyId}</TableCell>
-                        <TableCell align="right">{row.session}</TableCell>
-                        <TableCell align="right">{row.resourceId}</TableCell>
-                        <TableCell align="right">{row.type}</TableCell>
-                        <TableCell align="right">{row.time}</TableCell>
+                          </TableCell>
+                          <TableCell align="right">{row.keyId}</TableCell>
+                          <TableCell align="right">{row.session}</TableCell>
+                          <TableCell align="right">{row.resourceId}</TableCell>
+                          <TableCell align="right">{row.type}</TableCell>
+                          <TableCell align="right">{row.time}</TableCell>
                         </TableRow>
-                    );
+                      );
                     })}
-                {emptyRows > 0 && (
+                  {emptyRows > 0 && (
                     <TableRow style={{ height: (dense ? 10 : 43) * emptyRows }}>
-                    <TableCell colSpan={8} />
+                      <TableCell colSpan={8} />
                     </TableRow>
-                )}
+                  )}
                 </TableBody>
-            </Table>
+              </Table>
             </TableContainer>
             <TablePagination
-            rowsPerPageOptions={[10]}
-            component="div"
-            count={schedulerData.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
+              rowsPerPageOptions={[10]}
+              component="div"
+              count={schedulerData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-        </Paper>
+          </Paper>
         </div>
-    </div>
-    <Modal
+      </div>
+      <Modal
         show={showHide}
         onHide={handleModalShowHide}
         size="lg"
@@ -397,12 +398,12 @@ export default function EnhancedTable() {
         dialogClassName="height:50%"
         centered
         scrollable={true}
-    >
+      >
         <Modal.Header closeButton>
-            <Modal.Title>Schedule Instance</Modal.Title>
+          <Modal.Title>Schedule Instance</Modal.Title>
         </Modal.Header>
-        <ModalComponent/>
-    </Modal>
+        <ModalComponent />
+      </Modal>
     </>
   );
 }
