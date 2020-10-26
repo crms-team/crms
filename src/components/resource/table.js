@@ -224,7 +224,11 @@ const EnhancedTableToolbar = (props) => {
                             onClick={async () => {
                                 let type = props.type;
                                 for (let idx of props.numSelected) {
-                                    let id = data[idx].id;
+                                    let typeId = "id";
+                                    if (type == "database") {
+                                        typeId = "identifier";
+                                    }
+                                    let id = data[idx][typeId];
                                     let key_id = data[idx].key_id;
                                     let key_vendor = checkVendor(key_id);
                                     id = getIdValue(key_vendor, id);
@@ -247,8 +251,12 @@ const EnhancedTableToolbar = (props) => {
                         <IconButton
                             onClick={async () => {
                                 let type = props.type;
+                                let typeId = "id";
+                                if (type == "database") {
+                                    typeId = "identifier";
+                                }
                                 for (let idx of props.numSelected) {
-                                    let id = data[idx].id;
+                                    let id = data[idx][typeId];
                                     let key_id = data[idx].key_id;
                                     let key_vendor = checkVendor(key_id);
                                     id = getIdValue(key_vendor, id);
@@ -259,7 +267,6 @@ const EnhancedTableToolbar = (props) => {
                                         let rst = await idType[key_vendor][type]["manage"].stop(key_id, id);
                                         alert(rst.data ? "Success" : "Failed");
                                     }
-                                    window.location.reload();
                                 }
                             }}
                             aria-label="off"
@@ -319,8 +326,9 @@ const EnhancedTableToolbar = (props) => {
                             <FilterListIcon className="rowIconButton" />
                         </IconButton>
                     </Tooltip>
-                )}
-        </Toolbar>
+                )
+            }
+        </Toolbar >
     );
 };
 
