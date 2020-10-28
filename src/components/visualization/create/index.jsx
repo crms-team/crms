@@ -636,7 +636,7 @@ class EBS extends React.Component {
                             <Form.Group controlId="formBasicEmail">
                                 <Form.Label>Iops *</Form.Label>
                                 <Form.Control
-                                    placeholder="Enter OutpostArn"
+                                    placeholder="Enter iops: minimum is 100"
                                     onChange={(e) => {
                                         let val = e.target.value;
                                         this.func("Iops", val);

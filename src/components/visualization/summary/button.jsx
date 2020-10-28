@@ -127,7 +127,7 @@ class Instancebutton extends React.Component {
                         }
                         else {
                             let rst = await idType[keyVendor][this.state.type]["manage"].delete(key_id, id)
-                            alert(rst.data == true ? "Success" : "Failed" )
+                            alert(rst.result == true ? "Success" : "Failed" )
                         }
                         window.location.reload();
                     }} variant="warning">Delete</Button>}</td>

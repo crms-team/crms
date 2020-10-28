@@ -585,7 +585,7 @@ class ContentUpdate extends Component {
                                     <Form.Group controlId="formBasicEmail">
                                         <Form.Label>Iops *</Form.Label>
                                         <Form.Control
-                                            placeholder="Enter OutpostArn"
+                                            placeholder="Enter iops: minimum is 100"
                                             onChange={(e) => {
                                                 let val = e.target.value;
                                                 this.func("Iops", val);
@@ -1190,7 +1190,9 @@ class ContentUpdate extends Component {
                         </Form>
 
                         <Button variant="warning" onClick={async () => {
-                            console.log(await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data))
+                            let rst=await summaryType[this.state.resource]["manage"].update(this.props.modkey, tmp_data)
+                            rst.result==true?console.log("Success!"):console.log("Failed!")
+                            window.location.reload();
                         }}>
                             Modify
                 </Button>
