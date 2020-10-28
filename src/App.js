@@ -11,15 +11,15 @@ import Scheduler from "./components/scheduler"
 import "./App.css";
 
 class App extends Component {
-    Auth(){
-      if(sessionStorage.login=="false"){
-          localStorage.removeItem('key')
-          return <Redirect to="/"/>
-      }
-      else if((window.location.href==`${process.env.REACT_APP_SERVER_URL}/`)&&(sessionStorage.login=="true")){
-        return <Redirect to="/dashboard"/>
-      }
-    }  
+    Auth() {
+        if (sessionStorage.login == "false" || sessionStorage.login == undefined) {
+            localStorage.removeItem('key')
+            return <Redirect to="/" />
+        }
+        else if ((window.location.href == `${process.env.REACT_APP_SERVER_URL}/`) && (sessionStorage.login == "true")) {
+            return <Redirect to="/dashboard" />
+        }
+    }
 
     render() {
         return (
@@ -30,7 +30,7 @@ class App extends Component {
                 <Route exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/detail/:key_id/:type/:id" component={Detail} />
                 <Route exact path="/visualization" component={Visualization} />
-                <Route exact path="/history" component={History}/>
+                <Route exact path="/history" component={History} />
                 <Route exact path="/setting" component={Setting} />
                 <Route exact path="/scheduler" component={Scheduler} />
             </div>

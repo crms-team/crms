@@ -227,7 +227,7 @@ function AddCloudKeyModal(props) {
                             )}
 
                             <div className="select-bottom-text">
-                                <span>클라우드 키 발급 방법</span>
+                                <span onClick={()=>{window.open("https://crms-team.github.io/crms-page/guide.html")}}>클라우드 키 발급 방법</span>
                             </div>
                         </div>
                     </div>
