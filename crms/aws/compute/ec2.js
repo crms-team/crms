@@ -37,7 +37,7 @@ async function startInstances(key, args = undefined) {
     try {
         await ec2.startInstances(args).promise()
         return true
-    } catch {
+    } catch (e) {
         console.log("EC2 Start Error (startInstances Error)")
         return false
     }
@@ -61,7 +61,7 @@ async function runInstances(key, args = undefined) {
     try {
         await ec2.runInstances(args).promise()
         return true
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         console.log("EC2 POST Error (runInstances Error)")
         return false
@@ -74,7 +74,7 @@ async function modifyInstanceAttribute(key, args = undefined) {
     try {
         await ec2.modifyInstanceAttribute(args).promise()
         return true
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         console.log("EC2 PUT Error (modifyInstanceAttribute Error)")
         return false
