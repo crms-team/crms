@@ -14,11 +14,11 @@ Five feature of our system is that:
 - **CRUD Resource** : Our system provide Crud that Create, Read ,Update, Delete of cloud resource. you can manage cloud resource more easier and comfortable.
 
 
-![image](https://user-images.githubusercontent.com/37172677/97113086-6aeece80-172b-11eb-889d-c1fdbb1cc39e.png)
+![화면-기록-2020-10-26-오후-4 31 38-_online-video-cutter com_](https://user-images.githubusercontent.com/37172677/97383265-91ba2a00-1910-11eb-86b6-030f2b42ea64.gif)
 
 - **Visualization** : Our system provide cloud architecture visualization. In our system, you can see information about your current cloud architecture and resources.
 
-![image](https://user-images.githubusercontent.com/37172677/97113048-23684280-172b-11eb-9e9a-8b5d9129aaf1.png)
+![KakaoTalk_20201028_111900696-_online-video-cutter com_](https://user-images.githubusercontent.com/37172677/97383290-9b439200-1910-11eb-9329-684abfbf11ff.gif)
 
 - **History** : CRMS makes it easy to check the change of resource information according to modification to multi-cloud resources. You can see which cloud resources have changed and how.
 
