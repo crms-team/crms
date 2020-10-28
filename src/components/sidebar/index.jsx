@@ -198,13 +198,6 @@ class Sidebar extends Component {
                                     <p className="menulist">Setting</p>
                                 </li>
                             </Link>
-                            {isSetting && (
-                                <>
-                                    <p className="menulist-in">Password</p>
-                                    <p className="menulist-in">Cloud List</p>
-                                    <p className="menulist-in">Cloud Add</p>
-                                </>
-                            )}
 
                         </ul>
                     </div>
